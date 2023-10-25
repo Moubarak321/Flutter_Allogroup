@@ -1,13 +1,18 @@
+import 'package:allogroup/screens/office/components/app_column.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/icon_and_text_widget.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../allofood/popular_food_details.dart';
 
 class FoodPageBody extends StatefulWidget {
-  const FoodPageBody({super.key});
+  // const FoodPageBody({super.key});
+  const FoodPageBody({Key? key}) : super(key: key);
 
   @override
   State<FoodPageBody> createState() => _FoodPageBodyState();
@@ -20,19 +25,101 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   var _currPageValue = 0.0; // pour le zoom in et out
   double _scaleFactor = 0.8;
   double _height = Dimensions.pageViewContainer;
+  // String tousLesProduits = [] as String;
+  // List<String> tousLesProduits = [];
+  List<Map<String, dynamic>> tousLesProduits = [];
+
+  Future<List<String>> getCaroussImages() async {
+    List<String> images = [];
+    try {
+      final Reference storageReference =
+          FirebaseStorage.instance.ref("articles");
+      final ListResult result = await storageReference.list();
+      print(
+          "============================== final2========================================");
+
+      for (var item in result.items) {
+        final String imageUrl = await item.getDownloadURL();
+        images.add(imageUrl);
+      }
+      print(
+          "===================================images added===================================");
+    } catch (error) {
+      print("Erreur lors de la récupération des images : $error");
+    }
+    print(images);
+    print(
+        "======================================================================");
+    print(
+        "======================================================================");
+    print(
+        "======================================================================");
+    return images;
+  }
+
+  Future<List<Map<String, dynamic>>?> getAllProducts() async {
+    try {
+      List<Map<String, dynamic>> products = [];
+
+      // Accédez à la collection "Marchands" dans Firestore
+      QuerySnapshot marchandsSnapshot =
+          await FirebaseFirestore.instance.collection('marchands').get();
+
+      print(
+          "===================================marchandsSnapshot===================================");
+      print(marchandsSnapshot);
+      print(
+          "===================================marchandsSnapshot===================================");
+      // Parcourez les documents de la collection "Marchands"
+      for (QueryDocumentSnapshot marchand in marchandsSnapshot.docs) {
+        // Accédez à la sous-collection "Produits" de chaque marchand
+        print(marchand);
+        Map<String, dynamic> data = marchand.data() as Map<String, dynamic>;
+
+        print(data);
+
+        print(data['produits']);
+
+        // Parcourez les documents de la sous-collection "Produits" et ajoutez-les à la liste des produits
+        for (var produit in data['produits']) {
+          products.add(produit as Map<String, dynamic>);
+        }
+      }
+      print(
+          "===================================return===================================");
+
+      print(products);
+      print(
+          "===================================return===================================");
+
+      return products;
+    } catch (e) {
+      print("Erreur lors de la récupération des produits : $e");
+      return null;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    getAllProducts().then((products) {
+      setState(() {
+        tousLesProduits = products!;
+        print(
+            "000000000000000000000000000000000000000/////////////000000000000000000000000000000000000000");
+        print(tousLesProduits);
+        print(
+            "000000000000000000000000000000000000000/////////////000000000000000000000000000000000000000");
+      });
+    });
+
     pageController.addListener(() {
       setState(() {
         _currPageValue = pageController.page!;
         // print("Current value is $_currPageValue");
       });
     });
-    
   }
-  
 
   @override
   void dispose() {
@@ -107,15 +194,34 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         ),
 
         ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Container(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: tousLesProduits.length,
+          itemBuilder: (context, index) {
+            var produit = tousLesProduits[index];
+            var categorie = produit['categorie'];
+            var title = produit['title'];
+            var imageUrl = produit['image'];
+            var prix = produit['price'];
+            var duree = produit['during'];
+
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return PopularFoodDetail(produit: tousLesProduits[index]);
+                    },
+                  ),
+                );
+              },
+              child: Container(
                 margin: EdgeInsets.only(
-                    left: Dimensions.width20,
-                    right: Dimensions.width20,
-                    bottom: Dimensions.height10),
+                  left: Dimensions.width20,
+                  right: Dimensions.width20,
+                  bottom: Dimensions.height10,
+                ),
                 child: Row(
                   children: [
                     // =============== image section ===============
@@ -128,7 +234,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                         color: Colors.white38,
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/images/pizza.jpg"),
+                          image: NetworkImage(imageUrl),
                         ),
                       ),
                     ),
@@ -137,7 +243,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     Expanded(
                       child: Container(
                         height: Dimensions.listViewTextContSize, //100
-                        // width: 200,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radius20),
@@ -145,22 +250,22 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                           ),
                           color: Colors.white,
                         ),
-
                         child: Padding(
                           padding: EdgeInsets.only(
-                              left: Dimensions.width10,
-                              right: Dimensions.width10),
+                            left: Dimensions.width10,
+                            right: Dimensions.width10,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               BigText(
-                                text: "Nutritious fruit meal in China",
+                                text: title,
                               ),
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
-                              SmallText(text: "With chinese characteristics"),
+                              SmallText(text: categorie),
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
@@ -168,19 +273,16 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // IconAndTextWidget(
-                                  //     icon: Icons.circle_rounded,
-                                  //     text: "Normal",
-                                  //     iconColor: Colors.orange),
                                   IconAndTextWidget(
-                                      icon: Icons.location_on,
-                                      text: "1.7km",
-                                      iconColor:
-                                          Color.fromRGBO(10, 80, 137, 0.8)),
+                                    icon: Icons.monetization_on_rounded,
+                                    text: prix + " FCFA",
+                                    iconColor: Colors.orange,
+                                  ),
                                   IconAndTextWidget(
-                                      icon: Icons.access_time_rounded,
-                                      text: "32min",
-                                      iconColor: Colors.red),
+                                    icon: Icons.access_time_rounded,
+                                    text: duree + " min",
+                                    iconColor: Colors.red,
+                                  ),
                                 ],
                               )
                             ],
@@ -190,8 +292,12 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     ),
                   ],
                 ),
-              );
-            }),
+              ),
+            );
+          },
+        ),
+
+        
       ],
     );
   }
@@ -222,8 +328,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       matrix = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, _height * (1 - _scaleFactor) / 2, 1);
     }
-
-    
 
     return Transform(
       transform: matrix,
@@ -277,65 +381,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               child: Container(
                 //============== section des textes ==============
                 padding: EdgeInsets.only(
-                    top: Dimensions.height15, left: 15, right: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment
-                      .start, // alignement des composants de la boîte suivant le côté
-                  children: [
-                    BigText(text: "Chinese Side"),
-                    SizedBox(
-                      height: Dimensions.height10,
-                    ),
-                    Row(
-                      // etoiles
-                      children: [
-                        Wrap(
-                          children: List.generate(
-                              5,
-                              (index) => Icon(
-                                    Icons.star,
-                                    color: Color.fromRGBO(10, 80, 137, 0.8),
-                                    size: 15,
-                                  )),
-                        ),
-                        SizedBox(
-                          width: 9,
-                        ),
-                        SmallText(text: "4.5"),
-                        SizedBox(
-                          width: 9,
-                        ),
-                        SmallText(text: "1234"),
-                        SizedBox(
-                          width: 9,
-                        ),
-                        SmallText(
-                          text: "comments",
-                          size: 11,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: Dimensions.height20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconAndTextWidget(
-                            icon: Icons.circle_rounded,
-                            text: "Normal",
-                            iconColor: Colors.orange),
-                        IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: "1.7km",
-                            iconColor: Color.fromRGBO(10, 80, 137, 0.8)),
-                        IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: "32min",
-                            iconColor: Colors.red),
-                      ],
-                    )
-                  ],
+                    top: Dimensions.height10, left: 15, right: 15),
+                child: AppColumn(
+                  text: "Chinese Side",
                 ),
               ),
             ),
@@ -345,3 +393,4 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     );
   }
 }
+

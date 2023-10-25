@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "570659806740",
+    "project_id": "allogroup-bfda9",
+    "storage_bucket": "allogroup-bfda9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570659806740:android:55cc462560e654bbc61101",
+        "android_client_info": {
+          "package_name": "com.example.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdW0PXdfhIHQNTNjajgp9QVESWkzIRWjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

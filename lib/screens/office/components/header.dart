@@ -1,3 +1,6 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 // import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 
@@ -8,6 +11,65 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
+  String userName = '';
+  Future<String> _getProfileImageUrl() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    String imageUrl = '';
+
+    if (user != null) {
+      final String imageFileName = 'profile_images/${user.uid}.jpg';
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child(imageFileName);
+
+      try {
+        final String url = await storageReference.getDownloadURL();
+        imageUrl = url;
+      } catch (error) {
+        print("Erreur lors de la récupération de l'URL de l'image : $error");
+      }
+    }
+
+    return imageUrl;
+  }
+
+  Future<String> _loadUserName() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userName = user.displayName ?? 'John Doe';
+      });
+    }
+    return userName;
+  }
+  String formatName(String fullName) {
+  final names = fullName.split(' ');
+
+  if (names.length >= 2) {
+    // final firstName = names[0];
+    // final lastName = names[names.length - 1];
+    final lastName = names[0];
+
+    // Utilisez le premier prénom suivi de la première lettre du dernier prénom en majuscule
+    // return '$firstName ${lastName[0].toUpperCase()}.';
+    return lastName;
+  } else {
+    return fullName;
+  }
+}
+
+
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName().then((name) {
+      setState(() {
+        userName = name;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context)
@@ -38,21 +100,54 @@ class _HeaderState extends State<Header> {
                     ), // height de l'avatar
                     Row(
                       children: [
-                        const CircleAvatar(
-                          backgroundColor: Colors.white70,
-                          radius: 35,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context,
+                                '/profilScreen'); // Revenir à la page précédente
+                          },
                           child: CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/reng.jpg"),
-                            radius: 30,
+                            backgroundColor: Colors.white70,
+                            radius: 40,
+                            child: FutureBuilder<String>(
+                              future: _getProfileImageUrl(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    // Gérer les erreurs ici
+                                    return Text(
+                                        'Erreur lors de la récupération de l\'image');
+                                  }
+                                  if (snapshot.hasData) {
+                                    return CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(snapshot.data!),
+                                      radius: 35,
+                                    );
+                                  }
+                                }
+                                // Pendant le chargement, vous pouvez montrer un indicateur de chargement ou autre chose
+                                return CircularProgressIndicator();
+                              },
+                            ),
                           ),
                         ),
+
+                        // const CircleAvatar(
+                        //   backgroundColor: Colors.white70,
+                        //   radius: 35,
+                        //   child: CircleAvatar(
+                        //     backgroundImage:
+                        //         NetworkImage("assets/images/reng.jpg"),
+                        //     radius: 30,
+                        //   ),
+                        // ),
                         const SizedBox(width: 5),
                         Column(
                           children: [
                             //username
-                            const Text(
-                              "Mr Bull",
+                            Text(
+                              formatName(userName),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

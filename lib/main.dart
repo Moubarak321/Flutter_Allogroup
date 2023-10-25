@@ -1,6 +1,8 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/help/home_help.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
+import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
 import 'package:flutter/material.dart';
 import 'package:allogroup/home.dart';
 import 'package:allogroup/routes.dart';
@@ -10,22 +12,28 @@ import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:allogroup/screens/office/user/signInScreen/signInScreen.dart';
-import 'package:allogroup/screens/office/user/confirmation/verification_otp.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+// import 'package:allogroup/screens/office/components/foodcard_body.dart';
+//51518759
 
-//ancien void mouba
-// void main() {
-//   runApp(MyApp());
-// }
 
-//ancien void flutter
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
   runApp(MyApp());
 }
+
+
+
+
+
+
 
 class MyApp extends StatefulWidget {
   @override
@@ -36,13 +44,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  @override
+
+
+   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 5), () {
+
+    /// whenever your initialization is completed, remove the splash screen:
+    // Future.delayed(Duration(seconds: 5)).then((value) => {
+    Future.delayed(Duration(seconds: 5), () {
+      FlutterNativeSplash.remove();
       navigatorKey.currentState
           ?.pushReplacementNamed(initializeAppAndNavigate() as String);
-      // navigatorKey.currentState?.pushReplacementNamed('/home');
     });
   }
 
@@ -65,14 +78,14 @@ Future<void> initializeAppAndNavigate() async {
       DateTime oneMonthAgo =now.subtract(Duration(days: 30));
 
       bool registeredByEmail = user.providerData.any((userInfo) => userInfo.providerId == 'password');
-      bool registeredByPhone = user.providerData.any((userInfo) => userInfo.providerId == 'phoneNumber');
+      // bool registeredByPhone = user.providerData.any((userInfo) => userInfo.providerId == 'phoneNumber');
 
-      if ((registeredByEmail & registeredByPhone ) && (lastLoginTime.isBefore(oneMonthAgo)) ) {
+      if ((registeredByEmail ) && (lastLoginTime.isBefore(oneMonthAgo)) ) {
         await Future.delayed(const Duration(seconds: 5));
-        navigatorKey.currentState?.pushReplacementNamed('/home');
+        navigatorKey.currentState?.pushReplacementNamed('/signInScreen');
       } else {
 
-        navigatorKey.currentState?.pushReplacementNamed('/signInScreen');
+        navigatorKey.currentState?.pushReplacementNamed('/home');
 
         
       }
@@ -81,7 +94,7 @@ Future<void> initializeAppAndNavigate() async {
     }
 
     // Si l'utilisateur n'est pas connecté, vous pouvez le rediriger vers l'écran de connexion.
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 3));
     navigatorKey.currentState?.pushReplacementNamed('/signInScreen'); // Exemple : Page de connexion
   } catch (e) {
     print("Erreur lors de l'initialisation de Firebase : $e");
@@ -104,7 +117,7 @@ Future<void> initializeAppAndNavigate() async {
       theme: ThemeData(
         //theme globaux du projet
         // cardColor: Color.fromRGBO(10, 80, 137, 0.8), //couleur des cards
-        cardColor: Color.fromRGBO(10, 80, 137, 0.8), //couleur des cards
+        cardColor: Color(0xCC0A5089), //couleur des cards
         appBarTheme: const AppBarTheme(
             color: Color.fromRGBO(10, 80, 137, 0.8), centerTitle: true),
         // appBarTheme: const AppBarTheme(color: Colors.teal, centerTitle: true),
@@ -122,20 +135,25 @@ Future<void> initializeAppAndNavigate() async {
       routes: {
         '/home': (context) => const Home(),
         '/signInScreen': (context) => SignIn(),
-        '/Verification_otp': (context) => VerificationOtp(phoneNumber: '', verificationId: '',),
+        // '/Verification_otp': (context) => VerificationOtp(phoneNumber: '', verificationId: '',),
         '/profilScreen': (context) => ProfileScreen(),
         Routes.mainFoodPage: (context) => MainFoodPage(),
         Routes.homehelp: (context) => PresentationApp(),
+        '/popular_food_details': (context) => PopularFoodDetail(produit: {},),
+        '/UpdateProfileScreen' : (context) => UpdateProfileScreen()
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),
         body: Center(
           child: Image.asset(
-            "assets/images/Home.png",
+            "assets/images/livreur2.png",
             fit: BoxFit.cover,
           ),
+          
         ),
       ),
     );
   }
 }
+
+

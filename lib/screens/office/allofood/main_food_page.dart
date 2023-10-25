@@ -14,10 +14,42 @@ class MainFoodPage extends StatefulWidget {
 }
 
 class _MainFoodPageState extends State<MainFoodPage> {
+  bool foodButtonSelected = true; // Par défaut, "food" est actif
+  bool homeButtonSelected = false; // Par défaut, "Home" est inactif
+  bool deliveryButtonSelected = false; // "Delivery" est inactif
+
+  void selectFood() {
+    setState(() {
+      foodButtonSelected = true;
+      homeButtonSelected = false; // Par défaut, "Home" est inactif
+      deliveryButtonSelected = false;
+    });
+    // Vous pouvez ajouter ici le code pour naviguer vers la page d'accueil
+  }
+
+  void selectHome() {
+    setState(() {
+      homeButtonSelected = true;
+      deliveryButtonSelected = false;
+      foodButtonSelected = false;
+    });
+    // Vous pouvez ajouter ici le code pour naviguer vers la page d'accueil
+  }
+
+  void selectDelivery() {
+    setState(() {
+      deliveryButtonSelected = true;
+      homeButtonSelected = false;
+      foodButtonSelected = false;
+
+    });
+    // Vous pouvez ajouter ici le code pour gérer la page de livraison
+  }
+
   @override
   Widget build(BuildContext context) {
-    // print("height ${MediaQuery.of(context).size.height}");
-    // print("width ${MediaQuery.of(context).size.width}");
+    print("height ${MediaQuery.of(context).size.height}");
+    print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
       // appBar: AppBar(backgroundColor: Colors.white,),
       body: Column(
@@ -79,8 +111,75 @@ class _MainFoodPageState extends State<MainFoodPage> {
               child: FoodPageBody(),
             ),
           ),
+          SizedBox(
+            height: Dimensions.height20,
+          ),
         ],
+      ),
+
+      //============  Bottom Navbar Buttons  ============
+
+      extendBody: true,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          selectFood();
+          // Naviguer vers la nouvelle page lorsque l'élément est cliqué
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return MainFoodPage(); // Remplacez DetailPage par votre propre page.
+              },
+            ),
+          );
+        },
+        backgroundColor: foodButtonSelected
+            ? Colors.orange
+            : Color.fromRGBO(10, 80, 137, 0.8),
+        child: Icon(
+          Icons.fastfood,
+        ),
+      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(45),
+        ),
+        child: Container(
+          color: Colors.black38,
+          child: BottomAppBar(
+              shape: CircularNotchedRectangle(),
+              child: Row(
+                children: [
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      selectHome();
+                      Navigator.pushNamed(context, '/home');
+                    },
+                    tooltip: 'Accueil',
+                    icon: Icon(Icons.home),
+                    color: homeButtonSelected ? Colors.orange : Colors.white,
+                  ),
+                  Spacer(),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      selectDelivery();
+                    },
+                    tooltip: 'Livraison',
+                    icon: Icon(Icons.delivery_dining),
+                    color:
+                        deliveryButtonSelected ? Colors.orange : Colors.white,
+                  ),
+                  Spacer(),
+                ],
+              )),
+        ),
       ),
     );
   }
 }
+
+
+

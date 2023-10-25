@@ -29,13 +29,13 @@ class PresentationScreen extends StatelessWidget {
   }
 
   _makingPhoneCall() async {
-  var url = Uri.parse("tel:0022960559894");
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
+    var url = Uri.parse("tel:+22960559894");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
 
   Widget buildExpansionTile(String title, String content) {
     return Card(
@@ -63,20 +63,21 @@ class PresentationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar(
         title: Text('FAQ'),
         leading: IconButton(
-          
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.orange, )),
-        titleTextStyle: TextStyle(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.bold),
+            icon: const Icon(
+              LineAwesomeIcons.angle_left,
+              color: Colors.orange,
+            )),
+        titleTextStyle: TextStyle(
+            color: Colors.orange, fontSize: 24, fontWeight: FontWeight.bold),
         // backgroundColor: Color.fromRGBO(10, 80, 137, 0.8),
         backgroundColor: Colors.white,
         centerTitle: true,
-        
       ),
-      
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +103,6 @@ class PresentationScreen extends StatelessWidget {
 
             buildExpansionTile('Quels moyens de paiements acceptez-vous  ?',
                 "Avec le service Allô Food de Allô Group, vous pouvez choisir votre paiement parmi : Espèces, Portefeuille Allô Group, Carte Bancaire, MTN-Momo, Flozz. Toutes les informations personnelles de nos clients sont confidentielles et bien sécurisées. Allô Group est en partenariat avec des professionnels de renommée internationale dans le domaine pour assurer cette confidentialité et cette sécurité."),
-
 
             buildExpansionTile('Comment parrainer un nouvel utilisateur ?',
                 "Pour parrainer un nouvel utilisateur, prière entrer dans l’application et suivre les différentes étapes suivantes: Entrez dans le Menu de l’application situé au niveau des paramètres.  Appuyez sur le boutton de parrainage pour générer un code . Partagez votre code de parrainage à votre ami qui vient juste de créer son compte Allô Group. Mais attention !!! La limite du parrainage est fixée à 15 personnes, passé ce nombre, votre code devient obsolète. Bénéficier un code promo généré en parrainant un(e) ami(e) qui effectue une course avec l’application Allô Group dans un délai de 30 jours."),
@@ -130,10 +130,7 @@ class PresentationScreen extends StatelessWidget {
                 'Que faire si je ne reçois pas le repas commandé à temps ?',
                 "Ecrivez au service client via le numéro +22953899427 ou via la partie Aide de l’application en précisant le numéro de commande puis en envoyant des photos de la commande erronée. Le service client se changera de rentrer en contact avec les parties prennantes (restaurant/boutique et livreur) afin de déterminer les responsabilités et reviendra vers vous avec un apport de solution. Vous pouvez toutefois nous contacter sur nos différents numéros du service client."),
 
-            
-
-            buildExpansionTile(
-                'Comment télécharger l\'application AllôGroup ?',
+            buildExpansionTile('Comment télécharger l\'application AllôGroup ?',
                 "Allez sur le play store de votre android et recherchez AllôGroup."),
 
             buildExpansionTile('Qui contacter en cas de problème particulier ?',
@@ -144,10 +141,10 @@ class PresentationScreen extends StatelessWidget {
       ),
       // Ajoutez un bouton flottant pour passer un appel téléphonique
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          launchPhoneCall('tel:0022960559894');
+        onPressed: () {
+          _makingPhoneCall();
+          // launchPhoneCall('tel:0022960559894');
           // launchPhoneCall(0022960559894 as String);
-          
         },
         backgroundColor: Colors.green,
         child: Icon(Icons.phone), // Couleur du bouton

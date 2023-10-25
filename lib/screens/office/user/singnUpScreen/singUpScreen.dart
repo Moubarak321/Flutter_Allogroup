@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:intl_phone_field/intl_phone_field.dart';
+// import 'package:intl_phone_field/phone_number.dart';
 import '../signInScreen/signInScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../confirmation/verification_otp.dart';
+// import '../confirmation/verification_otp.dart';
+import 'package:get/get.dart';
+// import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter_libphonenumber/flutter_libphonenumber.dart'; =========
 
 class SignUp extends StatefulWidget {
   @override
@@ -16,8 +21,16 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  // final phoneNumber = phoneNumber;
 
   String? _passwordErrorText;
+  bool _isLoading = false;
+  // Expresion réguliere pour la gestion de email
+  bool isEmailValid(String email) {
+    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegex.hasMatch(email);
+  }
 
   bool _isPasswordValid(String value) {
     if (value.length < 6) {
@@ -40,69 +53,138 @@ class _SignUpState extends State<SignUp> {
 
   bool loading = false;
   String phoneNumber = '';
+  String countryCode = '';
 
-// envoi mail
+  //Vérification mail invalide
+  void _showErrorDialog(String errorMessage) {
+    Get.defaultDialog(
+      title: "Attention !!!",
+      titleStyle: TextStyle(fontSize: 20, color: Colors.red), // Style du titre
+      content: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15.0),
+        child: Text(
+          errorMessage,
+          style: TextStyle(
+            fontSize: 16, // Taille de police du texte du contenu
+            color: Colors.black, // Couleur du texte du contenu
+          ),
+        ),
+      ),
+      confirm: ElevatedButton(
+        onPressed: () {
+          Get.back(); // Ferme le dialogue
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red, // Couleur du bouton "OK"
+          side: BorderSide.none,
+        ),
+        child: Text(
+          "OK",
+          style: TextStyle(
+            fontSize: 16, // Taille de police du texte du bouton
+            color: Colors.white, // Couleur du texte du bouton
+          ),
+        ),
+      ),
+    );
+    setState(() {
+      _isLoading = false; // Mettre fin à l'indicateur de chargement
+    });
+  }
+//======================================== test num handle=====================================
+
+  // void _handleSubmit() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     final email = _emailController.text;
+  //     final password = _passwordController.text;
+  //     final phoneNumber = _phoneNumberController.text;
+
+  //     try {
+  //       final phoneNumberUtil = FormatPhoneResult(
+  //           e164: phoneNumber, formattedNumber: phoneNumber); // Créez une instance de PhoneNumberUtil
+
+  //       final phoneNumberFormatted = await phoneNumberUtil.parseAndFormat(
+  //         phoneNumber,
+  //         'BJ', // Remplacez 'BJ' par le code ISO du pays de l'utilisateur
+  //         PhoneNumberType.mobile,
+  //       );
+  //       // Créez un utilisateur Firebase Auth
+  //       UserCredential userCredential =
+  //           await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //         email: email,
+  //         password: password,
+  //       );
+
+  //       // Si l'utilisateur Firebase Auth est créé avec succès, enregistrez les données dans Firebase Firestore
+  //       if (userCredential.user != null) {
+  //         String userId = userCredential.user!.uid;
+
+  //         // Créez une référence à la collection "users" dans Firestore
+  //         CollectionReference usersCollection =
+  //             FirebaseFirestore.instance.collection('users');
+
+  //         // Enregistrez l'utilisateur dans Firestore avec l'e-mail, le mot de passe et le numéro de téléphone
+  //         await usersCollection.doc(userId).set({
+  //           'phoneNumber': phoneNumberFormatted,
+  //         });
+
+  //         print("Utilisateur enregistré dans Firebase Firestore avec succès.");
+  //         Navigator.of(context).push(MaterialPageRoute(
+  //           builder: (context) => SignIn(),
+  //         ));
+  //       } else {
+  //         print("L'utilisateur Firebase Auth n'a pas été créé avec succès.");
+  //       }
+  //     } catch (e) {
+  //       // Gérez les erreurs d'inscription ici
+  //       print("Erreur d'inscription : $e");
+  //     }
+  //   }
+  // }
+
+//======================================== old handle=====================================
   void _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
+      final phoneNumber = _phoneNumberController.text;
+      //// Utilisez le contrôleur _phoneNumberController
 
       try {
-
         // Créez un utilisateur Firebase Auth
         UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        print(userCredential);
-        
-      } catch (e) {
+        print(
+            "==================================user created auth==================================");
+        // Si l'utilisateur Firebase Auth est créé avec succès, enregistrez les données dans Firebase Firestore
+        if (userCredential.user != null) {
+          String userId = userCredential.user!.uid;
+          print(
+              "==================================ajout base et crea firestore==================================");
 
+          // Créez une référence à la collection "users" dans Firestore
+          CollectionReference usersCollection =
+              FirebaseFirestore.instance.collection('users');
+
+          // Enregistrez l'utilisateur dans Firestore avec l'e-mail, le mot de passe et le numéro de téléphone
+          await usersCollection.doc(userId).set({
+            // 'email': email,
+            'phoneNumber': "229$phoneNumber",
+          });
+
+          print("Utilisateur enregistré dans Firebase Firestore avec succès.");
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SignIn(),
+          ));
+        } else {
+          print("L'utilisateur Firebase Auth n'a pas été créé avec succès.");
+        }
+      } catch (e) {
         // Gérez les erreurs d'inscription ici
         print("Erreur d'inscription : $e");
-      }
-    }
-  }
-
-// auth OTP qui fonctionne
-  void sendOtpCode() async {
-    if (_formKey.currentState!.validate()) {
-      final phoneNumber = this.phoneNumber;
-
-      if (phoneNumber.isNotEmpty) {
-        _handleSubmit();
-        // Vous pouvez vérifier ici si le numéro de téléphone est valide
-
-        // Commencez le processus d'authentification par numéro de téléphone
-        try {
-          await FirebaseAuth.instance.verifyPhoneNumber(
-            phoneNumber: phoneNumber,
-            timeout: const Duration(minutes: 2),
-            verificationCompleted: (AuthCredential authCredential) async {
-              // Ce callback est appelé lorsque Firebase vérifie automatiquement le code.
-              // Vous pouvez ignorer cette partie si vous le souhaitez.
-            },
-            verificationFailed: (FirebaseAuthException e) {
-              // Gérez les erreurs de vérification ici
-              print("Erreur de vérification : ${e.message}");
-            },
-            codeSent: (String verificationId, int? resendToken) {
-              // Lorsque le code est envoyé avec succès, naviguez vers l'écran de vérification OTP
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => VerificationOtp(
-                  verificationId: verificationId,
-                  phoneNumber: phoneNumber,
-                ),
-              ));
-            },
-            codeAutoRetrievalTimeout: (String verificationId) {
-              // Gérez le cas où le code de vérification a expiré ici.
-            },
-          );
-        } catch (e) {
-          print("Erreur lors de l'envoi du code de vérification : $e");
-        }
       }
     }
   }
@@ -124,16 +206,7 @@ class _SignUpState extends State<SignUp> {
                   Column(
                     children: [
                       Container(
-                        decoration: BoxDecoration(
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Color.fromRGBO(
-                            //         10, 80, 137, 1), // Couleur de l'ombre
-                            //     blurRadius: 10, // Rayon du flou de l'ombre
-                            //     spreadRadius: 2, // Écart de l'ombre
-                            //   ),
-                            // ],
-                            ),
+                        decoration: BoxDecoration(),
                         child: Image.asset(
                           "assets/images/Home.png", // Remplacez par le chemin de votre logo
                           height: 150,
@@ -351,6 +424,7 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(height: 20),
 
                   IntlPhoneField(
+                    controller: _phoneNumberController,
                     flagsButtonPadding: const EdgeInsets.all(5),
                     dropdownIconPosition: IconPosition.trailing,
                     initialCountryCode: 'BJ',
@@ -371,12 +445,14 @@ class _SignUpState extends State<SignUp> {
                     },
                     keyboardType: TextInputType.number,
                   ),
-
-                 
-
                   ElevatedButton(
-                    onPressed: sendOtpCode,
-                    child: Text("Inscription"),
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading =
+                            true; // Démarrez l'indicateur de chargement
+                      });
+                      _handleSubmit();
+                    }, // Affiche le texte du bouton
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -386,7 +462,15 @@ class _SignUpState extends State<SignUp> {
                       minimumSize:
                           MaterialStateProperty.all(Size(double.infinity, 48)),
                     ),
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            // Affiche l'indicateur de chargement
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : Text("Inscription"),
                   ),
+
                   SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
@@ -415,6 +499,7 @@ class _SignUpState extends State<SignUp> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 }
