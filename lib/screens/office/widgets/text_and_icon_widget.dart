@@ -2,13 +2,13 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 
-class IconAndTextWidget extends StatelessWidget {
+class TextAndIconWidget extends StatelessWidget {
   final IconData icon;
   final String text;
   // final Color color;
   final Color iconColor;
 
-  const IconAndTextWidget(
+  const TextAndIconWidget(
       {super.key,
       required this.icon,
       required this.text,
@@ -19,8 +19,8 @@ class IconAndTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: iconColor, size: Dimensions.iconSize24),
         SmallText(text: text,),
+        Icon(icon, color: iconColor, size: Dimensions.iconSize24),
         SizedBox(width: 5,),
         
       ],

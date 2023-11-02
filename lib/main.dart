@@ -1,5 +1,6 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/help/home_help.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
@@ -122,7 +123,9 @@ Future<void> initializeAppAndNavigate() async {
             color: Color.fromRGBO(10, 80, 137, 0.8), centerTitle: true),
         // appBarTheme: const AppBarTheme(color: Colors.teal, centerTitle: true),
         bottomAppBarTheme: const BottomAppBarTheme(
-            color: Color.fromRGBO(10, 80, 137, 0.8)), //bottom appbar
+            color: Color.fromRGBO(10, 80, 137, 1),
+          
+            ), //bottom appbar
         floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: Colors.orange), // home button
       ),
@@ -140,7 +143,8 @@ Future<void> initializeAppAndNavigate() async {
         Routes.mainFoodPage: (context) => MainFoodPage(),
         Routes.homehelp: (context) => PresentationApp(),
         '/popular_food_details': (context) => PopularFoodDetail(produit: {},),
-        '/UpdateProfileScreen' : (context) => UpdateProfileScreen()
+        '/UpdateProfileScreen' : (context) => UpdateProfileScreen(),
+        '/recommended_food_detail': (context) => RecommendedFoodDetail()
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

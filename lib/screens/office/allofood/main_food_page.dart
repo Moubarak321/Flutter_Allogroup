@@ -71,8 +71,8 @@ class _MainFoodPageState extends State<MainFoodPage> {
                     ),
                     Row(
                       children: [
-                        SmallText(text: "Cotonou", color: Colors.orange),
-                        Icon(Icons.arrow_drop_down_circle_rounded)
+                        SmallText(text: "Restaurants", color: Colors.orange),
+                        // Icon(Icons.arrow_drop_down_circle_rounded)
                       ],
                     ),
                   ],

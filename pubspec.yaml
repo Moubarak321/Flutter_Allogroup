@@ -48,7 +48,7 @@ dependencies:
   image_picker: ^1.0.4
   firebase_storage: ^11.2.8
   flutter_native_splash: ^2.3.3
-
+  get_storage: ^2.1.1
 
 
 

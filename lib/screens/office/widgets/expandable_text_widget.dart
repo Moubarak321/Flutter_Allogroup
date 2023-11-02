@@ -1,3 +1,4 @@
+// import 'package:allogroup/screens/office/components/app_column.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 
@@ -5,7 +6,8 @@ import 'dimensions.dart';
 
 class ExpandableTextWidget extends StatefulWidget {
   final String text;
-  const ExpandableTextWidget({super.key, required this.text});
+  // ignore: non_constant_identifier_names
+  const ExpandableTextWidget( {super.key, required this.text});
 
   @override
   State<ExpandableTextWidget> createState() => _ExpandableTextWidgetState();
