@@ -1,5 +1,6 @@
 // ignore: file_names
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/components/foodcard_body.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
@@ -86,10 +87,22 @@ class _MainFoodPageState extends State<MainFoodPage> {
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       color: Color.fromRGBO(10, 80, 137, 0.8),
                     ),
-                    child: Icon(
-                      Icons.shopping_cart_rounded,
-                      color: Colors.white,
-                      size: Dimensions.iconSize24,
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Cart();
+                    },
+                  ),
+                );
+                      },
+                      child: Icon(
+                        Icons.shopping_cart_rounded,
+                        color: Colors.white,
+                        size: Dimensions.iconSize24,
+                      ),
                     ),
                   ),
                 ),

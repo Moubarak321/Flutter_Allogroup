@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/office/components/header.dart';
@@ -64,7 +65,18 @@ class _HomeState extends State<Home> {
             actions: [
               IconButton(
                   //button shopping
-                  onPressed: () {},
+                  onPressed: () {
+                     
+                     Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Cart();
+                    },
+                  ),
+                );
+                    
+                  },
                   icon: const Icon(Icons.shopping_cart))
             ],
           ),

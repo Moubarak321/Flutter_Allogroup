@@ -42,24 +42,23 @@ class _HeaderState extends State<Header> {
     }
     return userName;
   }
+
   String formatName(String fullName) {
-  final names = fullName.split(' ');
+    final names = fullName.split(' ');
 
-  if (names.length >= 2) {
-    // final firstName = names[0];
-    // final lastName = names[names.length - 1];
-    final lastName = names[0];
+    if (names.length >= 2) {
+      // final firstName = names[0];
+      // final lastName = names[names.length - 1];
+      final lastName = names[0];
 
-    // Utilisez le premier prénom suivi de la première lettre du dernier prénom en majuscule
-    // return '$firstName ${lastName[0].toUpperCase()}.';
-    return lastName;
-  } else {
-    return fullName;
+      // Utilisez le premier prénom suivi de la première lettre du dernier prénom en majuscule
+      // return '$firstName ${lastName[0].toUpperCase()}.';
+      return lastName;
+    } else {
+      return fullName;
+    }
   }
-}
 
-
-  
   @override
   void initState() {
     super.initState();

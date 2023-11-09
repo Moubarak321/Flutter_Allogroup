@@ -8,8 +8,9 @@ import '../widgets/big_text.dart';
 
 class AppColumnFood extends StatelessWidget {
   final String text;
+  final String restau;
   // final String cat;
-  const AppColumnFood({super.key, required this.text});
+  const AppColumnFood({super.key, required this.text, required this.restau});
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +28,30 @@ class AppColumnFood extends StatelessWidget {
         Row(
           // etoiles
           children: [
-            Wrap(
-              children: List.generate(
-                  5,
-                  (index) => Icon(
-                        Icons.star,
-                        color: Color.fromRGBO(10, 80, 137, 0.8),
-                        size: 15,
-                      )),
-            ),
+            // Wrap(
+            //   children: List.generate(
+            //       5,
+            //       (index) => Icon(
+            //             Icons.star,
+            //             color: Color.fromRGBO(10, 80, 137, 0.8),
+            //             size: 15,
+            //           )),
+            // ),
+            // SizedBox(
+            //   width: 9,
+            // ),
+            SmallText(text: restau),
             SizedBox(
               width: 9,
             ),
-            SmallText(text: "4.5"),
-            SizedBox(
-              width: 9,
-            ),
-            SmallText(text: "1234"),
-            SizedBox(
-              width: 9,
-            ),
-            SmallText(
-              text: "comments",
-              size: 11,
-            )
+            // SmallText(text: "1234"),
+            // SizedBox(
+            //   width: 9,
+            // ),
+            // SmallText(
+            //   text: "comments",
+            //   size: 11,
+            // )
           ],
         ),
         SizedBox(

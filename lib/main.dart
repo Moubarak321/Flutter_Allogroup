@@ -1,4 +1,5 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/help/home_help.dart';
@@ -14,10 +15,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:allogroup/screens/office/user/signInScreen/signInScreen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 // import 'package:allogroup/screens/office/components/foodcard_body.dart';
 //51518759
-
-
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +30,6 @@ void main() async {
   runApp(MyApp());
 }
 
-
-
-
-
-
-
 class MyApp extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
@@ -45,9 +39,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-
-
-   @override
+  @override
   void initState() {
     super.initState();
 
@@ -60,57 +52,38 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> initializeAppAndNavigate() async {
+    try {
+      // Vérifiez si l'utilisateur est déjà connecté.
+      User? user = FirebaseAuth.instance.currentUser;
 
+      if (user != null) {
+        DateTime lastLoginTime = user.metadata.lastSignInTime!;
+        DateTime now = DateTime.now();
+        DateTime oneMonthAgo = now.subtract(Duration(days: 30));
 
+        bool registeredByEmail = user.providerData
+            .any((userInfo) => userInfo.providerId == 'password');
+        // bool registeredByPhone = user.providerData.any((userInfo) => userInfo.providerId == 'phoneNumber');
 
+        if ((registeredByEmail) && (lastLoginTime.isBefore(oneMonthAgo))) {
+          await Future.delayed(const Duration(seconds: 5));
+          navigatorKey.currentState?.pushReplacementNamed('/signInScreen');
+        } else {
+          navigatorKey.currentState?.pushReplacementNamed('/home');
+        }
 
-
-
-
-
-Future<void> initializeAppAndNavigate() async {
-  try {
-    // Vérifiez si l'utilisateur est déjà connecté.
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      DateTime lastLoginTime = user.metadata.lastSignInTime!;
-      DateTime now = DateTime.now();
-      DateTime oneMonthAgo =now.subtract(Duration(days: 30));
-
-      bool registeredByEmail = user.providerData.any((userInfo) => userInfo.providerId == 'password');
-      // bool registeredByPhone = user.providerData.any((userInfo) => userInfo.providerId == 'phoneNumber');
-
-      if ((registeredByEmail ) && (lastLoginTime.isBefore(oneMonthAgo)) ) {
-        await Future.delayed(const Duration(seconds: 5));
-        navigatorKey.currentState?.pushReplacementNamed('/signInScreen');
-      } else {
-
-        navigatorKey.currentState?.pushReplacementNamed('/home');
-
-        
+        return;
       }
 
-      return;
+      // Si l'utilisateur n'est pas connecté, vous pouvez le rediriger vers l'écran de connexion.
+      await Future.delayed(const Duration(seconds: 3));
+      navigatorKey.currentState?.pushReplacementNamed(
+          '/signInScreen'); // Exemple : Page de connexion
+    } catch (e) {
+      print("Erreur lors de l'initialisation de Firebase : $e");
     }
-
-    // Si l'utilisateur n'est pas connecté, vous pouvez le rediriger vers l'écran de connexion.
-    await Future.delayed(const Duration(seconds: 3));
-    navigatorKey.currentState?.pushReplacementNamed('/signInScreen'); // Exemple : Page de connexion
-  } catch (e) {
-    print("Erreur lors de l'initialisation de Firebase : $e");
   }
-}
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +96,8 @@ Future<void> initializeAppAndNavigate() async {
             color: Color.fromRGBO(10, 80, 137, 0.8), centerTitle: true),
         // appBarTheme: const AppBarTheme(color: Colors.teal, centerTitle: true),
         bottomAppBarTheme: const BottomAppBarTheme(
-            color: Color.fromRGBO(10, 80, 137, 1),
-          
-            ), //bottom appbar
+          color: Color.fromRGBO(10, 80, 137, 1),
+        ), //bottom appbar
         floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: Colors.orange), // home button
       ),
@@ -142,9 +114,13 @@ Future<void> initializeAppAndNavigate() async {
         '/profilScreen': (context) => ProfileScreen(),
         Routes.mainFoodPage: (context) => MainFoodPage(),
         Routes.homehelp: (context) => PresentationApp(),
-        '/popular_food_details': (context) => PopularFoodDetail(produit: {},),
-        '/UpdateProfileScreen' : (context) => UpdateProfileScreen(),
-        '/recommended_food_detail': (context) => RecommendedFoodDetail()
+        Routes.delivery: (context) => Delivery(),
+        '/popular_food_details': (context) => PopularFoodDetail(
+              produit: {},
+            ),
+        '/UpdateProfileScreen': (context) => UpdateProfileScreen(),
+        '/recommended_food_detail': (context) => RecommendedFoodDetail(),
+        '/cart': (context) => Cart(),
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),
@@ -153,11 +129,8 @@ Future<void> initializeAppAndNavigate() async {
             "assets/images/livreur2.png",
             fit: BoxFit.cover,
           ),
-          
         ),
       ),
     );
   }
 }
-
-

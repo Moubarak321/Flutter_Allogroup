@@ -1,7 +1,7 @@
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 // import 'package:allogroup/screens/office/widgets/expandable_text_widget.dart';
 import 'package:allogroup/screens/office/widgets/icon_and_text_widget.dart';
-import 'package:allogroup/screens/office/widgets/small_text.dart';
+// import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/big_text.dart';
@@ -39,18 +39,18 @@ class AppColumnRestau extends StatelessWidget {
             SizedBox(
               width: 9,
             ),
-            SmallText(text: "4.5"),
-            SizedBox(
-              width: 9,
-            ),
-            SmallText(text: "1234"),
-            SizedBox(
-              width: 9,
-            ),
-            SmallText(
-              text: "comments",
-              size: 11,
-            )
+            // SmallText(text: "4.5"),
+            // SizedBox(
+            //   width: 9,
+            // ),
+            // SmallText(text: "1234"),
+            // SizedBox(
+            //   width: 9,
+            // ),
+            // SmallText(
+            //   text: "comments",
+            //   size: 11,
+            // )
           ],
         ),
         SizedBox(

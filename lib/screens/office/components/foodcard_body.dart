@@ -419,65 +419,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'dart:math';
 
 // import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
@@ -514,9 +455,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   List<Map<String, dynamic>> tousLesProduits = [];
   List<Map<String, dynamic>> tousLesMarchants = [];
 
-
-
-
   Future<List<Map<String, dynamic>>?> getAllProducts() async {
     try {
       List<Map<String, dynamic>> products = [];
@@ -528,12 +466,15 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       for (QueryDocumentSnapshot marchand in marchandsSnapshot.docs) {
         // Accédez à la sous-collection "Produits" de chaque marchand
         Map<String, dynamic> data = marchand.data() as Map<String, dynamic>;
+        // print("------------data----------: $data");
         // Parcourez les documents de la sous-collection "Produits" et ajoutez-les à la liste des produits
         for (var produit in data['produits']) {
+          produit["fullName"] = data["fullName"];
+          produit["boutiqueId"] = data["id"];
           products.add(produit as Map<String, dynamic>);
-          print("Produit : $produit");
-      
-
+          // .add(produit as Map<String, dynamic>);
+          // print("Produit : $produit");
+          print("Voilà le nom de la boutique " + produit["fullName"]);
         }
       }
       return products;
@@ -542,17 +483,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       return null;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
   Future<List<Map<String, dynamic>>?> getAllMerchants() async {
     try {
@@ -696,7 +626,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           ),
         ),
         buildProductList(),
-
       ],
     );
   }
@@ -736,14 +665,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       // String merchantCat = tousLesMarchants[index]['categorie'];
       // String merchantAdresse = tousLesMarchants[index]['adresse'];
 
-      return 
-      GestureDetector(
+      return GestureDetector(
         onTap: () {
-    // Gérez la redirection vers la page de détail ici
-   Get.snackbar("Info",
+          // Gérez la redirection vers la page de détail ici
+          Get.snackbar("Info",
               "Ce restaurant est vérifié et prêt à vous servir. Parcourez les offres en dessous pour commander");
-  },
-        child:Transform(
+        },
+        child: Transform(
           transform: matrix,
           child: Stack(
             children: [
@@ -791,14 +719,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                       ),
                     ],
                   ),
-      
+
                   child: Container(
                     //============== section des textes ==============
                     padding: EdgeInsets.only(
                         top: Dimensions.height10, left: 15, right: 15),
                     child: AppColumnRestau(
                       text: merchantName,
-                      
                     ),
                   ),
                 ),
@@ -922,8 +849,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         },
       );
     } else {
-      return SizedBox(height: Dimensions.height30,
-       child: CircularProgressIndicator(),
+      return SizedBox(
+        height: Dimensions.height30,
+        child: CircularProgressIndicator(),
       ); // Ou un widget indiquant qu'aucun produit n'est disponible
     }
   }
