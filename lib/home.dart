@@ -1,4 +1,5 @@
 import 'package:allogroup/screens/office/allofood/cart.dart';
+import 'package:allogroup/screens/office/notifications/notifications.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/office/components/header.dart';
@@ -54,28 +55,33 @@ class _HomeState extends State<Home> {
         //widget scroll view wrapping the body
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
+
             //Barre de navigation
             pinned: true, //fixation de la navbar
-            title: const Text("Allô Group"), //nom de l'app
-            leading: IconButton(
-              //button menu
-              icon: const Icon(Icons.menu),
-              onPressed: () {},
+            // title: const Text("Allô Group"), //nom de l'app
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: const Text("Allô Group"),
             ),
+
+            // leading: IconButton(
+            //   //button menu
+            //   icon: const Icon(Icons.menu),
+            //   onPressed: () {},
+            // ),
             actions: [
               IconButton(
                   //button shopping
                   onPressed: () {
-                     
-                     Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Cart();
-                    },
-                  ),
-                );
-                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Cart();
+                        },
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.shopping_cart))
             ],
@@ -153,6 +159,14 @@ class _HomeState extends State<Home> {
                   IconButton(
                     onPressed: () {
                       selectNotif();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Notifications(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );
                     },
                     tooltip: 'Notifications',
                     icon: Icon(Icons.notifications),

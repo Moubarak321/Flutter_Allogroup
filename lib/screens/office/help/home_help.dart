@@ -29,7 +29,7 @@ class PresentationScreen extends StatelessWidget {
   }
 
   _makingPhoneCall() async {
-    var url = Uri.parse("tel:+22960559894");
+    var url = Uri.parse("tel:+22995381455");
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {

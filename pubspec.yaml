@@ -49,8 +49,8 @@ dependencies:
   firebase_storage: ^11.2.8
   flutter_native_splash: ^2.3.3
   get_storage: ^2.1.1
-  google_maps_flutter: ^2.1.1
-  google_maps_webservice: ^0.0.19 
+  # google_maps_flutter: ^2.1.1
+  # google_maps_webservice: ^0.0.19 
   intl: ^0.18.1
   firebase_database: ^10.3.3
 

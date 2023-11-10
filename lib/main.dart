@@ -1,10 +1,17 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
+import 'package:allogroup/screens/office/allofood/interfacefoodmarchand.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
+import 'package:allogroup/screens/office/allolivreur/interfacelivreurchampion.dart';
 import 'package:allogroup/screens/office/help/home_help.dart';
+import 'package:allogroup/screens/office/notifications/notifications.dart';
+import 'package:allogroup/screens/office/user/informations/informations.dart';
+import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
+import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
+import 'package:allogroup/screens/office/user/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:allogroup/home.dart';
 import 'package:allogroup/routes.dart';
@@ -121,6 +128,13 @@ class _MyAppState extends State<MyApp> {
         '/UpdateProfileScreen': (context) => UpdateProfileScreen(),
         '/recommended_food_detail': (context) => RecommendedFoodDetail(),
         '/cart': (context) => Cart(),
+        '/notifications': (context) => Notifications(),
+        '/wallet': (context) => Wallet(),
+        '/parametres': (context) => Parametres(),
+        '/informations': (context) => Informations(),
+        '/utilisateur': (context) => Utilisateur(),
+        Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
+        Routes.interfaceLivreur : (context) => InterFaceLivreurChampion()
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

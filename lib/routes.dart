@@ -4,6 +4,8 @@ class Routes {
   // static const String help = '/help';
   // static const String popularFoodDetails = '/popular_food_details';
   static const String homehelp = '/home_help';
+  static const String interfaceLivreur = '/interfacelivreurchampion';
+  static const String interfaceMarchand = '/interfacefoodmarchand';
 
 }
 

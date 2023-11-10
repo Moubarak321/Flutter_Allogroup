@@ -1,6 +1,7 @@
 // ignore: file_names
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
+import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/components/foodcard_body.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
@@ -179,6 +180,14 @@ class _MainFoodPageState extends State<MainFoodPage> {
                   IconButton(
                     onPressed: () {
                       selectDelivery();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Delivery(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );
                     },
                     tooltip: 'Livraison',
                     icon: Icon(Icons.delivery_dining),

@@ -1,5 +1,9 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/home.dart';
+import 'package:allogroup/screens/office/user/informations/informations.dart';
+import 'package:allogroup/screens/office/user/parametres/parametres.dart';
+import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
+import 'package:allogroup/screens/office/user/wallet/wallet.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -177,21 +181,49 @@ class ProfileScreen extends StatelessWidget {
               ProfileMenuWidget(
                   title: "Paramètres",
                   icon: LineAwesomeIcons.cog,
-                  onPress: () {}),
+                  onPress: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Parametres(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );}),
               ProfileMenuWidget(
                   title: "Portefeuille",
                   icon: LineAwesomeIcons.wallet,
-                  onPress: () {}),
+                  onPress: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Wallet(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );}),
               ProfileMenuWidget(
                   title: "Gestion utilisateur",
                   icon: LineAwesomeIcons.user_check,
-                  onPress: () {}),
+                  onPress: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Utilisateur(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );}),
               const Divider(),
               const SizedBox(height: 10),
               ProfileMenuWidget(
                   title: "Informations",
                   icon: LineAwesomeIcons.info,
-                  onPress: () {}),
+                  onPress: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Informations(); // Remplacez DetailPage par votre propre page.
+                          },
+                        ),
+                      );}),
               ProfileMenuWidget(
                   title: "Déconnecter",
                   icon: LineAwesomeIcons.alternate_sign_out,

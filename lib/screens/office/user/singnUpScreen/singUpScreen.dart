@@ -173,6 +173,7 @@ class _SignUpState extends State<SignUp> {
           await usersCollection.doc(userId).set({
             // 'email': email,
             'phoneNumber': "229$phoneNumber",
+            'wallet': 0,
           });
 
           print("Utilisateur enregistré dans Firebase Firestore avec succès.");

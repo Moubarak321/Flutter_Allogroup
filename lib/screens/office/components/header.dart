@@ -1,4 +1,5 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   String userName = '';
+  String fund = '' ;
+
   Future<String> _getProfileImageUrl() async {
     final User? user = FirebaseAuth.instance.currentUser;
     String imageUrl = '';
@@ -59,6 +62,34 @@ class _HeaderState extends State<Header> {
     }
   }
 
+  Future<int?> getUserWalletBalance() async {
+    try {
+      // Récupérer l'utilisateur authentifié
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Accéder au document de l'utilisateur dans Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        // Vérifier si le document de l'utilisateur existe et contient la clé 'wallet'
+        if (userDoc.exists &&
+            userDoc.data() is Map<String, dynamic> &&
+            (userDoc.data() as Map<String, dynamic>).containsKey('wallet')) {
+          // Récupérer et retourner la valeur de la clé 'wallet'
+          return (userDoc.data() as Map<String, dynamic>)['wallet'];
+        }
+      }
+    } catch (e) {
+      print("Erreur lors de la récupération du solde du portefeuille : $e");
+    }
+
+    // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +98,13 @@ class _HeaderState extends State<Header> {
         userName = name;
       });
     });
+    getUserWalletBalance().then((walletBalance) {
+    if (walletBalance != null) {
+      setState(() {
+        fund = walletBalance.toString(); // Convertir le solde du portefeuille en String
+      });
+    }
+  });
   }
 
   @override
@@ -170,8 +208,8 @@ class _HeaderState extends State<Header> {
                           ],
                         ),
                         const Spacer(),
-                        const Text(
-                          "154 \$ CAD",
+                         Text(
+                          fund +" CFA",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
