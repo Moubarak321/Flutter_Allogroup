@@ -12,9 +12,25 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
+  late TextEditingController _roleController;
+
   String userName = '';
   String fund = '' ;
+  Future<void> _loadUserRole() async {
+    final User? user = FirebaseAuth.instance.currentUser;
 
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      setState(() {
+        _roleController.text = userDoc.get("role").toString();
+       
+      });
+    }
+  }
   Future<String> _getProfileImageUrl() async {
     final User? user = FirebaseAuth.instance.currentUser;
     String imageUrl = '';
@@ -89,10 +105,17 @@ class _HeaderState extends State<Header> {
     // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
     return null;
   }
+   @override
+  void dispose() {
+    _roleController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+     _roleController = TextEditingController();
+    _loadUserRole();
     _loadUserName().then((name) {
       setState(() {
         userName = name;
@@ -198,8 +221,8 @@ class _HeaderState extends State<Header> {
                                 color: Colors.black54,
                               ),
 
-                              child: const Text(
-                                "VIP",
+                              child:  Text(
+                                _roleController.text,
                                 style: TextStyle(
                                   color: Colors.white,
                                 ),

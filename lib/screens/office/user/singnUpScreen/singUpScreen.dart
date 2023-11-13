@@ -174,6 +174,7 @@ class _SignUpState extends State<SignUp> {
             // 'email': email,
             'phoneNumber': "229$phoneNumber",
             'wallet': 0,
+            'role': "Utilisateur"
           });
 
           print("Utilisateur enregistré dans Firebase Firestore avec succès.");

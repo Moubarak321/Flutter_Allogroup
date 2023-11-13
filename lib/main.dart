@@ -11,6 +11,9 @@ import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
 import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/favoris.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:allogroup/screens/office/user/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:allogroup/home.dart';
@@ -133,6 +136,9 @@ class _MyAppState extends State<MyApp> {
         '/parametres': (context) => Parametres(),
         '/informations': (context) => Informations(),
         '/utilisateur': (context) => Utilisateur(),
+        '/historiqueCommandes': (context) => HistoriqueCommandesRepas(),
+        '/historiqueCourses': (context) => HistoriqueCourses(),
+        '/favoris': (context) => Favoris(),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
         Routes.interfaceLivreur : (context) => InterFaceLivreurChampion()
       },

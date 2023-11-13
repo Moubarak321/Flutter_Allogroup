@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart'; 
+import 'package:intl/date_symbol_data_local.dart';
 import './description_livreur.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 
 class Delivery extends StatelessWidget {
   User? getCurrentUser() {
@@ -11,7 +12,6 @@ class Delivery extends StatelessWidget {
   }
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
-
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
 
@@ -22,18 +22,17 @@ class Delivery extends StatelessWidget {
     final depense = courseData['prix'];
     final timestamp = courseData['id'];
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
-    final formattedDate = DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-
+    final formattedDate =
+        DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
 
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(8.0),
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.orange, 
+        color: Colors.orange,
         border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8.0),
-        
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,6 +79,8 @@ class Delivery extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Container(
+            padding: EdgeInsets.only(
+                right: Dimensions.width20, left: Dimensions.width20),
             color: Colors.blue,
             height: 200,
             child: Center(
@@ -88,7 +89,6 @@ class Delivery extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
-                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),
@@ -130,10 +130,10 @@ class Delivery extends StatelessWidget {
                   // L'utilisateur n'a pas de données de courses
                   return Center(
                     child: Text(
-                      "Vous n'avez pas encore de courses",
+                      "Aucune course",
                       style: TextStyle(
                         fontSize: 20.0,
-                        color: Colors.orange,
+                        // color: Colors.orange,
                       ),
                     ),
                   );
