@@ -30,8 +30,23 @@ class Delivery extends StatelessWidget {
       margin: EdgeInsets.all(8.0),
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
+        boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFe8e8e8),
+                        blurRadius: 5.0,
+                        offset: Offset(0, 5),
+                      ),
+                      BoxShadow(
+                        color: Colors.white,
+                        offset: Offset(-5, 0),
+                      ),
+                      BoxShadow(
+                        color: Colors.white,
+                        offset: Offset(5, 0),
+                      ),
+                    ],
         color: Colors.orange,
-        border: Border.all(color: Colors.blue),
+        // border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(
@@ -39,31 +54,31 @@ class Delivery extends StatelessWidget {
         children: <Widget>[
           Text(
             "Bilan d'une course",
-            style: TextStyle(fontSize: 18.0, color: Colors.black),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Date de commande : $formattedDate',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Adresse de Récupération: $addressRecuperation',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Adresse de Livraison: $addressLivraison',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Type de Livraison: $typeLivraison',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Titre: $title',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
             'Prix: $depense',
-            style: TextStyle(fontSize: 18.0, color: Colors.blue),
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],
       ),
@@ -103,16 +118,11 @@ class Delivery extends StatelessWidget {
                 ),
               );
             },
-            child: Text('Commencez une course'),
+            child: Icon(Icons.add),
           ),
           SizedBox(height: 20.0),
-          Text(
-            'Consultez vos courses antérieurs',
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.orange,
-            ),
-          ),
+          
+
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -141,13 +151,27 @@ class Delivery extends StatelessWidget {
 
                 final courses = userData['courses'] as List<dynamic>;
 
+                // Only display the last two courses
+                final displayedCourses = courses.length >= 2
+                    ? courses.sublist(courses.length - 2)
+                    : courses;
+
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: courses.length,
+                  itemCount: displayedCourses.length,
                   itemBuilder: (context, index) {
-                    final courseData = courses[index] as Map<String, dynamic>;
+                    final courseData =
+                        displayedCourses[index] as Map<String, dynamic>;
+                    // if ( courseData['status'] ?? false);
+                    final bool courseStatus = courseData['status'] == true;
 
-                    return buildCourseCard(courseData);
+                    // Check if the product status is true before displaying the card
+                    if (courseStatus) {
+                      return buildCourseCard(courseData);
+                    } else {
+                      // You can return an empty container or null if you don't want to display
+                      return Container();
+                    }
                   },
                 );
               },

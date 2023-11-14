@@ -7,7 +7,6 @@ import '../components/details.dart';
 // import './attente_livreur.dart';
 import 'package:get/get.dart';
 
-
 class DeliveryFormPage extends StatefulWidget {
   @override
   _DeliveryFormPageState createState() => _DeliveryFormPageState();
@@ -21,6 +20,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   int? deliveryNumero;
   String? title;
   String? details;
+  DateTime? deliveryDate;
+  TimeOfDay? deliveryTime;
 
   int currentStep = 0; // Étape actuelle du formulaire
 
@@ -58,33 +59,43 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return FirebaseAuth.instance.currentUser;
   }
 
-  void saveFormDataToFirestore() {
-    final user = getCurrentUser();
-    if (user != null) {
-      final courseId = DateTime.now();
+ 
+void saveFormDataToFirestore() {
+  final user = getCurrentUser();
+  if (user != null) {
+    final courseId = DateTime.now();
+    print("******************* Yooo");
 
-      final userData = {
-        'id': courseId,
-        'type_courses': 'Livraison de bien',
-        'addressRecuperation': pickupAddress,
-        'numeroARecuperation': pickupNumero,
-        'addressLivraison': deliveryAddress,
-        'numeroALivraison': deliveryNumero,
-        'title': title,
-        'details': details,
-        'prix': 500,
-        'status': false,
-      };
-
-      FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'courses': FieldValue.arrayUnion([userData]),
-      }).then((_) {
-        // Les données ont été enregistrées avec succès.
-      }).catchError((error) {
-        // Une erreur s'est produite lors de la mise à jour des données.
-      });
-    }
+    final userData = {
+      'id': courseId,
+      'type_courses': 'Livraison de bien',
+      'addressRecuperation': pickupAddress,
+      'numeroARecuperation': pickupNumero,
+      'addressLivraison': deliveryAddress,
+      'numeroALivraison': deliveryNumero,
+      'dateDeLivraison': deliveryDate,
+      'heureDeLivraison': deliveryTime != null
+          ? "${deliveryTime!.hour}:${deliveryTime!.minute}"
+          : null,
+      'title': title,
+      'details': details,
+      'prix': 500,
+      'status': false,
+    };
+    print("******************* $userData");
+    FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'courses': FieldValue.arrayUnion([userData]),
+    }, SetOptions(merge: true)).then((_) {
+      // Data saved successfully.
+      print("Data saved successfully");
+    }).catchError((error) {
+      // An error occurred while updating the data.
+      print("Error+++++++++++++++++++++++: $error");
+    });
   }
+}
+
+
 
   bool isStepValid() {
     switch (currentStep) {
@@ -95,8 +106,10 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       case 2:
         return deliveryAddress != null && deliveryNumero != null;
       case 3:
-        return title != null && details != null;
+        return deliveryDate != null && deliveryTime != null;
       case 4:
+        return title != null && details != null;
+      case 5:
         return true;
       default:
         return false;
@@ -117,12 +130,14 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
             currentStep: currentStep,
             onStepContinue: () {
               if (isStepValid()) {
-                if (currentStep < 4) {
+                if (currentStep < 5) {
                   setState(() {
                     currentStep++;
+                    print("currentStep: ********************$currentStep");
                   });
                 } else {
                   // Soumission du formulaire, faites ce que vous voulez ici
+                  print("Soummission du formulaire");
                   saveFormDataToFirestore();
                   Get.snackbar("Succès", "Statut mis à jour");
 
@@ -214,6 +229,65 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 ),
               ),
               Step(
+                title: Text('Date de livraison'),
+                content: Column(
+                  children: [
+                    // Use any date picker widget of your choice
+                    ElevatedButton(
+                      
+                      onPressed: () async {
+                        DateTime? selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2101),
+                        );
+                        if (selectedDate != null) {
+                          setState(() {
+                            deliveryDate = selectedDate;
+                          });
+                        }
+                      },
+                      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+        ),
+                      
+                      child: Text(
+                        // style: TextStyle(backgroundColor: Colors.orange),
+                        deliveryDate != null
+                            ? 'Date sélectionnée: ${deliveryDate!.toLocal()}'
+                            : 'Sélectionner la date',
+                            
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    // Use any time picker widget of your choice
+                    ElevatedButton(
+                      onPressed: () async {
+                        TimeOfDay? selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            deliveryTime = selectedTime;
+                          });
+                        }
+                      },
+                      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+        ),
+                      child: Text(
+                        // style: TextStyle(backgroundColor: Colors.orange),
+                        deliveryTime != null
+                            ? 'Heure sélectionnée: ${deliveryTime!.format(context)}'
+                            : 'Sélectionner l\'heure',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Step(
                 title: Text('Détails sur la Course'),
                 content: DetailsInfoWidget(
                   formKey: _formKey,
@@ -245,6 +319,20 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                         ),
                         Text(
                           'Lieu de Livraison: $deliveryAddress',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                        Text(
+                          'Date de Livraison: $deliveryDate',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                        Text(
+                          'Heure de Livraison:  ${deliveryTime != null ? '${deliveryTime!.hour}:${deliveryTime!.minute}' : 'Non défini'}',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte

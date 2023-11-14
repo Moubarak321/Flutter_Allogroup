@@ -257,7 +257,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         radius: 55,
                       ),
                     ),
-                    
                   ),
                   Positioned(
                     bottom: 0,
@@ -296,6 +295,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     ),
                     const SizedBox(height: tFormHeight - 20),
                     TextFormField(
+                      enabled: false,
                       controller: _emailController,
                       decoration: const InputDecoration(
                         label: Text(tEmail),
@@ -378,60 +378,60 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: tFormHeight),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Get.defaultDialog(
-                              title: "Supprimer mon profil",
-                              titleStyle: const TextStyle(fontSize: 20),
-                              content: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15.0),
-                                child: Text(
-                                    "Voulez-vous supprimer votre compte ?"),
-                              ),
-                              confirm: Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      final User? user =
-                                          FirebaseAuth.instance.currentUser;
-                                      if (user != null) {
-                                        await user.delete();
-                                        Get.offAllNamed('/signInScreen');
-                                      } else {
-                                        print("Aucun utilisateur connecté.");
-                                      }
-                                    } catch (e) {
-                                      print(
-                                          "Erreur lors de la suppression : $e");
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.redAccent,
-                                    side: BorderSide.none,
-                                  ),
-                                  child: const Text("Oui"),
-                                ),
-                              ),
-                              cancel: OutlinedButton(
-                                onPressed: () => Get.back(),
-                                child: const Text("Non"),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent.withOpacity(0.1),
-                            elevation: 0,
-                            foregroundColor: Colors.red,
-                            shape: const StadiumBorder(),
-                            side: BorderSide.none,
-                          ),
-                          child: const Text(tDelete),
-                        ),
-                      ],
-                    )
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     ElevatedButton(
+                    //       onPressed: () {
+                    //         Get.defaultDialog(
+                    //           title: "Supprimer mon profil",
+                    //           titleStyle: const TextStyle(fontSize: 20),
+                    //           content: const Padding(
+                    //             padding: EdgeInsets.symmetric(vertical: 15.0),
+                    //             child: Text(
+                    //                 "Voulez-vous supprimer votre compte ?"),
+                    //           ),
+                    //           confirm: Expanded(
+                    //             child: ElevatedButton(
+                    //               onPressed: () async {
+                    //                 try {
+                    //                   final User? user =
+                    //                       FirebaseAuth.instance.currentUser;
+                    //                   if (user != null) {
+                    //                     await user.delete();
+                    //                     Get.offAllNamed('/signInScreen');
+                    //                   } else {
+                    //                     print("Aucun utilisateur connecté.");
+                    //                   }
+                    //                 } catch (e) {
+                    //                   print(
+                    //                       "Erreur lors de la suppression : $e");
+                    //                 }
+                    //               },
+                    //               style: ElevatedButton.styleFrom(
+                    //                 backgroundColor: Colors.redAccent,
+                    //                 side: BorderSide.none,
+                    //               ),
+                    //               child: const Text("Oui"),
+                    //             ),
+                    //           ),
+                    //           cancel: OutlinedButton(
+                    //             onPressed: () => Get.back(),
+                    //             child: const Text("Non"),
+                    //           ),
+                    //         );
+                    //       },
+                    //       style: ElevatedButton.styleFrom(
+                    //         backgroundColor: Colors.redAccent.withOpacity(0.1),
+                    //         elevation: 0,
+                    //         foregroundColor: Colors.red,
+                    //         shape: const StadiumBorder(),
+                    //         side: BorderSide.none,
+                    //       ),
+                    //       child: const Text(tDelete),
+                    //     ),
+                    //   ],
+                    // )
                   ],
                 ),
               ),
