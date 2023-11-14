@@ -17,7 +17,7 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,20 +48,20 @@ class HistoriqueCommandesRepas extends StatelessWidget {
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFe8e8e8),
-                        blurRadius: 5.0,
-                        offset: Offset(0, 5),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-5, 0),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(5, 0),
-                      ),
-                    ],
+          BoxShadow(
+            color: Color(0xFFe8e8e8),
+            blurRadius: 5.0,
+            offset: Offset(0, 5),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(-5, 0),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(5, 0),
+          ),
+        ],
         color: Colors.orange,
         // border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8.0),
@@ -121,61 +121,60 @@ class HistoriqueCommandesRepas extends StatelessWidget {
               ),
             ),
           ),
-          
           Expanded(
-  child: StreamBuilder(
-    stream: FirebaseFirestore.instance
-        .collection('users')
-        .doc(getCurrentUser()?.uid)
-        .snapshots(),
-    builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-      if (!snapshot.hasData) {
-        return CircularProgressIndicator();
-      }
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(getCurrentUser()?.uid)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
 
-      final userData = snapshot.data!.data() as Map<String, dynamic>;
-      if (!userData.containsKey('Cart')) {
-        return Center(
-          child: Text(
-            "Aucun produit",
-            style: TextStyle(
-              fontSize: 20.0,
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                if (!userData.containsKey('Cart')) {
+                  return Center(
+                    child: Text(
+                      "Aucun produit",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  );
+                }
+
+                final courses = userData['Cart'] as List<dynamic>;
+
+                // Filter the courses list to include only those with status set to true
+                final filteredCourses = courses
+                    .where((courseData) => courseData['status'] == true)
+                    .toList();
+
+                if (filteredCourses.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "Aucun produit avec le statut à true",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: filteredCourses.length,
+                  itemBuilder: (context, index) {
+                    final courseData =
+                        filteredCourses[index] as Map<String, dynamic>;
+
+                    return buildCourseCard(courseData);
+                  },
+                );
+              },
             ),
           ),
-        );
-      }
-
-      final courses = userData['Cart'] as List<dynamic>;
-
-      // Filter the courses list to include only those with status set to true
-      final filteredCourses = courses
-          .where((courseData) => courseData['status'] == true)
-          .toList();
-
-      if (filteredCourses.isEmpty) {
-        return Center(
-          child: Text(
-            "Aucun produit avec le statut à true",
-            style: TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-        );
-      }
-
-      return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: filteredCourses.length,
-        itemBuilder: (context, index) {
-          final courseData = filteredCourses[index] as Map<String, dynamic>;
-
-          return buildCourseCard(courseData);
-        },
-      );
-    },
-  ),
-),
-
         ],
       ),
     );
