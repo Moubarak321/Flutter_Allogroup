@@ -30,7 +30,6 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
   final box = GetStorage();
   int get quantity => box.read('quantity') ?? 0;
   late final Map<String, dynamic> produit;
-
   int _quantity = 0;
   // int get quantity => _quantity;
   int _inCartItems = 0;
@@ -64,79 +63,89 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
     );
   }
 
-  // Future<void> addProductToCart(
-  //   String userId,
-  //   Map<String, dynamic> produit,
-  // ) async {
-  //   CollectionReference cartCollection = FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .doc(userId)
-  //       .collection('Carts');
+  //************************************test-marche******************************** */
+  // void AjouterAuPanier() {
+  //   User? getCurrentUser() {
+  //     return FirebaseAuth.instance.currentUser;
+  //   } // Assurez-vous que vous récupérez l'utilisateur correctement.
 
-  //   // Recherche d'un panier actif pour l'utilisateur
-  //   QuerySnapshot cartSnapshot =
-  //       await cartCollection.where('status', isEqualTo: 'active').get();
-  //   DocumentReference cartDocRef;
+  //   if (user != null) {
+  //     final userData = {
+  //       'id': DateTime.now()
+  //           .millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
+  //       'titre': produit["title"],
+  //       'categorie': produit["categorie"],
+  //       'prix': produit["price"],
+  //       'image': produit["image"],
+  //       'boutique': produit["fullName"],
+  //       'boutiqueId': produit["boutiqueId"],
+  //       'quantite': quantity.toString(),
+  //       // 'categorie': produit["categorie"],
+  //       'status': false,
+  //     };
 
-  //   if (cartSnapshot.docs.isNotEmpty) {
-  //     // L'utilisateur a déjà un panier actif
-  //     cartDocRef = cartSnapshot.docs[0].reference;
-  //   } else {
-  //     // Crée un nouveau panier pour l'utilisateur
-  //     DocumentReference newCartRef = await cartCollection.add({
-  //       'cartItems': [],
-  //       'total': 0,
-  //       'status': 'active',
+  //     FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user?.uid)
+  //         .get()
+  //         .then((userDoc) {
+  //       if (userDoc.exists) {
+  //         // L'utilisateur existe, mettez à jour son panier existant.
+  //         FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user?.uid)
+  //             .update({
+  //               'Cart': FieldValue.arrayUnion([userData]),
+  //             })
+  //             .then((_) {})
+  //             .catchError((error) {
+  //               // Une erreur s'est produite lors de la mise à jour des données.
+  //             });
+  //       } else {
+  //         // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
+  //         final newCartData = {
+  //           'Cart': [userData], // Le premier produit est ajouté au panier.
+  //         };
+
+  //         FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user?.uid)
+  //             .set(newCartData)
+  //             .then((_) {
+  //           // Les données ont été enregistrées avec succès.
+  //         }).catchError((error) {
+  //           // Une erreur s'est produite lors de la création du panier.
+  //         });
+  //       }
   //     });
-  //     cartDocRef = newCartRef;
   //   }
-
-  //   // Vérifie si le produit est déjà dans le panier
-  //   QuerySnapshot productInCart = await cartDocRef
-  //       .collection('cartItems')
-  //       .where('productId', isEqualTo: produit['id'])
-  //       .get();
-
-  //   if (productInCart.docs.isNotEmpty) {
-  //     // Le produit est déjà dans le panier, met à jour la quantité
-  //     final DocumentSnapshot existingProduct = productInCart.docs.first;
-  //     cartDocRef.collection('cartItems').doc(existingProduct.id).update({
-  //       'quantity':
-  //           existingProduct['quantity'] + 1, // Augmente la quantité de 1
-  //     });
-  //   } else {
-  //     // Le produit n'est pas encore dans le panier, ajoute-le
-  //     cartDocRef.collection('cartItems').add({
-  //       'productId': produit['id'],
-  //       'quantity': 1, // Première quantité
-  //       'price': produit['price'],
-  //       'merchantName': produit['merchantName'], // Nom de la boutique
-  //     });
-  //   }
-
-  //   // Met à jour le champ 'total' du panier avec le prix du produit ajouté
-  //   cartDocRef.update({
-  //     'total': FieldValue.increment(produit['price'].toDouble()),
-  //   });
   // }
 
-  //************************************test-marche******************************** */
-  void AjouterAuPanier() {
-    User? getCurrentUser() {
-      return FirebaseAuth.instance.currentUser;
-    } // Assurez-vous que vous récupérez l'utilisateur correctement.
+  Future<void> AjouterAuPanier() async {
+  User? getCurrentUser() {
+    return FirebaseAuth.instance.currentUser;
+  } // Assurez-vous que vous récupérez l'utilisateur correctement.
 
-    if (user != null) {
+  if (user != null) {
+    final AppColumnFood food = AppColumnFood(
+      text: produit["title"],
+      restau: produit["fullName"],
+    );
+
+    final DateTime? selectedDateTime = await food.setDate(context);
+
+    if (selectedDateTime != null) {
       final userData = {
         'id': DateTime.now()
-            .millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
+            , // Utilisez un identifiant unique pour chaque produit ajouté.
         'titre': produit["title"],
         'categorie': produit["categorie"],
         'prix': produit["price"],
         'image': produit["image"],
         'boutique': produit["fullName"],
-        'boutiqueId' : produit["boutiqueId"],
+        'boutiqueId': produit["boutiqueId"],
         'quantite': quantity.toString(),
+        'dateLivraison': selectedDateTime,
         // 'categorie': produit["categorie"],
         'status': false,
       };
@@ -148,13 +157,16 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
           .then((userDoc) {
         if (userDoc.exists) {
           // L'utilisateur existe, mettez à jour son panier existant.
-          FirebaseFirestore.instance.collection('users').doc(user?.uid).update({
-            'Cart': FieldValue.arrayUnion([userData]),
-          }).then((_) {
-            
-          }).catchError((error) {
-            // Une erreur s'est produite lors de la mise à jour des données.
-          });
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .update({
+                'Cart': FieldValue.arrayUnion([userData]),
+              })
+              .then((_) {})
+              .catchError((error) {
+                // Une erreur s'est produite lors de la mise à jour des données.
+              });
         } else {
           // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
           final newCartData = {
@@ -174,93 +186,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
       });
     }
   }
-
-//***************************second test marche pas*********************** */
-// void AjouterAuPanier() {
-//     User? getCurrentUser() {
-//     return FirebaseAuth.instance.currentUser;
-//   } // Assurez-vous que vous récupérez l'utilisateur correctement.
-
-//   if (user != null) {
-//     final userData = {
-//       'id': DateTime.now().millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
-//       'produit': produit,
-//       'quantite': quantity,
-//       'categorie': produit["categorie"],
-//       'status': false,
-//     };
-
-//     FirebaseFirestore.instance.collection('users').doc(user?.uid).get().then((userDoc) {
-//       if (userDoc.exists) {
-//         // L'utilisateur existe, vérifiez si le produit existe déjà dans le panier.
-//         final userCart = userDoc.data() as Map<String, dynamic>;
-//         final cart = userCart['Cart'] as List<dynamic>;
-
-//         bool productAlreadyInCart = false;
-
-//         for (var cartItem in cart) {
-//           final existingProduct = cartItem['produit'];
-//           if (existingProduct['id'] == produit['id']) {
-//             // Le produit existe déjà dans le panier, mettez à jour la quantité.
-//             int existingQuantity = cartItem['quantite'];
-//             existingQuantity += quantity;
-//             cartItem['quantite'] = existingQuantity;
-//             productAlreadyInCart = true;
-//             break;
-//           }
-//         }
-
-//         if (!productAlreadyInCart) {
-//           // Le produit n'existe pas dans le panier, ajoutez-le.
-//           cart.add(userData);
-//         }
-
-//         // Mettez à jour le panier dans Firestore.
-//         FirebaseFirestore.instance.collection('users').doc(user?.uid).update({'Cart': cart}).then((_) {
-//           // Les données ont été enregistrées avec succès.
-//         }).catchError((error) {
-//           // Une erreur s'est produite lors de la mise à jour des données.
-//         });
-//       } else {
-//         // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui avec le produit.
-//         final newCartData = {
-//           'Cart': [userData], // Le premier produit est ajouté au panier.
-//         };
-
-//         FirebaseFirestore.instance.collection('users').doc(user?.uid).set(newCartData).then((_) {
-//           // Les données ont été enregistrées avec succès.
-//         }).catchError((error) {
-//           // Une erreur s'est produite lors de la création du panier.
-//         });
-//       }
-//     });
-//   }
-// }
-
-//*******************************marche**************************************************************
-  // void AjouterAuPanier() {
-  //   // final user = getCurrentUser();
-  //   if (user != null) {
-  //     final courseId = DateTime.now();
-
-  //     final userData = {
-  //       'id': courseId,
-  //       'produit': produit,
-  //       'quantite': quantity,
-  //       'categorie':produit["categorie"],
-  //       'status':  false,
-
-  //     };
-
-  //     FirebaseFirestore.instance.collection('users').doc(user?.uid).update({
-  //       'Cart': FieldValue.arrayUnion([userData]),
-  //     }).then((_) {
-  //       // Les données ont été enregistrées avec succès.
-  //     }).catchError((error) {
-  //       // Une erreur s'est produite lors de la mise à jour des données.
-  //     });
-  //   }
-  // }
+}
 
   @override
   void initState() {
@@ -335,7 +261,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppColumnFood( 
+                  AppColumnFood(
                     text: widget.produit['title'],
                     restau: widget.produit['fullName'],
                   ),
@@ -422,10 +348,10 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 //  var userId;
                 // addProductToCart(produit as String, userId );
-                AjouterAuPanier();
+               await AjouterAuPanier();
                 Get.snackbar(
                     "Succes", "Ce produit à bien été ajouté au panier");
                 // Navigator.push(
