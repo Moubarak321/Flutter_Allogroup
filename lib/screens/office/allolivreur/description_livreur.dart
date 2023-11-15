@@ -20,9 +20,9 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   int? deliveryNumero;
   String? title;
   String? details;
-  DateTime? deliveryDate;
-  TimeOfDay? deliveryTime;
-
+  // DateTime? deliveryDate;
+  // TimeOfDay? deliveryTime;
+  DateTime? selectedDateTime = DateTime.now();
   int currentStep = 0; // Étape actuelle du formulaire
 
 /** 
@@ -59,41 +59,151 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return FirebaseAuth.instance.currentUser;
   }
 
- 
-void saveFormDataToFirestore() {
-  final user = getCurrentUser();
-  if (user != null) {
-    final courseId = DateTime.now();
-    print("******************* Yooo");
+  void saveFormDataToFirestore() {
+    final user = getCurrentUser();
+    if (user != null) {
+      final courseId = DateTime.now();
+      print("******************* Yooo");
 
-    final userData = {
-      'id': courseId,
-      'type_courses': 'Livraison de bien',
-      'addressRecuperation': pickupAddress,
-      'numeroARecuperation': pickupNumero,
-      'addressLivraison': deliveryAddress,
-      'numeroALivraison': deliveryNumero,
-      'dateDeLivraison': deliveryDate,
-      'heureDeLivraison': deliveryTime != null
-          ? "${deliveryTime!.hour}:${deliveryTime!.minute}"
-          : null,
-      'title': title,
-      'details': details,
-      'prix': 500,
-      'status': false,
-    };
-    print("******************* $userData");
-    FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-      'courses': FieldValue.arrayUnion([userData]),
-    }, SetOptions(merge: true)).then((_) {
-      // Data saved successfully.
-      print("Data saved successfully");
-    }).catchError((error) {
-      // An error occurred while updating the data.
-      print("Error+++++++++++++++++++++++: $error");
+      final userData = {
+        'id': courseId,
+        'type_courses': 'Livraison de bien',
+        'addressRecuperation': pickupAddress,
+        'numeroARecuperation': pickupNumero,
+        'addressLivraison': deliveryAddress,
+        'numeroALivraison': deliveryNumero,
+        'dateDeLivraison': selectedDateTime,
+        // 'heureDeLivraison': deliveryTime != null
+        //     ? "${deliveryTime!.hour}:${deliveryTime!.minute}"
+        //     : null,
+        'title': title,
+        'details': details,
+        'prix': 500,
+        'status': false,
+      };
+      print("******************* $userData");
+      FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'courses': FieldValue.arrayUnion([userData]),
+      }, SetOptions(merge: true)).then((_) {
+        // Data saved successfully.
+        print("Data saved successfully");
+      }).catchError((error) {
+        // An error occurred while updating the data.
+        print("Error+++++++++++++++++++++++: $error");
+      });
+    }
+  }
+
+  // Future<DateTime?> setDate(BuildContext context) async {
+  //   DateTime? selectedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime.now(),
+  //     lastDate: DateTime(2101),
+  //   );
+
+  //   if (selectedDate != null) {
+  //     TimeOfDay? selectedTime = await showTimePicker(
+  //       context: context,
+  //       initialTime: TimeOfDay.now(),
+  //     );
+
+  //     if (selectedTime != null) {
+  //       // Combine date and time into a single DateTime object
+  //       DateTime selectedDateTime = DateTime(
+  //         selectedDate.year,
+  //         selectedDate.month,
+  //         selectedDate.day,
+  //         selectedTime.hour,
+  //         selectedTime.minute,
+  //       );
+
+  //       // Return the selected DateTime
+  //       return selectedDateTime;
+  //     }
+  //   }
+
+  //   // Return null if the user cancels the date or time picker
+  //   return null;
+  // }
+
+  // Future<void> setDate(BuildContext context) async {
+  //   DateTime? selectedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime.now(),
+  //     lastDate: DateTime(2101),
+  //   );
+
+  //   if (selectedDate != null) {
+  //     TimeOfDay? selectedTime = await showTimePicker(
+  //       context: context,
+  //       initialTime: TimeOfDay.now(),
+  //     );
+
+  //     if (selectedTime != null) {
+  //       // Combine date and time into a single DateTime object
+  //       DateTime selectedDateTime = DateTime(
+  //         selectedDate.year,
+  //         selectedDate.month,
+  //         selectedDate.day,
+  //         selectedTime.hour,
+  //         selectedTime.minute,
+  //       );
+
+  //       // Set the selectedDateTime value
+  //       setState(() {
+  //         this.selectedDateTime = selectedDateTime;
+  //       });
+  //     }
+  //   }
+  // }
+
+
+
+  Future<void> setDate(BuildContext context) async {
+  DateTime? selectedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime(2101),
+  );
+
+  if (selectedDate != null) {
+    TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selectedTime != null) {
+      // Combine date and time into a single DateTime object
+      DateTime selectedDateTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+
+      // Set the selectedDateTime value
+      setState(() {
+        this.selectedDateTime = selectedDateTime;
+      });
+    }
+  } else {
+    // Si l'utilisateur annule la sélection de la date, définissez selectedDateTime sur la date actuelle
+    setState(() {
+      this.selectedDateTime = DateTime.now();
     });
   }
 }
+
+
+
+
+
+
+
 
 
 
@@ -106,7 +216,7 @@ void saveFormDataToFirestore() {
       case 2:
         return deliveryAddress != null && deliveryNumero != null;
       case 3:
-        return deliveryDate != null && deliveryTime != null;
+        return selectedDateTime != null;
       case 4:
         return title != null && details != null;
       case 5:
@@ -234,56 +344,20 @@ void saveFormDataToFirestore() {
                   children: [
                     // Use any date picker widget of your choice
                     ElevatedButton(
-                      
                       onPressed: () async {
-                        DateTime? selectedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2101),
-                        );
-                        if (selectedDate != null) {
-                          setState(() {
-                            deliveryDate = selectedDate;
-                          });
-                        }
+                        await setDate(context);
                       },
                       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
-        ),
-                      
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.orange),
+                      ),
                       child: Text(
-                        // style: TextStyle(backgroundColor: Colors.orange),
-                        deliveryDate != null
-                            ? 'Date sélectionnée: ${deliveryDate!.toLocal()}'
-                            : 'Sélectionner la date',
-                            
+                        selectedDateTime != null
+                            ? 'Date sélectionnée: $selectedDateTime'
+                            : 'Date actuelle: ${DateTime.now()}',
                       ),
                     ),
                     SizedBox(height: 16.0),
-                    // Use any time picker widget of your choice
-                    ElevatedButton(
-                      onPressed: () async {
-                        TimeOfDay? selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (selectedTime != null) {
-                          setState(() {
-                            deliveryTime = selectedTime;
-                          });
-                        }
-                      },
-                      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
-        ),
-                      child: Text(
-                        // style: TextStyle(backgroundColor: Colors.orange),
-                        deliveryTime != null
-                            ? 'Heure sélectionnée: ${deliveryTime!.format(context)}'
-                            : 'Sélectionner l\'heure',
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -325,19 +399,19 @@ void saveFormDataToFirestore() {
                           ),
                         ),
                         Text(
-                          'Date de Livraison: $deliveryDate',
+                          'Date de Livraison: $selectedDateTime',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
-                        Text(
-                          'Heure de Livraison:  ${deliveryTime != null ? '${deliveryTime!.hour}:${deliveryTime!.minute}' : 'Non défini'}',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
+                        // Text(
+                        //   'Heure de Livraison:  ${deliveryTime != null ? '${deliveryTime!.hour}:${deliveryTime!.minute}' : 'Non défini'}',
+                        //   style: TextStyle(
+                        //     fontSize: 18.0,
+                        //     color: Colors.white, // Couleur du texte
+                        //   ),
+                        // ),
                         Text(
                           'Prix du service : 500 F',
                           style: TextStyle(
