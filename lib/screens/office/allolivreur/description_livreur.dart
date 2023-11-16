@@ -159,53 +159,49 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   //   }
   // }
 
-
-
-  Future<void> setDate(BuildContext context) async {
-  DateTime? selectedDate = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime.now(),
-    lastDate: DateTime(2101),
-  );
-
-  if (selectedDate != null) {
-    TimeOfDay? selectedTime = await showTimePicker(
+  Future<DateTime?> setDate(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      helpText: "Choisissez une date de livraison",
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
     );
 
-    if (selectedTime != null) {
-      // Combine date and time into a single DateTime object
-      DateTime selectedDateTime = DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        selectedTime.hour,
-        selectedTime.minute,
+    if (selectedDate != null) {
+      // ignore: use_build_context_synchronously
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          );
+        },
+        
+        helpText: "Choisissez l'heure de la livraison",
+        initialTime: TimeOfDay.now(),
       );
 
-      // Set the selectedDateTime value
-      setState(() {
-        this.selectedDateTime = selectedDateTime;
-      });
+      if (selectedTime != null) {
+        // Combine date and time into a single DateTime object
+        DateTime selectedDateTime = DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+
+        // Return the selected DateTime
+        print(selectedDateTime);
+        return selectedDateTime;
+      }
     }
-  } else {
-    // Si l'utilisateur annule la sélection de la date, définissez selectedDateTime sur la date actuelle
-    setState(() {
-      this.selectedDateTime = DateTime.now();
-    });
+
+    // Return null if the user cancels the date or time picker
+    return null;
   }
-}
-
-
-
-
-
-
-
-
-
 
   bool isStepValid() {
     switch (currentStep) {

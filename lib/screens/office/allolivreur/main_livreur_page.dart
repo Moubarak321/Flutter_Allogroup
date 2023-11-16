@@ -132,7 +132,10 @@ class Delivery extends StatelessWidget {
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                 // Utilisez DocumentSnapshot au lieu de QuerySnapshot
                 if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
+                  return SizedBox(
+        height: Dimensions.height30,
+        child: CircularProgressIndicator(),
+      ); 
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;

@@ -1,4 +1,3 @@
-import 'package:allogroup/screens/office/user/utilisateur/details/favoris.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +20,7 @@ bool isStepValid() {
       return true;
     case 1:
       return true;
-    case 2:
-      return true;
-
+    
     default:
       return false;
   }
@@ -42,7 +39,7 @@ class _UtilisateurState extends State<Utilisateur> {
             currentStep: currentStep,
             onStepContinue: () {
               if (isStepValid()) {
-                if (currentStep < 2) {
+                if (currentStep < 1) {
                   setState(() {
                     currentStep++;
                   });
@@ -106,7 +103,7 @@ class _UtilisateurState extends State<Utilisateur> {
               ),
               
               Step(
-                title: Text('Historique des commandes de repas'),
+                title: Text('Historique des commandes '),
                 content: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Padding(
@@ -141,49 +138,49 @@ class _UtilisateurState extends State<Utilisateur> {
                   ),
                 ),
               ),
-              Step(
-                title: Text('Vos repas favoris'),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // Text(
-                        //   'Consultez vos repas favoris : ',
-                        //   style: TextStyle(
-                        //     fontSize: 18.0,
-                        //     color: Colors.white, // Couleur du texte
-                        //   ),
-                        // ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Favoris(),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
-                          child: const Text(
-                            "Voir vos favoris",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              // Step(
+              //   title: Text('Vos repas favoris'),
+              //   content: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(16.0),
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: <Widget>[
+              //           // Text(
+              //           //   'Consultez vos repas favoris : ',
+              //           //   style: TextStyle(
+              //           //     fontSize: 18.0,
+              //           //     color: Colors.white, // Couleur du texte
+              //           //   ),
+              //           // ),
+              //           ElevatedButton(
+              //             onPressed: () {
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => Favoris(),
+              //                 ),
+              //               );
+              //             },
+              //             style: ElevatedButton.styleFrom(
+              //                 backgroundColor: Colors.orange,
+              //                 side: BorderSide.none,
+              //                 shape: const StadiumBorder()),
+              //             child: const Text(
+              //               "Voir vos favoris",
+              //               style: TextStyle(
+              //                 color: Colors.white,
+              //                 fontSize: 16,
+              //                 fontFamily: 'Poppins',
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

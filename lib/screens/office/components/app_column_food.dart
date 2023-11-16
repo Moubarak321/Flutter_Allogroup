@@ -15,7 +15,6 @@ class AppColumnFood extends StatelessWidget {
     DateTime? selectedDate = await showDatePicker(
       context: context,
       helpText: "Choisissez une date de livraison",
-
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
@@ -26,11 +25,11 @@ class AppColumnFood extends StatelessWidget {
       TimeOfDay? selectedTime = await showTimePicker(
         context: context,
         builder: (BuildContext context, Widget? child) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-      child: child!,
-    );
-  },
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          );
+        },
         helpText: "Choisissez l'heure de la livraison",
         initialTime: TimeOfDay.now(),
       );
@@ -107,23 +106,22 @@ class AppColumnFood extends StatelessWidget {
                 icon: Icons.verified,
                 text: "Vérifié",
                 iconColor: Colors.orange),
-              // onTap: () async {
-              //   DateTime? selectedDateTime = await setDate(context);
+            // onTap: () async {
+            //   DateTime? selectedDateTime = await setDate(context);
 
-              //   if (selectedDateTime != null) {
-              //     // Do something with the selected date and time
-              //     print("Selected Date and Time: $selectedDateTime");
-              //   } else {
-              //     print("Date and Time selection canceled");
-              //   }
+            //   if (selectedDateTime != null) {
+            //     // Do something with the selected date and time
+            //     print("Selected Date and Time: $selectedDateTime");
+            //   } else {
+            //     print("Date and Time selection canceled");
+            //   }
 
-              //   // Get.snackbar("Infos", "Vous programmez l'achat de ce produit");
-              // },
-              IconAndTextWidget(
-                icon: Icons.calendar_month,
-                text: "??",
-                iconColor: Colors.red,
-              
+            //   // Get.snackbar("Infos", "Vous programmez l'achat de ce produit");
+            // },
+            IconAndTextWidget(
+              icon: Icons.calendar_month,
+              text: "??",
+              iconColor: Colors.red,
             ),
             IconAndTextWidget(
                 icon: Icons.delivery_dining,

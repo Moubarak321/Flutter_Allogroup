@@ -527,107 +527,114 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     }
   }
 
-  void AddtoFavorite(Map<String, dynamic> product) async {
-    User? getCurrentUser() {
-      return FirebaseAuth.instance.currentUser;
-    } // Assurez-vous que vous récupérez l'utilisateur correctement.
 
-    if (user != null) {
-      final userData = {
-        'id': DateTime.now()
-            .millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
-        'titre': product["title"],
-        'categorie': product["categorie"],
-        'prix': product["price"],
-        'image': product["image"],
-        'boutique': product["fullName"],
-        'boutiqueId': product["boutiqueId"],
-        // 'quantite': quantity.toString(),
-        // 'categorie': product["categorie"],
-        'status': product["isFavorite"],
-      };
+// =========================================================================
+// Fonctions a activer plus tard 
+// =========================================================================
 
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
-          .get()
-          .then((userDoc) {
-        if (userDoc.exists) {
-          // L'utilisateur existe, mettez à jour son panier existant.
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(user?.uid)
-              .update({
-                'Favoris': FieldValue.arrayUnion([userData]),
-              })
-              .then((_) {})
-              .catchError((error) {
-                // Une erreur s'est produite lors de la mise à jour des données.
-              });
-        } else {
-          // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
-          final newCartData = {
-            'Favoris': [userData], // Le premier produit est ajouté au panier.
-          };
+  // void AddtoFavorite(Map<String, dynamic> product) async {
+  //   User? getCurrentUser() {
+  //     return FirebaseAuth.instance.currentUser;
+  //   } // Assurez-vous que vous récupérez l'utilisateur correctement.
 
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(user?.uid)
-              .set(newCartData)
-              .then((_) {
-            // Les données ont été enregistrées avec succès.
-          }).catchError((error) {
-            // Une erreur s'est produite lors de la création du panier.
-          });
-        }
-      });
-    }
-  }
+  //   if (user != null) {
+  //     final userData = {
+  //       'id': DateTime.now()
+  //           .millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
+  //       'titre': product["title"],
+  //       'categorie': product["categorie"],
+  //       'prix': product["price"],
+  //       'image': product["image"],
+  //       'boutique': product["fullName"],
+  //       'boutiqueId': product["boutiqueId"],
+  //       // 'quantite': quantity.toString(),
+  //       // 'categorie': product["categorie"],
+  //       'status': product["isFavorite"],
+  //     };
 
-  Future<bool> RemoveFromFavorite(Map<String, dynamic> product) async {
-    try {
-      User? getCurrentUser() {
-        return FirebaseAuth.instance.currentUser;
-      }
+  //     FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user?.uid)
+  //         .get()
+  //         .then((userDoc) {
+  //       if (userDoc.exists) {
+  //         // L'utilisateur existe, mettez à jour son panier existant.
+  //         FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user?.uid)
+  //             .update({
+  //               'Favoris': FieldValue.arrayUnion([userData]),
+  //             })
+  //             .then((_) {})
+  //             .catchError((error) {
+  //               // Une erreur s'est produite lors de la mise à jour des données.
+  //             });
+  //       } else {
+  //         // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
+  //         final newCartData = {
+  //           'Favoris': [userData], // Le premier produit est ajouté au panier.
+  //         };
 
-      if (user != null) {
-        final userData = {
-          'id': DateTime.now().millisecondsSinceEpoch,
-          'titre': product["title"],
-          'categorie': product["categorie"],
-          'prix': product["price"],
-          'image': product["image"],
-          'boutique': product["fullName"],
-          'boutiqueId': product["boutiqueId"],
-          'status': product["isFavorite"],
-        };
+  //         FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user?.uid)
+  //             .set(newCartData)
+  //             .then((_) {
+  //           // Les données ont été enregistrées avec succès.
+  //         }).catchError((error) {
+  //           // Une erreur s'est produite lors de la création du panier.
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user?.uid)
-            .get();
+  // Future<bool> RemoveFromFavorite(Map<String, dynamic> product) async {
+  //   try {
+  //     User? getCurrentUser() {
+  //       return FirebaseAuth.instance.currentUser;
+  //     }
 
-        if (userDoc.exists) {
-          // L'utilisateur existe, mettez à jour son panier existant.
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user?.uid)
-              .update({
-            'Favoris': FieldValue.arrayRemove([userData]),
-          });
-          return true; // La suppression a réussi.
-        }
-      }
+  //     if (user != null) {
+  //       final userData = {
+  //         'id': DateTime.now().millisecondsSinceEpoch,
+  //         'titre': product["title"],
+  //         'categorie': product["categorie"],
+  //         'prix': product["price"],
+  //         'image': product["image"],
+  //         'boutique': product["fullName"],
+  //         'boutiqueId': product["boutiqueId"],
+  //         'status': product["isFavorite"],
+  //       };
 
-      return false; // La suppression a échoué.
-    } catch (error) {
-      print("Erreur lors de la suppression du favori : $error");
-      return false; // La suppression a échoué en raison d'une erreur.
-    }
-  }
+  //       final userDoc = await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(user?.uid)
+  //           .get();
 
+  //       if (userDoc.exists) {
+  //         // L'utilisateur existe, mettez à jour son panier existant.
+  //         await FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user?.uid)
+  //             .update({
+  //           'Favoris': FieldValue.arrayRemove([userData]),
+  //         });
+  //         return true; // La suppression a réussi.
+  //       }
+  //     }
 
- 
+  //     return false; // La suppression a échoué.
+  //   } catch (error) {
+  //     print("Erreur lors de la suppression du favori : $error");
+  //     return false; // La suppression a échoué en raison d'une erreur.
+  //   }
+  // }
+
+  
+// =========================================================================
+// Fin Fonctions a activer plus tard 
+// =========================================================================
 
   @override
   void initState() {
@@ -937,15 +944,34 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                   text: prix + " FCFA",
                                   iconColor: Colors.orange,
                                 ),
-                                IconAndTextWidget(
-                                  icon: Icons.access_time_rounded,
-                                  text: duree + " min",
-                                  iconColor: Colors.red,
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.snackbar("Infos",
+                                        "Ce produit vous sera livré dans environ $duree min");
+                                  },
+                                  child: IconAndTextWidget(
+                                    icon: Icons.access_time_rounded,
+                                    text: duree + " min",
+                                    iconColor: Colors.red,
+                                  ),
                                 ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.snackbar("Infos",
+                                        "Ce produit est prêt à être livré.");
+                                  },
+                                  child: IconAndTextWidget(
+                                    icon: Icons.delivery_dining,
+                                    text: "",
+                                    iconColor: Color.fromRGBO(10, 80, 137, 0.8),
+                                  ),
+                                ),
+
                                 // GestureDetector(
                                 //   onTap: () {
                                 //     setState(() {
-                                //       produit["isFavorite"] = true;
+                                //       produit["isFavorite"] = !produit[
+                                //           "isFavorite"]; // Inverser l'état actuel
                                 //       AddtoFavorite(produit);
                                 //       Get.snackbar(
                                 //         "Infos",
@@ -953,30 +979,17 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                 //             ? "Ce produit a été ajouté aux favoris"
                                 //             : "Ce produit a été supprimé des favoris",
                                 //       );
-                                //     });
-                                //   },
-                                //   child: IconAndTextWidget(
-                                //     icon: produit["isFavorite"]
-                                //         ? Icons.favorite
-                                //         : Icons.favorite_border,
-                                //     text: "",
-                                //     iconColor: produit["isFavorite"]
-                                //         ? Colors.red
-                                //         : Colors
-                                //             .black, // Changez la couleur de l'icône si elle est préférée
-                                //   ),
-                                // ),
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     setState(() {
-                                //       produit["isFavorite"] = !produit["isFavorite"]; // Inverser l'état actuel
-                                //       AddtoFavorite(produit);
-                                //       Get.snackbar(
-                                //         "Infos",
-                                //         produit["isFavorite"]
-                                //             ? "Ce produit a été ajouté aux favoris"
-                                //             : "Ce produit a été supprimé des favoris",
-                                //       );
+
+                                //       // Ajoutez cette condition pour gérer le changement d'icône et de couleur lorsque le produit est retiré des favoris
+                                //       if (!produit["isFavorite"]) {
+                                //         RemoveFromFavorite(produit);
+                                //         // Si le produit n'est plus un favori, changez la couleur de l'icône en noir
+                                //         IconAndTextWidget(
+                                //           icon: Icons.favorite_border,
+                                //           text: "",
+                                //           iconColor: Colors.black,
+                                //         );
+                                //       }
                                 //     });
                                 //   },
                                 //   child: IconAndTextWidget(
@@ -988,77 +1001,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                 //         ? Colors.red
                                 //         : Colors.black,
                                 //   ),
-                                // ),
-
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      produit["isFavorite"] = !produit[
-                                          "isFavorite"]; // Inverser l'état actuel
-                                      AddtoFavorite(produit);
-                                      Get.snackbar(
-                                        "Infos",
-                                        produit["isFavorite"]
-                                            ? "Ce produit a été ajouté aux favoris"
-                                            : "Ce produit a été supprimé des favoris",
-                                      );
-
-                                      // Ajoutez cette condition pour gérer le changement d'icône et de couleur lorsque le produit est retiré des favoris
-                                      if (!produit["isFavorite"]) {
-                                        RemoveFromFavorite(produit);
-                                        // Si le produit n'est plus un favori, changez la couleur de l'icône en noir
-                                        IconAndTextWidget(
-                                          icon: Icons.favorite_border,
-                                          text: "",
-                                          iconColor: Colors.black,
-                                        );
-                                      }
-                                    });
-                                  },
-                                  child: IconAndTextWidget(
-                                    icon: produit["isFavorite"]
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    text: "",
-                                    iconColor: produit["isFavorite"]
-                                        ? Colors.red
-                                        : Colors.black,
-                                  ),
-                                ),
-
-                                // GestureDetector(
-                                //   // onTap: () async {
-                                //   //   setState(() {
-                                //   //     produit["isFavorite"] = !produit[
-                                //   //         "isFavorite"]; // Inverser l'état actuel
-
-                                //   //   if (produit["isFavorite"]) {
-                                //   //     // Si le produit est maintenant en favori, l'ajouter à la liste des favoris
-                                //   //     AddtoFavorite(produit);
-                                //   //     Get.snackbar(
-                                //   //       "Infos",
-                                //   //       "Ce produit a été ajouté aux favoris",
-                                //   //     );
-                                //   //   } else {
-                                //   //     // Si le produit est maintenant retiré des favoris, le supprimer de la liste des favoris
-                                //   //     RemoveFromFavorite(produit);
-                                //   //     print('retiré');
-                                //   //     Get.snackbar(
-                                //   //       "Infos",
-                                //   //       "Ce produit a été retiré des favoris",
-                                //   //     );
-                                //   //   }
-                                //   //   });
-                                //   // },
-                                  // child: IconAndTextWidget(
-                                  //   icon: produit["isFavorite"]
-                                  //       ? Icons.favorite
-                                  //       : Icons.favorite_border,
-                                  //   text: "",
-                                  //   iconColor: produit["isFavorite"]
-                                  //       ? Colors.red
-                                  //       : Colors.black,
-                                  // ),
                                 // ),
                               ],
                             )

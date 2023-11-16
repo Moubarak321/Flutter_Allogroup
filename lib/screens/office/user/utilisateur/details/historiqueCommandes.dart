@@ -154,7 +154,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                 if (filteredCourses.isEmpty) {
                   return Center(
                     child: Text(
-                      "Aucun produit avec le statut à true",
+                      "Aucun produit",
                       style: TextStyle(
                         fontSize: 20.0,
                       ),
