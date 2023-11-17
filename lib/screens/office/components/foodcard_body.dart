@@ -421,7 +421,7 @@
 
 import 'dart:math';
 
-// import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
+import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/components/app_column_restau.dart';
 import 'package:allogroup/screens/office/components/function.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
@@ -505,6 +505,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         String merchantName = merchantData['fullName'];
         String merchantCat = merchantData['cuisine'];
         String merchantAdresse = merchantData['adresse'];
+        String merchantDescription = merchantData['descriptionboutique'];
+
+       List<dynamic> merchantProducts = merchantData['produits'];
         String merchantImageURL = merchantData[
             'profileImageUrl']; // Remplacez 'ImageURL' par le nom de votre champ pour l'image
 
@@ -513,7 +516,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           'name': merchantName,
           'imageURL': merchantImageURL,
           'categorie': merchantCat,
-          'adresse': merchantAdresse
+          'adresse': merchantAdresse,
+          'products': merchantProducts,
+          'description': merchantDescription
         };
 
         // Ajoutez les informations du marchand à la liste des marchands
@@ -527,9 +532,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     }
   }
 
-
 // =========================================================================
-// Fonctions a activer plus tard 
+// Fonctions a activer plus tard
 // =========================================================================
 
   // void AddtoFavorite(Map<String, dynamic> product) async {
@@ -631,9 +635,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   //   }
   // }
 
-  
 // =========================================================================
-// Fin Fonctions a activer plus tard 
+// Fin Fonctions a activer plus tard
 // =========================================================================
 
   @override
@@ -775,14 +778,24 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     if (index >= 0 && index < tousLesMarchants.length) {
       String merchantName = tousLesMarchants[index]['name'];
       String merchantImageURL = tousLesMarchants[index]['imageURL'];
+      // var marchand = tousLesMarchants[index];
+
       // String merchantCat = tousLesMarchants[index]['categorie'];
       // String merchantAdresse = tousLesMarchants[index]['adresse'];
 
       return GestureDetector(
         onTap: () {
           // Gérez la redirection vers la page de détail ici
-          Get.snackbar("Info",
-              "Ce restaurant est vérifié et prêt à vous servir. Parcourez les offres en dessous pour commander");
+          // Get.snackbar("Info", "Ce restaurant est vérifié et prêt à vous servir. Parcourez les offres en dessous pour commander");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                print(tousLesMarchants[index]);
+                return RecommendedFoodDetail(marchand: tousLesMarchants[index]);
+              },
+            ),
+          );
         },
         child: Transform(
           transform: matrix,

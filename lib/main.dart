@@ -129,7 +129,7 @@ class _MyAppState extends State<MyApp> {
               produit: {},
             ),
         '/UpdateProfileScreen': (context) => UpdateProfileScreen(),
-        '/recommended_food_detail': (context) => RecommendedFoodDetail(),
+        // '/recommended_food_detail': (context) => RecommendedFoodDetail(),
         '/cart': (context) => Cart(),
         '/notifications': (context) => Notifications(),
         '/wallet': (context) => Wallet(),
@@ -139,7 +139,8 @@ class _MyAppState extends State<MyApp> {
         '/historiqueCommandes': (context) => HistoriqueCommandesRepas(),
         '/historiqueCourses': (context) => HistoriqueCourses(),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
-        Routes.interfaceLivreur : (context) => InterFaceLivreurChampion()
+        Routes.interfaceLivreur : (context) => InterFaceLivreurChampion(),
+        'recommended_food_detail': (context) => RecommendedFoodDetail(marchand: {})
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),
