@@ -503,22 +503,25 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             merchantDocument.data() as Map<String, dynamic>;
 
         String merchantName = merchantData['fullName'];
+        String merchantId = merchantData['id'];
         String merchantCat = merchantData['cuisine'];
         String merchantAdresse = merchantData['adresse'];
         String merchantDescription = merchantData['descriptionboutique'];
 
-       List<dynamic> merchantProducts = merchantData['produits'];
+        List<dynamic> merchantProducts = merchantData['produits'];
         String merchantImageURL = merchantData[
             'profileImageUrl']; // Remplacez 'ImageURL' par le nom de votre champ pour l'image
 
         // Créez un objet Map pour stocker le nom de la boutique et l'URL de l'image
         Map<String, dynamic> merchantInfo = {
+          'id': merchantId,
           'name': merchantName,
           'imageURL': merchantImageURL,
           'categorie': merchantCat,
           'adresse': merchantAdresse,
           'products': merchantProducts,
           'description': merchantDescription
+
         };
 
         // Ajoutez les informations du marchand à la liste des marchands
@@ -892,6 +895,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
+                    print("--------------$produit");
                     return PopularFoodDetail(produit: tousLesProduits[index]);
                   },
                 ),

@@ -7,6 +7,7 @@ import 'package:allogroup/screens/office/widgets/icon_and_text_widget.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:allogroup/home.dart';
 
 class RecommendedFoodDetail extends StatefulWidget {
   final Map<String, dynamic> marchand;
@@ -29,7 +30,10 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
 
   Widget buildProductList() {
     List tousLesProduitsMarchant = marchand['products'];
-
+    print("...........................$marchand");
+    String boutique = marchand["name"];
+    // print("////////////$boutique");
+    print("Tous les produits********************$tousLesProduitsMarchant");
     if (tousLesProduitsMarchant.isNotEmpty) {
       return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -38,6 +42,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
         itemBuilder: (context, index) {
           // var tousLesProduitsMarchant = marchand['products'];
           var produit = tousLesProduitsMarchant[index];
+          produit["fullName"] = boutique;
           var categorie = produit['categorie'];
           var title = produit['title'];
           var imageUrl = produit['image'];
@@ -51,7 +56,10 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return PopularFoodDetail(produit: produit);
+                    // return Home();
+                    print(tousLesProduitsMarchant[index]);
+                    return PopularFoodDetail(
+                        produit: tousLesProduitsMarchant[index]);
                   },
                 ),
               );
