@@ -1,5 +1,6 @@
 // import 'package:allogroup/screens/office/allofood/paiement.dart';
 import 'package:allogroup/screens/office/components/function.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
@@ -40,7 +41,7 @@ class _CartState extends State<Cart> {
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        List<dynamic> cart = userData['Cart'] as List<dynamic>;
+        List<dynamic> cart = userData['cart'] as List<dynamic>;
 
         for (var cartItem in cart) {
           if (cartItem['status'] == false) {
@@ -79,8 +80,11 @@ class _CartState extends State<Cart> {
 
   Future<void> removeFromCart(int index) async {
     try {
-      List<Map<String, dynamic>> updatedCart = tousLesProduits;
+      List<Map<String, dynamic>> updatedCart =
+          List.from(tousLesProduits); // Copie de la liste
+      // print("...........$updatedCart");
       final productToRemove = updatedCart.removeAt(index);
+      print("...........$productToRemove");
 
       // Mettez à jour le panier dans Firestore avec le produit supprimé.
       final user = getCurrentUser();
@@ -89,7 +93,8 @@ class _CartState extends State<Cart> {
             .collection('users')
             .doc(user.uid)
             .update({
-          'Cart': productToRemove,
+          'cart':
+              updatedCart, // Utilisez la liste mise à jour sans le produit supprimé
         });
       }
 
@@ -104,41 +109,125 @@ class _CartState extends State<Cart> {
     }
   }
 
-  Future<void> paiement() async {
-    try {
-      List<Map<String, dynamic>>? products = await GetProductFromCart();
-      if (products != null) {
-        setState(
-          () async {
+  // Future<void> commande() async {
+  //   try {
+  //     List<Map<String, dynamic>>? products = await GetProductFromCart();
+  //     if (products != null) {
+  //       setState(
+  //         () async {
+  //           for (var order in products) {
+  //             print("///////////////////");
+  //             print(order);
+  //             order['status'] = true; // Mise à jour du statut du produit
+  //             commandes.add(order);
+  //             Get.snackbar("Succès", "Statut mis à jour");
+
+  //             // Supprimer le produit du panier
+  //             await removeFromCart(products.indexOf(order));
+  //           }
+
+  //           final user = getCurrentUser();
+
+  //           if (user != null) {
+  //             await FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(user.uid)
+  //                 .update({'paiementBoutique': commandes});
+  //           }
+  //         },
+  //       );
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       error = "Erreur lors de la mise à jour du statut des produits : $e";
+  //     });
+  //   }
+  // }
+
+
+
+
+
+Future<void> clearCart() async {
+  try {
+    final user = getCurrentUser();
+
+    if (user != null) {
+      DocumentReference userDocRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
+
+      // Vider le champ 'cart' dans Firestore
+      await userDocRef.update({
+        'cart': [],
+      });
+    }
+  } catch (e) {
+    print("Erreur lors de la suppression du panier : $e");
+    // Gérer l'erreur selon vos besoins
+  }
+}
+
+
+
+
+
+
+
+
+Future<void> commande() async {
+  try {
+    List<Map<String, dynamic>>? products = await GetProductFromCart();
+    if (products != null) {
+      setState(
+        () async {
+          final user = getCurrentUser();
+
+          if (user != null) {
+            DocumentReference userDocRef = FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid);
+
+            // Ajouter les nouveaux produits à la liste existante dans Firestore
+            await userDocRef.update({
+              'paiementBoutique': FieldValue.arrayUnion(products),
+            });
+
+            // Mettre à jour le statut et supprimer les produits du panier
             for (var order in products) {
               print("///////////////////");
               print(order);
               order['status'] = true; // Mise à jour du statut du produit
-              print(
-                  "-----------order-------------" + order["status"].toString());
               commandes.add(order);
               Get.snackbar("Succès", "Statut mis à jour");
-            }
-            final user = getCurrentUser();
 
-            if (user != null) {
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .update({
-                'Cart': commandes,
-              });
+              // Supprimer le produit du panier
+              await clearCart();
             }
-            ;
-          },
-        );
-      }
-    } catch (e) {
-      setState(() {
-        error = "Erreur lors de la mise à jour du statut des produits : $e";
-      });
+          }
+        },
+      );
     }
+  } catch (e) {
+    setState(() {
+      error = "Erreur lors de la mise à jour du statut des produits : $e";
+    });
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   @override
   void initState() {
@@ -173,10 +262,10 @@ class _CartState extends State<Cart> {
             Text("Votre panier"),
             GestureDetector(
               onTap: () {
-                paiement();
+                commande();
                 setState(() {
-                isLoading = true; // Démarrez l'indicateur de chargement
-          });
+                  isLoading = true; // Démarrez l'indicateur de chargement
+                });
                 Future.delayed(
                   Duration(seconds: 5),
                   () {
@@ -186,7 +275,7 @@ class _CartState extends State<Cart> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              Cart()), // Remplacez par le nom de votre page de changement de mot de passe
+                              HistoriqueCommandesRepas()), // Remplacez par le nom de votre page de changement de mot de passe
                     );
                   },
                 );
@@ -293,11 +382,12 @@ class _CartState extends State<Cart> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(Dimensions.radius20),
-                                bottomRight: Radius.circular(Dimensions.radius20),
+                                bottomRight:
+                                    Radius.circular(Dimensions.radius20),
                               ),
                               color: Colors.white,
                             ),
-                
+
                             child: Padding(
                               padding: EdgeInsets.only(
                                   left: Dimensions.width10,
@@ -345,7 +435,7 @@ class _CartState extends State<Cart> {
                                                 size: Dimensions.font20,
                                                 color: const Color.fromARGB(
                                                     255, 139, 105, 52)),
-                
+
                                             SizedBox(
                                               width: Dimensions.width10 / 2,
                                             ),
@@ -398,12 +488,12 @@ class _CartState extends State<Cart> {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(
                                                 Dimensions.radius20),
-                                            color:
-                                                Color.fromRGBO(10, 80, 137, 0.8),
+                                            color: Color.fromRGBO(
+                                                10, 80, 137, 0.8),
                                           ),
                                           child: GestureDetector(
                                             onTap: () {
-                                              removeFromCart(index as int);
+                                              removeFromCart(index);
                                             },
                                             child: Icon(
                                               Icons.delete_rounded,

@@ -17,11 +17,12 @@
 // }
 
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
+// import 'package:intl/date_symbol_data_local.dart';
 
 class HistoriqueCommandesRepas extends StatelessWidget {
   User? getCurrentUser() {
@@ -37,10 +38,11 @@ class HistoriqueCommandesRepas extends StatelessWidget {
     final prix = courseData['prix'];
     final quantite = courseData['quantite'];
     final titre = courseData['titre'];
-    // final timestamp = courseData['id'];
-    // final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
-    // final formattedDate =
-    //     DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
+    // final livraison = courseData['dateLivraison'];
+    final livraison = courseData['dateLivraison'];
+    final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
+    final formattedDate =
+        DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
 
     return Container(
       width: double.infinity,
@@ -93,6 +95,10 @@ class HistoriqueCommandesRepas extends StatelessWidget {
             'Quantité: $quantite',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
+          Text(
+            'Date de livraison: $formattedDate',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
         ],
       ),
     );
@@ -133,7 +139,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('Cart')) {
+                if (!userData.containsKey('paiementBoutique')) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -144,11 +150,11 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['Cart'] as List<dynamic>;
-
+                final courses = userData['paiementBoutique'] as List<dynamic>;
+                print("courses...................$courses");
                 // Filter the courses list to include only those with status set to true
                 final filteredCourses = courses
-                    .where((courseData) => courseData['status'] == true)
+                    .where((courseData) => courseData['status'] == false)
                     .toList();
 
                 if (filteredCourses.isEmpty) {
