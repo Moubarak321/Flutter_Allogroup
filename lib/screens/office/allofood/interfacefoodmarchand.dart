@@ -284,7 +284,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                   flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                       marchandImageURL,
-                      width: double.infinity,
+                      width: double.maxFinite,
                       fit: BoxFit.cover,
                     ),
                   ),
