@@ -291,7 +291,7 @@ class _CartState extends State<Cart> {
                                               width: Dimensions.width10 / 2,
                                             ),
                                             SmallText(
-                                                text: "Soustotal",
+                                                text: "~",
                                                 size: Dimensions.font20),
                                             SmallText(
                                                 text: " $sousTotal F",

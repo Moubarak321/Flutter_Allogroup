@@ -170,6 +170,8 @@ bool isStepValid() {
     case 0:
       return true;
     case 1:
+      return true;  
+    case 2:
       return deliveryAddress != null && deliveryNumero != null;
     default:
       return false;
@@ -189,7 +191,7 @@ class _UtilisateurState extends State<Utilisateur> {
             currentStep: currentStep,
             onStepContinue: () {
               if (isStepValid()) {
-                if (currentStep < 1) {
+                if (currentStep < 2) {
                   setState(() {
                     currentStep++;
                   });
@@ -207,6 +209,48 @@ class _UtilisateurState extends State<Utilisateur> {
               }
             },
             steps: [
+              Step(
+                title: Text('Service de Livraison'),
+                content: Card(
+                  color: Colors.orange, // Couleur de l'arrière-plan
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Prix en fonction de la distance :',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                        Text(
+                          'Inférieur à 5km : 500 F',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                        Text(
+                          'Entre 5km et 10km : 1000 F',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                        Text(
+                          'Supérieur à 10km : 2000 F',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               Step(
                 title: const Text('Processus de paiement'),
                 content: Padding(
