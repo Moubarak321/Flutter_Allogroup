@@ -120,12 +120,12 @@ class AppColumnFood extends StatelessWidget {
             // },
             IconAndTextWidget(
               icon: Icons.calendar_month,
-              text: "??",
+              text: "",
               iconColor: Colors.red,
             ),
             IconAndTextWidget(
                 icon: Icons.delivery_dining,
-                text: "--",
+                text: "",
                 iconColor: Colors.blue),
           ],
         ),

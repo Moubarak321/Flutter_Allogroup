@@ -1,6 +1,4 @@
-// import 'package:allogroup/screens/office/allofood/paiement.dart';
 import 'package:allogroup/screens/office/components/function.dart';
-import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
@@ -9,7 +7,7 @@ import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:allogroup/screens/office/components/recuperation.dart';
+import 'package:allogroup/screens/office/allofood/paiement.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -21,13 +19,14 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   bool isLoading = true;
   String? error;
+  late String total;
   List<Map<String, dynamic>> tousLesProduits = [];
   List<Map<String, dynamic>> commandes = [];
 
-//PickupInfoWidget parameters
-  // String? pickupAddress;
-  // int? pickupNumero;
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String getTotalPrice() {
+    int totalPrice = calculateTotalPrice();
+    return "$totalPrice F"; 
+  }
 
   Future<dynamic> GetProductFromCart() async {
     try {
@@ -93,8 +92,7 @@ class _CartState extends State<Cart> {
             .collection('users')
             .doc(user.uid)
             .update({
-          'cart':
-              updatedCart, // Utilisez la liste mise à jour sans le produit supprimé
+          'cart': updatedCart,
         });
       }
 
@@ -109,215 +107,68 @@ class _CartState extends State<Cart> {
     }
   }
 
-  // Future<void> commande() async {
-  //   try {
-  //     List<Map<String, dynamic>>? products = await GetProductFromCart();
-  //     if (products != null) {
-  //       setState(
-  //         () async {
-  //           for (var order in products) {
-  //             print("///////////////////");
-  //             print(order);
-  //             order['status'] = true; // Mise à jour du statut du produit
-  //             commandes.add(order);
-  //             Get.snackbar("Succès", "Statut mis à jour");
-
-  //             // Supprimer le produit du panier
-  //             await removeFromCart(products.indexOf(order));
-  //           }
-
-  //           final user = getCurrentUser();
-
-  //           if (user != null) {
-  //             await FirebaseFirestore.instance
-  //                 .collection('users')
-  //                 .doc(user.uid)
-  //                 .update({'paiementBoutique': commandes});
-  //           }
-  //         },
-  //       );
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       error = "Erreur lors de la mise à jour du statut des produits : $e";
-  //     });
-  //   }
-  // }
-
-
-
-
-
-Future<void> clearCart() async {
-  try {
-    final user = getCurrentUser();
-
-    if (user != null) {
-      DocumentReference userDocRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid);
-
-      // Vider le champ 'cart' dans Firestore
-      await userDocRef.update({
-        'cart': [],
-      });
+  int calculateTotalPrice() {
+    int totalPrice = 0;
+    for (var product in tousLesProduits) {
+      var prix = product['prix'];
+      var qte = product['quantite'];
+      var intQuantite = int.parse(qte);
+      var intPrix = int.parse(prix);
+      var sousTotal = intQuantite * intPrix;
+      totalPrice += sousTotal;
     }
-  } catch (e) {
-    print("Erreur lors de la suppression du panier : $e");
-    // Gérer l'erreur selon vos besoins
+    return totalPrice;
   }
-}
-
-
-
-
-
-
-
-
-Future<void> commande() async {
-  try {
-    List<Map<String, dynamic>>? products = await GetProductFromCart();
-    if (products != null) {
-      setState(
-        () async {
-          final user = getCurrentUser();
-
-          if (user != null) {
-            DocumentReference userDocRef = FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid);
-
-            // Ajouter les nouveaux produits à la liste existante dans Firestore
-            await userDocRef.update({
-              'paiementBoutique': FieldValue.arrayUnion(products),
-            });
-
-            // Mettre à jour le statut et supprimer les produits du panier
-            for (var order in products) {
-              print("///////////////////");
-              print(order);
-              order['status'] = true; // Mise à jour du statut du produit
-              commandes.add(order);
-              Get.snackbar("Succès", "Statut mis à jour");
-
-              // Supprimer le produit du panier
-              await clearCart();
-            }
-          }
-        },
-      );
-    }
-  } catch (e) {
-    setState(() {
-      error = "Erreur lors de la mise à jour du statut des produits : $e";
-    });
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   void initState() {
     super.initState();
     fetchProductsFromCart();
-
-    // GetProductFromCart().then((products) {
-    //   setState(() {
-    //     tousLesProduits = products!;
-    //   });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text("Votre Panier"),
         automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.pop(context); // Revenir à la page précédente
-                },
-                child: AppIcon(
-                  icon: Icons.arrow_back,
-                  backgroundColor: Color(0xCC0A5089),
-                  iconColor: Colors.white,
-                )),
+              onTap: () {
+                Navigator.pop(context); // Revenir à la page précédente
+              },
+              child: AppIcon(
+                icon: Icons.arrow_back,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
             Text("Votre panier"),
             GestureDetector(
               onTap: () {
-                commande();
-                setState(() {
-                  isLoading = true; // Démarrez l'indicateur de chargement
-                });
-                Future.delayed(
-                  Duration(seconds: 5),
-                  () {
-                    // Après 5 secondes, effectuez l'action que vous souhaitez ici
-                    // Par exemple, naviguez vers une autre page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              HistoriqueCommandesRepas()), // Remplacez par le nom de votre page de changement de mot de passe
-                    );
-                  },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Utilisateur(),
+                  ),
                 );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) {
-                //       return Cart();
-                //     },
-                //   ),
-                // );
               },
               child: AppIcon(
-                  icon: Icons.payment_outlined,
-                  backgroundColor: Color(0xCC0A5089),
-                  iconColor: Colors.white),
+                icon: Icons.delivery_dining_sharp,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
             ),
           ],
         ),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       paiement();
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) {
-        //             return Cart();
-        //           },
-        //         ),
-        //       );
-        //     },
-        //     icon: const Icon(Icons.payment_outlined),
-        //   ),
-        // ],
       ),
       body: Column(
         children: [
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              "Voici les produits dans votre panier :",
+              "Votre panier coûte ${getTotalPrice()}",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -346,9 +197,9 @@ Future<void> commande() async {
                 var imageUrl = article['image'];
                 var prix = article['prix'];
                 var qte = article['quantite'];
-                // var intQuantite = int.parse(qte);
-                // var intPrix = int.parse(prix);
-                // var sousTotal = intQuantite * intPrix;
+                var intQuantite = int.parse(qte);
+                var intPrix = int.parse(prix);
+                var sousTotal = intQuantite * intPrix;
                 return SingleChildScrollView(
                   child: Container(
                     margin: EdgeInsets.only(
@@ -440,10 +291,10 @@ Future<void> commande() async {
                                               width: Dimensions.width10 / 2,
                                             ),
                                             SmallText(
-                                                text: "Total",
+                                                text: "Soustotal",
                                                 size: Dimensions.font20),
                                             SmallText(
-                                                text: " 100",
+                                                text: " $sousTotal F",
                                                 size: Dimensions.font20),
                                             // BigText(text: quantity.toString()),
                                             SizedBox(
@@ -515,19 +366,6 @@ Future<void> commande() async {
                 );
               },
             ),
-          // PickupInfoWidget(
-          //   formKey: _formKey,
-          //   pickupAddress: "pickupAddress",
-          //   pickupNumero: 555445,
-          //   updatePickupInfo: (address, numero) {
-          //     setState(() {
-          //       pickupAddress = address;
-          //       pickupNumero = numero;
-          //     });
-          //   },
-          // )
-
-          // )
         ],
       ),
     );
