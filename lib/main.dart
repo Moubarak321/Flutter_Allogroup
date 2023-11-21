@@ -26,7 +26,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:allogroup/screens/office/user/signInScreen/signInScreen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
-// import 'package:allogroup/screens/office/components/foodcard_body.dart';
+import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 //51518759
 
 void main() async {
@@ -138,9 +138,11 @@ class _MyAppState extends State<MyApp> {
         '/utilisateur': (context) => Utilisateur(),
         '/historiqueCommandes': (context) => HistoriqueCommandesRepas(),
         '/historiqueCourses': (context) => HistoriqueCourses(),
+        '/traitementEnCours.dart': (context) => EnCoursDeTraitement(),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
-        Routes.interfaceLivreur : (context) => InterFaceLivreurChampion(),
-        'recommended_food_detail': (context) => RecommendedFoodDetail(marchand: {})
+        Routes.interfaceLivreur: (context) => InterFaceLivreurChampion(),
+        'recommended_food_detail': (context) =>
+            RecommendedFoodDetail(marchand: {})
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),
