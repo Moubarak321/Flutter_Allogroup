@@ -242,15 +242,7 @@ class ProfileScreen extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             try {
-                              // Utilisez FirebaseAuth pour déconnecter l'utilisateur actuellement connecté.
                               await FirebaseAuth.instance.signOut();
-
-                              // Une fois l'utilisateur déconnecté avec succès, vous pouvez effectuer des actions supplémentaires si nécessaire.
-                              // Par exemple, naviguer vers la page de connexion.
-
-                              // Assurez-vous d'avoir les routes appropriées définies dans votre application pour la page de connexion.
-                              // Vous pouvez utiliser Get.offAllNamed('/nom_de_votre_page_de_connexion') pour naviguer vers la page de connexion en utilisant GetX.
-
                               Get.offAllNamed('/signInScreen');
                             } catch (e) {
                               // Gérez les erreurs éventuelles liées à la déconnexion de l'utilisateur.
