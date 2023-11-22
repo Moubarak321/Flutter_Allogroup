@@ -155,8 +155,8 @@ class Delivery extends StatelessWidget {
                 final courses = userData['courses'] as List<dynamic>;
 
                 // Only display the last two courses
-                final displayedCourses = courses.length >= 2
-                    ? courses.sublist(courses.length - 2)
+                final displayedCourses = courses.length >= 1
+                    ? courses.sublist(courses.length - 1)
                     : courses;
 
                 return ListView.builder(
