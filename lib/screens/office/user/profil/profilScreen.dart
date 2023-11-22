@@ -230,35 +230,33 @@ class ProfileScreen extends StatelessWidget {
                   textColor: Colors.red,
                   endIcon: false,
                   onPress: () {
-                    Get.defaultDialog(
-                      title: "DECONNEXION",
-                      titleStyle: const TextStyle(fontSize: 20),
-                      content: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15.0),
-                        child: Text(
-                            "Etes-vous sûre de vouloir vous déconnecter ?"),
+                   Get.defaultDialog(
+                    title: "DECONNEXION",
+                    titleStyle: const TextStyle(fontSize: 20),
+                    content: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
+                      child: Text("Etes-vous sûr de vouloir vous déconnecter ?"),
+                    ),
+                    confirm: ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          await FirebaseAuth.instance.signOut();
+                          Get.offAllNamed('/signInScreen');
+                        } catch (e) {
+                          print("Erreur lors de la déconnexion : $e");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        side: BorderSide.none,
                       ),
-                      confirm: Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              await FirebaseAuth.instance.signOut();
-                              Get.offAllNamed('/signInScreen');
-                            } catch (e) {
-                              // Gérez les erreurs éventuelles liées à la déconnexion de l'utilisateur.
-                              print("Erreur lors de la déconnexion : $e");
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                              side: BorderSide.none),
-                          child: const Text("Oui"),
-                        ),
-                      ),
-                      cancel: OutlinedButton(
-                          onPressed: () => Get.back(),
-                          child: const Text("Non")),
-                    );
+                      child: const Text("Oui"),
+                    ),
+                    cancel: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      child: const Text("Non"),
+                    ),
+                  );
                   }),
             ],
           ),
