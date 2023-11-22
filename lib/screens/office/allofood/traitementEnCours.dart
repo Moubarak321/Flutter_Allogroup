@@ -14,7 +14,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Traitement'),
+        title: Text('Mes livraisons'),
       ),
     );
   }
