@@ -18,16 +18,19 @@ class InterfaceFoodMarchand extends StatelessWidget {
 
     for (var commande in commandes) {
       var adresseLivraison = commande['lieuLivraison'] as String;
+      var numeroLivraison = commande['numeroLivraison'] as int;
+      var adresseEtNumero = '$adresseLivraison - $numeroLivraison';
 
-      if (!commandesGroupedByAddress.containsKey(adresseLivraison)) {
-        commandesGroupedByAddress[adresseLivraison] = [commande];
+      if (!commandesGroupedByAddress.containsKey(adresseEtNumero)) {
+        commandesGroupedByAddress[adresseEtNumero] = [commande];
       } else {
-        commandesGroupedByAddress[adresseLivraison]!.add(commande);
+        commandesGroupedByAddress[adresseEtNumero]!.add(commande);
       }
     }
 
     return commandesGroupedByAddress;
   }
+
 
   @override
   Widget build(BuildContext context) {
