@@ -1,179 +1,3 @@
-/*import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-class InterfaceFoodMarchand extends StatelessWidget {
-  final User? user = FirebaseAuth.instance.currentUser;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Vos Commandes'),
-      ),
-      body: FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('marchands')
-            .doc(user?.uid)
-            .get(),
-        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Erreur: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(
-              child: Text('Aucune donnée de marchand disponible.'),
-            );
-          } else {
-            var marchandData = snapshot.data!.data() as Map<String, dynamic>;
-            var commandes = marchandData['commandes'] as List<dynamic>;
-
-            return ListView.builder(
-              itemCount: commandes.length,
-              itemBuilder: (context, index) {
-                var commandData = commandes[index] as Map<String, dynamic>;
-                var commandId = commandData['id'];
-                var statut = commandData['statut'];
-
-                return Card(
-                  margin: EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text('Commande ID: $commandId'),
-                    subtitle: Text('Statut: $statut'),
-                    // Ajoutez d'autres informations que vous souhaitez afficher
-                    // à partir des données de la commande.
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
-  }
-  
-}
-*/
-
-/*
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-class InterfaceFoodMarchand extends StatelessWidget {
-  final User? user = FirebaseAuth.instance.currentUser;
-
-  @override
-  Widget build(BuildContext context) {
-    return 
-    Scaffold(
-      appBar: AppBar(
-        title: Text('Vos Commandes'),
-      ),
-      body: FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('marchands')
-            .doc(user?.uid)
-            .get(),
-        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Erreur: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(
-              child: Text('Aucune donnée de marchand disponible.'),
-            );
-          } else {
-            var marchandData = snapshot.data!.data() as Map<String, dynamic>;
-            var commandes = marchandData['commandes'] as List<dynamic>;
-
-            // Récupérer les détails du marchand
-            var marchandImageURL = marchandData['profileImageUrl'];
-            var marchandName = marchandData['fullName'];
-            var marchandDescription = marchandData['descriptionboutique'];
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Afficher les détails du marchand avec son image et nom
-                Container(
-                  height: 300, // ou tout autre hauteur souhaitée pour l'image
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(marchandImageURL),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        color: Colors.black.withOpacity(0.5),
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          marchandName,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                // Afficher la description du marchand
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    marchandDescription,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                SizedBox(height: 10),
-                // Afficher la liste des commandes
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: commandes.length,
-                    itemBuilder: (context, index) {
-                      var commandData = commandes[index] as Map<String, dynamic>;
-                      var commandId = commandData['id'];
-                      var statut = commandData['statut'];
-
-                      return Card(
-                        margin: EdgeInsets.all(8.0),
-                        child: ListTile(
-                          title: Text('Commande ID: $commandId'),
-                          subtitle: Text('Statut: $statut'),
-                          // Ajoutez d'autres informations que vous souhaitez afficher
-                          // à partir des données de la commande.
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          }
-        },
-      ),
-    );
-  }
-}*/
-
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -188,10 +12,27 @@ import '../widgets/small_text.dart';
 
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
+  
+  Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(List<dynamic> commandes) {
+    Map<String, List<Map<String, dynamic>>> commandesGroupedByAddress = {};
+
+    for (var commande in commandes) {
+      var adresseLivraison = commande['lieuLivraison'] as String;
+
+      if (!commandesGroupedByAddress.containsKey(adresseLivraison)) {
+        commandesGroupedByAddress[adresseLivraison] = [commande];
+      } else {
+        commandesGroupedByAddress[adresseLivraison]!.add(commande);
+      }
+    }
+
+    return commandesGroupedByAddress;
+  }
 
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('fr_FR', null);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Vos Commandes'),
@@ -217,13 +58,14 @@ class InterfaceFoodMarchand extends StatelessWidget {
           } else {
             var marchandData = snapshot.data!.data() as Map<String, dynamic>;
             var commandes = marchandData['commandes'] as List<dynamic>;
+            var commandesGroupedByAddress = groupCommandsByAddress(commandes);
             var marchandImageURL = marchandData['profileImageUrl'];
             var marchandName = marchandData['fullName'];
             var marchandDescription = marchandData['descriptionboutique'];
 
             return CustomScrollView(
               slivers: [
-                SliverAppBar(
+                  SliverAppBar(
                   automaticallyImplyLeading: false,
                   toolbarHeight: 75,
                   title: Row(
@@ -298,175 +140,197 @@ class InterfaceFoodMarchand extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      var commandData =
-                          commandes[index] as Map<String, dynamic>;
-                      var image = commandData["image"];
-                      var titre = commandData["titre"];
-                      var prix = commandData["prix"];
-                      var numeroClient = commandData["numeroLivraison"];
-                      var adresseClient = commandData["lieuLivraison"];
-                      var quantite = commandData["quantite"];
-                      final livraison = commandData["dateLivraison"];
-                      final date = DateTime.fromMillisecondsSinceEpoch(
-                          livraison.seconds * 1000);
-                      final formattedDate =
-                          DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR')
-                              .format(date);
-                      return Card(
-                        color: Color.fromRGBO(250, 250, 250, 1),
-                        margin: EdgeInsets.all(8.0),
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            bottom: Dimensions.height10,
-                          ),
-                          child: Row(
-                            children: [
-                              // =============== image section ===============
-                              Container(
-                                width: Dimensions.listViewImgSize, //120
-                                height: Dimensions.listViewImgSize, //120
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radius20),
-                                  color: Color(0x61FFFFFF),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(image),
+                // Mapping des commandes groupées par adresse en SliverList
+                ...commandesGroupedByAddress.entries.map((entry) {
+                  var adresse = entry.key;
+                  var commandesParAdresse = entry.value;
+                  return SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Livraison à : $adresse',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.orange,
                                   ),
                                 ),
-                              ),
-
-                              // =============== Text section ===============
-                              Expanded(
-                                child: GestureDetector(
+                                SizedBox(width: 10), // Espacement entre le texte et les icônes
+                                GestureDetector(
                                   onTap: () {
-                                    Get.defaultDialog(
-                                      title: "Informations sur la livraison",
-                                      middleText:
-                                          "Livraison de $quantite $titre à $adresseClient pour le $numeroClient ce $formattedDate",
-                                      backgroundColor: Colors.orange,
-                                      titleStyle:
-                                          TextStyle(color: Colors.white),
-                                      middleTextStyle:
-                                          TextStyle(color: Colors.white),
-                                      radius: 30,
-                                      confirm: OutlinedButton(
-                                        onPressed: () {
-                                          // Action à effectuer lorsque le bouton "Mon Livreur" est appuyé
-                                          Get.back();
-                                          // Votre code pour l'action du bouton "Mon Livreur" ici
-                                        },
-                                        child: const Text(
-                                          "Mon Livreur",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      cancel: OutlinedButton(
-                                        onPressed: () {
-                                          // Action à effectuer lorsque le bouton "Autre" est appuyé
-                                          Get.back();
-                                          // Votre code pour l'action du bouton "Autre" ici
-                                        },
-                                        child: const Text(
-                                          "Allo Livreur",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    );
+                                    // Action à effectuer pour Mon Livreur
                                   },
-                                  child: Container(
-                                    height:
-                                        Dimensions.listViewTextContSize, //100
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(
-                                            Dimensions.radius20),
-                                        bottomRight: Radius.circular(
-                                            Dimensions.radius20),
-                                      ),
-                                      color: Colors.white,
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.directions_bike), // Icône pour Mon Livreur
+                                      Text('Mon Livreur'), // Texte pour Mon Livreur
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10), // Espacement entre les icônes
+                                GestureDetector(
+                                  onTap: () {
+                                    // Action à effectuer pour Allo Livreur
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.delivery_dining), // Icône pour Allo Livreur
+                                      Text('Allo Livreur'), // Texte pour Allo Livreur
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: commandesParAdresse.length,
+                          itemBuilder: (context, i) {
+                            var commandData = commandesParAdresse[i];
+                            var image = commandData["image"];
+                            var titre = commandData["titre"];
+                            var prix = commandData["prix"];
+                            var numeroClient = commandData["numeroLivraison"];
+                            var adresseClient = commandData["lieuLivraison"];
+                            var quantite = commandData["quantite"];
+                            final livraison = commandData["dateLivraison"];
+                            final date = DateTime.fromMillisecondsSinceEpoch(
+                                livraison.seconds * 1000);
+                            final formattedDate =
+                                DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR')
+                                    .format(date);
+
+                             return Card(
+                          color: Color.fromRGBO(250, 250, 250, 1),
+                          margin: EdgeInsets.all(8.0),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: Dimensions.width20,
+                              vertical: Dimensions.height10,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: Dimensions.listViewImgSize,
+                                  height: Dimensions.listViewImgSize,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius20,
                                     ),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        left: Dimensions.width10,
-                                        right: Dimensions.width10,
+                                    color: Color(0x61FFFFFF),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(image),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.defaultDialog(
+                                        title: "Information sur la livraison",
+                                        middleText:
+                                            "Livraison de $quantite $titre à $adresseClient pour le $numeroClient ce $formattedDate",
+                                        backgroundColor: Color.fromRGBO(10, 80, 137, 0.8),
+                                        titleStyle:
+                                            TextStyle(color: Colors.white),
+                                        middleTextStyle:
+                                            TextStyle(color: Colors.white),
+                                      
+                                        cancel: OutlinedButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: const Text(
+                                            "OK",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: Dimensions.listViewTextContSize,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(
+                                            Dimensions.radius20,
+                                          ),
+                                          bottomRight: Radius.circular(
+                                            Dimensions.radius20,
+                                          ),
+                                        ),
+                                        color: Colors.white,
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          BigText(
-                                            text: titre,
-                                          ),
-                                          SizedBox(
-                                            height: Dimensions.height10,
-                                          ),
-                                          SmallText(text: formattedDate),
-                                          SizedBox(
-                                            height: Dimensions.height10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              IconAndTextWidget(
-                                                icon: Icons
-                                                    .monetization_on_rounded,
-                                                text: prix + " FCFA",
-                                                iconColor: Colors.orange,
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  /*Get.snackbar("Infos",
-                                                      "Ce produit vous sera livré dans environ $duree min");*/ ////
-                                                },
-                                                child: IconAndTextWidget(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: Dimensions.width10,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            BigText(text: titre),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            SmallText(text: formattedDate),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                IconAndTextWidget(
+                                                  icon:
+                                                      Icons.monetization_on_rounded,
+                                                  text: prix + " FCFA",
+                                                  iconColor: Colors.orange,
+                                                ),
+                                                IconAndTextWidget(
                                                   icon: Icons.balance_rounded,
                                                   text: quantite,
                                                   iconColor: Colors.red,
                                                 ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Get.snackbar("Infos",
-                                                      "Ce produit est prêt à être livré.");
-                                                },
-                                                child: IconAndTextWidget(
+                                                IconAndTextWidget(
                                                   icon: Icons.delivery_dining,
                                                   text: "",
                                                   iconColor: Color.fromRGBO(
-                                                      10, 80, 137, 0.8),
+                                                    10,
+                                                    80,
+                                                    137,
+                                                    0.8,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                        );
+                          },
                         ),
-                        /*ListTile(
-                          title: Text('Commande ID: $commandId'),
-                          subtitle: Text('Statut: $statut'),
-                          // Ajoutez d'autres informations que vous souhaitez afficher
-                          // à partir des données de la commande.
-                        ),*/
-                      );
-                    },
-                    childCount: commandes.length,
-                  ),
-                ),
+                      
+                      ],
+                    ),
+                  );
+                }).toList(),
               ],
             );
           }
@@ -475,3 +339,5 @@ class InterfaceFoodMarchand extends StatelessWidget {
     );
   }
 }
+
+              
