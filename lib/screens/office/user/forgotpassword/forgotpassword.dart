@@ -240,8 +240,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       if (value == null || value.isEmpty) {
                         return "Veuillez entrer le résultat correct.";
                       } else if (value != "2") {
-                        // Vérifiez si la réponse est égale à "2".
-                        return "La réponse est incorrecte.";
+                        return "La réponse est incorrecte, recommencez.";
                       }
                       return null;
                     },
