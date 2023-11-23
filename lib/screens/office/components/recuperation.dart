@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 // ignore: must_be_immutable
 class PickupInfoWidget extends StatelessWidget {
@@ -40,7 +41,6 @@ class PickupInfoWidget extends StatelessWidget {
               prefixIcon: Icon(Icons.location_on),
             ),
             onChanged: (value) {
-              // Appeler la fonction pour mettre à jour les données
               updatePickupInfo(value, pickupNumero ?? 0);
             },
             validator: (value) {
@@ -60,36 +60,37 @@ class PickupInfoWidget extends StatelessWidget {
             color: Colors.orange,
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.lightBlue,
+
+        IntlPhoneField(
+          key: Key('phoneFieldKey'), 
+          flagsButtonPadding: const EdgeInsets.all(5),
+          dropdownIconPosition: IconPosition.trailing,
+          initialCountryCode: 'BJ',
+          decoration: const InputDecoration(
+            labelText: 'Numéro',
+            labelStyle: TextStyle(color: Color.fromRGBO(250, 153, 78, 1)),
+            filled: true,
+            fillColor: Colors.white,
+            alignLabelWithHint: true,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(),
+              borderRadius: BorderRadius.all(Radius.circular(35)),
             ),
-            borderRadius: BorderRadius.circular(8.0),
           ),
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: 'Numéro',
-              prefixIcon: Icon(Icons.phone),
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              int numero = int.tryParse(value) ?? 0;
-              updatePickupInfo(pickupAddress ?? '', numero);
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Il est important de préciser un numéro de contact';
-              }
-              final numero = int.tryParse(value);
-              if (numero == null || numero == 0) {
-                return 'Veuillez saisir un numéro valide';
-              }
-              return null;
-            },
-          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            // Extraire le numéro de téléphone
+            final phoneNumber = value.completeNumber;
+              // Appeler la fonction pour mettre à jour les données
+              updatePickupInfo(pickupAddress ?? '', int.parse(phoneNumber));    
+          },
+          validator: (value) {
+            if (value == null) {
+              return 'Il est important de préciser un numéro de contact';
+            }
+            return null;
+          },
         ),
-        SizedBox(height: 20.0),
       ],
     );
   }

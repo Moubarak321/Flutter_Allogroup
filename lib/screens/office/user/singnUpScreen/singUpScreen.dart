@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-// import 'package:intl_phone_field/phone_number.dart';
 import '../signInScreen/signInScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import '../confirmation/verification_otp.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter_libphonenumber/flutter_libphonenumber.dart'; =========
 
 class SignUp extends StatefulWidget {
   @override
