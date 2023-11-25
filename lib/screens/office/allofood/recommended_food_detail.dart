@@ -48,6 +48,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
           var imageUrl = produit['image'];
           var prix = produit['price'];
           var duree = produit['during'];
+          var promo = produit["note"];
           // bool favoris = produit['isFavorite'];
 
           return GestureDetector(
@@ -137,11 +138,11 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.snackbar("Infos",
-                                        "Ce produit est prêt à être livré.");
+                                    Get.snackbar("Promo",
+                                        "$promo");
                                   },
                                   child: IconAndTextWidget(
-                                    icon: Icons.delivery_dining,
+                                    icon: Icons.discount_rounded,
                                     text: "",
                                     iconColor: Color.fromRGBO(10, 80, 137, 0.8),
                                   ),

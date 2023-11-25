@@ -11,20 +11,24 @@ class Notifications extends StatelessWidget {
     return FirebaseAuth.instance.currentUser;
   }
 
-  Widget buildCourseCard(Map<String, dynamic> courseData, BuildContext context) {
+  void navigateToDetailsNotifications(BuildContext context, Map<String, dynamic> courseData, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Detailsnotifications(courseData: courseData, index: index)),
+    );
+  }
+
+  Widget buildCourseCard(Map<String, dynamic> courseData, BuildContext context, int index) {
     initializeDateFormatting('fr_FR', null);
 
     final date = courseData['date'] != null ? DateTime.fromMillisecondsSinceEpoch(courseData['date']) : null;
     final titre = courseData['title'];
-    final image = courseData['image'];
 
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Detailsnotifications()), 
-        );
+       onTap: () {
+        navigateToDetailsNotifications(context, courseData, index);
       },
+
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.all(8.0),
@@ -62,14 +66,14 @@ class Notifications extends StatelessWidget {
             SizedBox(height: 10),
 
             // Affichage de l'image
-            if (image != null && image.isNotEmpty)
+            /*if (image != null && image.isNotEmpty)
               Image.network(
                 image,
                 width: double.infinity,
                 height: 300,
                 fit: BoxFit.cover,
-              ),
-            SizedBox(height: 10),
+              ),*/
+            //SizedBox(height: 10),
 
             // Affichage de la date
             if (date != null)
@@ -144,7 +148,7 @@ class Notifications extends StatelessWidget {
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
                     final courseData = courses[index] as Map<String, dynamic>;
-                    return buildCourseCard(courseData, context);
+                    return buildCourseCard(courseData, context, index);
                   },
                 );
               },

@@ -6,6 +6,7 @@ import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/allolivreur/interfacelivreurchampion.dart';
 import 'package:allogroup/screens/office/help/home_help.dart';
 import 'package:allogroup/screens/office/notifications/notifications.dart';
+import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
 import 'package:allogroup/screens/office/user/informations/informations.dart';
 import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
@@ -139,6 +140,7 @@ class _MyAppState extends State<MyApp> {
         '/historiqueCommandes': (context) => HistoriqueCommandesRepas(),
         '/historiqueCourses': (context) => HistoriqueCourses(),
         '/traitementEnCours.dart': (context) => EnCoursDeTraitement(),
+        '/detailsnotifications': (context) => Detailsnotifications(courseData: {}, index: 0,),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
         Routes.interfaceLivreur: (context) => InterFaceLivreurChampion(),
         'recommended_food_detail': (context) =>

@@ -72,44 +72,51 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-  final User? user = FirebaseAuth.instance.currentUser;
+    final User? user = FirebaseAuth.instance.currentUser;
 
-  if (user != null) {
-    try {
+    if (user != null) {
+      try {
+        await user.updateProfile(displayName: _fullNameController.text);
 
-      await user.updateProfile(displayName: _fullNameController.text);
+        if (_pickedImagePath.isNotEmpty) {
+          final String imageFileName = 'profile_images/${user.uid}.jpg';
+          final Reference storageReference =
+              FirebaseStorage.instance.ref().child(imageFileName);
 
-      if (_pickedImagePath.isNotEmpty) {
-        final String imageFileName = 'profile_images/${user.uid}.jpg';
-        final Reference storageReference =
-            FirebaseStorage.instance.ref().child(imageFileName);
+          final UploadTask uploadTask =
+              storageReference.putFile(File(_pickedImagePath));
 
-        final UploadTask uploadTask =
-            storageReference.putFile(File(_pickedImagePath));
+          await uploadTask.whenComplete(() async {
+            final String imageUrl = await storageReference.getDownloadURL();
 
-        await uploadTask.whenComplete(() async {
-          final String imageUrl = await storageReference.getDownloadURL();
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .update({
+              'profileImageUrl': imageUrl,
+              'phoneNumber': _phoneController.text,
+              'fullName': _fullNameController.text,
+            });
 
+            _showSuccesDialog("Vos données ont été mises à jour");
+          });
+        } else {
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .update({
-            'profileImageUrl': imageUrl,
             'phoneNumber': _phoneController.text,
             'fullName': _fullNameController.text,
           });
-        });
 
-        _showSuccesDialog("Vos données ont été mises à jour");
-      } else {
-        _showSuccesDialog("Vos données ont été mises à jour");
-      }
-    } catch (error) {
-      print("Erreur lors de la mise à jour du profil : $error");
-      _showErrorDialog("Erreur lors de la mise à jour du profil");
-      setState(() {
-        _isLoading = false;
-      });
+          _showSuccesDialog("Vos données ont été mises à jour");
+        }
+      } catch (error) {
+        print("Erreur lors de la mise à jour du profil : $error");
+        _showErrorDialog("Erreur lors de la mise à jour du profil");
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }

@@ -268,6 +268,10 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   BigText(
                       text: "Prix unitaire : ${widget.produit['price']} F",
                       color:  Color(0xFF89dad0)),
+                  BigText(
+                      text: "Promo: ${widget.produit['note']} ",
+                      color:  Color(0xFF89dad0)
+                      ),
                   BigText(text: "Description"),
                   SizedBox(
                     height: Dimensions.height10,

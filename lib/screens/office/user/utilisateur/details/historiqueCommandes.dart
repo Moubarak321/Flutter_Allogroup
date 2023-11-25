@@ -115,14 +115,14 @@ class HistoriqueCommandesRepas extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(
                 right: Dimensions.width20, left: Dimensions.width20),
-            // color: Colors.blue,
+                color: Colors.blue,
             height: 100,
             child: Center(
               child: Text(
                 'Tous vos achats',
                 style: TextStyle(
                   fontSize: 20.0,
-                  // color: Colors.white,
+                  color: Colors.white,
                 ),
               ),
             ),

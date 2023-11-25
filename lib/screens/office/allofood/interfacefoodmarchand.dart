@@ -12,8 +12,9 @@ import '../widgets/small_text.dart';
 
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
-  
-  Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(List<dynamic> commandes) {
+
+  Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
+      List<dynamic> commandes) {
     Map<String, List<Map<String, dynamic>>> commandesGroupedByAddress = {};
 
     for (var commande in commandes) {
@@ -30,7 +31,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
 
     return commandesGroupedByAddress;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
 
             return CustomScrollView(
               slivers: [
-                  SliverAppBar(
+                SliverAppBar(
                   automaticallyImplyLeading: false,
                   toolbarHeight: 75,
                   title: Row(
@@ -124,7 +124,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                     ),
                   ),
                   pinned: true,
-                  backgroundColor: Color.fromRGBO(255, 81, 1, 1),
+                  backgroundColor: Color.fromRGBO(142, 207, 250, 1),
                   expandedHeight: 300,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
@@ -134,7 +134,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
+                /*SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
@@ -142,7 +142,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                ),
+                ),*/
                 // Mapping des commandes groupées par adresse en SliverList
                 ...commandesGroupedByAddress.entries.map((entry) {
                   var adresse = entry.key;
@@ -152,44 +152,59 @@ class InterfaceFoodMarchand extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Livraison à : $adresse',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.orange,
-                                  ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,                            
+                            children: [
+                              Text(
+                                'Livraison à : $adresse',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.orange,
                                 ),
-                                SizedBox(width: 10), // Espacement entre le texte et les icônes
-                                GestureDetector(
-                                  onTap: () {
-                                    // Action à effectuer pour Mon Livreur
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.directions_bike), // Icône pour Mon Livreur
-                                      Text('Mon Livreur'), // Texte pour Mon Livreur
-                                    ],
+                              ),
+                              SizedBox(
+                                  height:
+                                      10), // Espacement entre le texte et les icônes
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Action à effectuer pour Mon Livreur
+                                    },
+                                    child: Column(
+                                      children: [
+                                        
+                                        Icon(Icons
+                                            .directions_bike), // Icône pour Mon Livreur
+                                        Text(
+                                            'Mon Livreur'), // Texte pour Mon Livreur
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 10), // Espacement entre les icônes
-                                GestureDetector(
-                                  onTap: () {
-                                    // Action à effectuer pour Allo Livreur
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.delivery_dining), // Icône pour Allo Livreur
-                                      Text('Allo Livreur'), // Texte pour Allo Livreur
-                                    ],
+                                  SizedBox(
+                                      width: 10), // Espacement entre les icônes
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Action à effectuer pour Allo Livreur
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Icon(Icons
+                                            .delivery_dining), // Icône pour Allo Livreur
+                                        Text(
+                                            'Allo Livreur'), // Texte pour Allo Livreur
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ),
+                        ),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
@@ -209,127 +224,130 @@ class InterfaceFoodMarchand extends StatelessWidget {
                                 DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR')
                                     .format(date);
 
-                             return Card(
-                          color: Color.fromRGBO(250, 250, 250, 1),
-                          margin: EdgeInsets.all(8.0),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: Dimensions.width20,
-                              vertical: Dimensions.height10,
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: Dimensions.listViewImgSize,
-                                  height: Dimensions.listViewImgSize,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      Dimensions.radius20,
-                                    ),
-                                    color: Color(0x61FFFFFF),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(image),
-                                    ),
-                                  ),
+                            return Card(
+                              color: Color.fromRGBO(250, 250, 250, 1),
+                              margin: EdgeInsets.all(8.0),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width20,
+                                  vertical: Dimensions.height10,
                                 ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Get.defaultDialog(
-                                        title: "Information sur la livraison",
-                                        middleText:
-                                            "Livraison de $quantite $titre à $adresseClient pour le $numeroClient ce $formattedDate",
-                                        backgroundColor: Color.fromRGBO(10, 80, 137, 0.8),
-                                        titleStyle:
-                                            TextStyle(color: Colors.white),
-                                        middleTextStyle:
-                                            TextStyle(color: Colors.white),
-                                      
-                                        cancel: OutlinedButton(
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          child: const Text(
-                                            "OK",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      height: Dimensions.listViewTextContSize,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: Dimensions.listViewImgSize,
+                                      height: Dimensions.listViewImgSize,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(
-                                            Dimensions.radius20,
-                                          ),
-                                          bottomRight: Radius.circular(
-                                            Dimensions.radius20,
-                                          ),
+                                        borderRadius: BorderRadius.circular(
+                                          Dimensions.radius20,
                                         ),
-                                        color: Colors.white,
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: Dimensions.width10,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            BigText(text: titre),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            SmallText(text: formattedDate),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                IconAndTextWidget(
-                                                  icon:
-                                                      Icons.monetization_on_rounded,
-                                                  text: prix + " FCFA",
-                                                  iconColor: Colors.orange,
-                                                ),
-                                                IconAndTextWidget(
-                                                  icon: Icons.balance_rounded,
-                                                  text: quantite,
-                                                  iconColor: Colors.red,
-                                                ),
-                                                IconAndTextWidget(
-                                                  icon: Icons.delivery_dining,
-                                                  text: "",
-                                                  iconColor: Color.fromRGBO(
-                                                    10,
-                                                    80,
-                                                    137,
-                                                    0.8,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
+                                        color: Color(0x61FFFFFF),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(image),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.defaultDialog(
+                                            title:
+                                                "Information sur la livraison",
+                                            middleText:
+                                                "Livraison de $quantite $titre à $adresseClient pour le $numeroClient ce $formattedDate",
+                                            backgroundColor: Color.fromRGBO(
+                                                10, 80, 137, 0.8),
+                                            titleStyle:
+                                                TextStyle(color: Colors.white),
+                                            middleTextStyle:
+                                                TextStyle(color: Colors.white),
+                                            cancel: OutlinedButton(
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              child: const Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          height:
+                                              Dimensions.listViewTextContSize,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(
+                                                Dimensions.radius20,
+                                              ),
+                                              bottomRight: Radius.circular(
+                                                Dimensions.radius20,
+                                              ),
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: Dimensions.width10,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                BigText(text: titre),
+                                                SizedBox(
+                                                  height: Dimensions.height10,
+                                                ),
+                                                SmallText(text: formattedDate),
+                                                SizedBox(
+                                                  height: Dimensions.height10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    IconAndTextWidget(
+                                                      icon: Icons
+                                                          .monetization_on_rounded,
+                                                      text: prix + " FCFA",
+                                                      iconColor: Colors.orange,
+                                                    ),
+                                                    IconAndTextWidget(
+                                                      icon:
+                                                          Icons.balance_rounded,
+                                                      text: quantite,
+                                                      iconColor: Colors.red,
+                                                    ),
+                                                    IconAndTextWidget(
+                                                      icon:
+                                                          Icons.delivery_dining,
+                                                      text: "",
+                                                      iconColor: Color.fromRGBO(
+                                                        10,
+                                                        80,
+                                                        137,
+                                                        0.8,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
+                              ),
+                            );
                           },
                         ),
-                      
                       ],
                     ),
                   );
@@ -342,5 +360,3 @@ class InterfaceFoodMarchand extends StatelessWidget {
     );
   }
 }
-
-              

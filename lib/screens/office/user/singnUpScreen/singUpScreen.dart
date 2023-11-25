@@ -86,56 +86,7 @@ class _SignUpState extends State<SignUp> {
       _isLoading = false; // Mettre fin à l'indicateur de chargement
     });
   }
-//======================================== test num handle=====================================
 
-  // void _handleSubmit() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     final email = _emailController.text;
-  //     final password = _passwordController.text;
-  //     final phoneNumber = _phoneNumberController.text;
-
-  //     try {
-  //       final phoneNumberUtil = FormatPhoneResult(
-  //           e164: phoneNumber, formattedNumber: phoneNumber); // Créez une instance de PhoneNumberUtil
-
-  //       final phoneNumberFormatted = await phoneNumberUtil.parseAndFormat(
-  //         phoneNumber,
-  //         'BJ', // Remplacez 'BJ' par le code ISO du pays de l'utilisateur
-  //         PhoneNumberType.mobile,
-  //       );
-  //       // Créez un utilisateur Firebase Auth
-  //       UserCredential userCredential =
-  //           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //         email: email,
-  //         password: password,
-  //       );
-
-  //       // Si l'utilisateur Firebase Auth est créé avec succès, enregistrez les données dans Firebase Firestore
-  //       if (userCredential.user != null) {
-  //         String userId = userCredential.user!.uid;
-
-  //         // Créez une référence à la collection "users" dans Firestore
-  //         CollectionReference usersCollection =
-  //             FirebaseFirestore.instance.collection('users');
-
-  //         // Enregistrez l'utilisateur dans Firestore avec l'e-mail, le mot de passe et le numéro de téléphone
-  //         await usersCollection.doc(userId).set({
-  //           'phoneNumber': phoneNumberFormatted,
-  //         });
-
-  //         print("Utilisateur enregistré dans Firebase Firestore avec succès.");
-  //         Navigator.of(context).push(MaterialPageRoute(
-  //           builder: (context) => SignIn(),
-  //         ));
-  //       } else {
-  //         print("L'utilisateur Firebase Auth n'a pas été créé avec succès.");
-  //       }
-  //     } catch (e) {
-  //       // Gérez les erreurs d'inscription ici
-  //       print("Erreur d'inscription : $e");
-  //     }
-  //   }
-  // }
 
 //======================================== old handle=====================================
   void _handleSubmit() async {
@@ -189,7 +140,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(10, 80, 137, 0.8), // Arrière-plan bleu
+      backgroundColor: Color.fromRGBO(10, 80, 137, 0.8), 
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

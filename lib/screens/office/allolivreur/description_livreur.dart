@@ -82,7 +82,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'status': false,
       };
       print("******************* $userData");
-      FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      FirebaseFirestore.instance.collection('administrateur').doc("commandeCourses").set({
         'courses': FieldValue.arrayUnion([userData]),
       }, SetOptions(merge: true)).then((_) {
         // Data saved successfully.
