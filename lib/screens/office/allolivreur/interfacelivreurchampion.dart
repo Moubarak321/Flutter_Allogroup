@@ -14,46 +14,66 @@ class InterFaceLivreurChampion extends StatelessWidget {
   }
 
   Future<bool> isUserEligibleForCourse(double coursePrice) async {
-    final User? user = FirebaseAuth.instance.currentUser;
+  final User? user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      try {
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        final userData = userDoc.data();
+  if (user != null) {
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final userData = userDoc.data();
 
-        if (userData != null && userData.containsKey('wallet')) {
-          final double walletAmount = userData['wallet'];
+      if (userData != null && userData.containsKey('wallet')) {
+        final double walletAmount = userData['wallet'];
 
-          // Vérifier si le montant dans le wallet est suffisant pour la course
-          if (walletAmount >= coursePrice) {
-            // Mettre à jour le wallet de l'utilisateur dans Firestore
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .update({
-              'wallet': walletAmount - coursePrice * 0.20,
-            });
-            return true;
+        // Vérifier si le montant dans le wallet est suffisant pour la course
+        if (walletAmount >= coursePrice) {
+          // Vérifier s'il n'y a pas de cours en instance dans le champ 'courses' du document 'champions'
+          final champDoc = await FirebaseFirestore.instance
+              .collection('champions')
+              .doc(user.uid)
+              .get();
+          final champData = champDoc.data();
+
+          if (champData != null && champData.containsKey('courses')) {
+            final List<dynamic> userCourses = champData['courses'];
+
+            if (userCourses.isEmpty) {
+              // Mettre à jour le wallet de l'utilisateur dans Firestore
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .update({
+                'wallet': walletAmount - coursePrice * 0.20,
+              });
+              return true;
+            } else {
+              print('L\'utilisateur a des cours en instance');
+              return false;
+            }
           } else {
+            print('Champ "courses" manquant dans le document de champion');
             return false;
           }
         } else {
-          print('Champ "wallet" manquant dans le document de l\'utilisateur');
+          print('Solde insuffisant dans le portefeuille');
           return false;
         }
-      } catch (error) {
-        print(
-            'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
-        return false; // Erreur lors de la récupération des données de l'utilisateur
+      } else {
+        print('Champ "wallet" manquant dans le document de l\'utilisateur');
+        return false;
       }
-    } else {
-      print('Utilisateur non authentifié');
-      return false; // Utilisateur non authentifié
+    } catch (error) {
+      print(
+          'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
+      return false; // Erreur lors de la récupération des données de l'utilisateur
     }
+  } else {
+    print('Utilisateur non authentifié');
+    return false; // Utilisateur non authentifié
   }
+}
 
 Future<void> validerCourse(Map<String, dynamic> courseData) async {   
   final User? user = getCurrentUser();
@@ -61,7 +81,7 @@ Future<void> validerCourse(Map<String, dynamic> courseData) async {
       try {
         // Récupérer le document de l'utilisateur dans la collection "champions"
         final userDoc =
-            FirebaseFirestore.instance.collection('champions').doc(user.uid);
+            FirebaseFirestore.instance.collection('users').doc(user.uid);
 
         // Obtenir les données du document utilisateur
         final userData = await userDoc.get();
@@ -69,7 +89,7 @@ Future<void> validerCourse(Map<String, dynamic> courseData) async {
         // Vérifier si le document de l'utilisateur existe
         if (userData.exists) {
           // Accéder à la clé "commandes" du document utilisateur
-          List<dynamic>? userCourses = userData.get('commandes');
+          List<dynamic>? userCourses = userData.get('commandesLivraison');
 
           // Vérifier si la liste des commandes existe
           if (userCourses == null) {
@@ -80,7 +100,7 @@ Future<void> validerCourse(Map<String, dynamic> courseData) async {
           userCourses.add(courseData);
 
           // Mettre à jour le document utilisateur avec la liste mise à jour des commandes
-          await userDoc.update({'commandes': userCourses});
+          await userDoc.update({'commandesLivraison': userCourses});
 
           // Récupérer l'ID de la course
           final courseId = courseData['id'];
