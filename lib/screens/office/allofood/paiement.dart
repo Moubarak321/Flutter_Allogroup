@@ -58,6 +58,29 @@ Future<dynamic> GetProductFromCart() async {
   }
 }
 
+Future<String?> getFCMToken() async {
+    final user = getCurrentUser();
+    if (user != null) {
+      try {
+        final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        final userData = userDoc.data();
+
+        if (userData != null && userData.containsKey('fcmToken')) {
+          final fcmToken = userData['fcmToken'];
+          //print('FCM Token: $fcmToken');
+          return fcmToken;
+        } else {
+          print('Le champ "fmctoken" est manquant dans le document de l\'utilisateur');
+          return null;
+        }
+      } catch (e) {
+        print('Erreur lors de la récupération du FCM Token: $e');
+        return null;
+      }
+    }
+    return null;
+  }
+
 int calculateTotalPrice() {
     int totalPrice = 0;
     for (var product in tousLesProduits) {
@@ -113,6 +136,7 @@ Future<void> envoi() async {
               ...order,
               'lieuLivraison': deliveryAddress,
               'numeroLivraison': deliveryNumero,
+              'fcmToken':getFCMToken(),
             }]),
           });
         }
