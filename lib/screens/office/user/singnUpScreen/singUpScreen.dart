@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../signInScreen/signInScreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +10,22 @@ class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
 }
+  class MyFirebaseMessaging {
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
+    Future<String?> getFCMToken() async {
+      String? token;
+
+      try {
+        token = await _firebaseMessaging.getToken();
+        print('Token FCM : $token');
+      } catch (e) {
+       print('Erreur lors de la récupération du token FCM : $e');
+      }
+
+      return token;
+    }
+  }
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -94,8 +110,12 @@ class _SignUpState extends State<SignUp> {
       final email = _emailController.text;
       final password = _passwordController.text;
       final phoneNumber = _phoneNumberController.text;
+      
+      // Obtenez la permission de notification
+      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
       //// Utilisez le contrôleur _phoneNumberController
-
+      
+      
       try {
         // Créez un utilisateur Firebase Auth
         UserCredential userCredential =
@@ -111,18 +131,31 @@ class _SignUpState extends State<SignUp> {
           print(
               "==================================ajout base et crea firestore==================================");
 
+          
           // Créez une référence à la collection "users" dans Firestore
           CollectionReference usersCollection =
               FirebaseFirestore.instance.collection('users');
 
-          // Enregistrez l'utilisateur dans Firestore avec l'e-mail, le mot de passe et le numéro de téléphone
-          await usersCollection.doc(userId).set({
-            // 'email': email,
-            'phoneNumber': "229$phoneNumber",
-            'wallet': 0,
-            'role': "Utilisateur"
-          });
-
+          if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+            // Si l'autorisation est accordée, obtenez le token FCM
+            String? fcmToken = await MyFirebaseMessaging().getFCMToken();
+            // Enregistrez l'utilisateur dans Firestore avec l'e-mail, le mot de passe et le numéro de téléphone
+            await usersCollection.doc(userId).set({
+              'phoneNumber': "229$phoneNumber",
+              'wallet': 0,
+              'role': "Utilisateur",
+              'fcmToken': fcmToken,
+            });
+            
+          } else {
+            // Gestion si l'autorisation est refusée ou bloquée
+            await usersCollection.doc(userId).set({
+              'phoneNumber': "229$phoneNumber",
+              'wallet': 0,
+              'role': "Utilisateur",
+            });
+            _showErrorDialog('Veuillez autoriser les notifications pour utiliser cette application.');
+          }    
           print("Utilisateur enregistré dans Firebase Firestore avec succès.");
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => SignIn(),
