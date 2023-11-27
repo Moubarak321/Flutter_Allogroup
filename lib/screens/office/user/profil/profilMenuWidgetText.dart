@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
 
 // Couleur primaire de votre application
 const Color tPrimaryColor = Colors.blue;

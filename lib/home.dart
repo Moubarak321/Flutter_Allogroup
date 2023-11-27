@@ -1,13 +1,9 @@
-import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/notifications/notifications.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/office/components/header.dart';
 import 'screens/office/components/accueilservices.dart';
 import 'screens/office/components/carousel_accueil.dart';
-// import 'screens/office/components/best_seller_list_accueil.dart';
-// import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
-// import 'package:allogroup/screens/office/help/home_help.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

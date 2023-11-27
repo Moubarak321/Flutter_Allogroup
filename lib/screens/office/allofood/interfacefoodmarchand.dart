@@ -64,7 +64,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
             var commandesGroupedByAddress = groupCommandsByAddress(commandes);
             var marchandImageURL = marchandData['profileImageUrl'];
             var marchandName = marchandData['fullName'];
-            var marchandDescription = marchandData['descriptionboutique'];
 
             return CustomScrollView(
               slivers: [

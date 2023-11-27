@@ -7,7 +7,6 @@ import 'package:allogroup/screens/office/widgets/icon_and_text_widget.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:allogroup/home.dart';
 
 class RecommendedFoodDetail extends StatefulWidget {
   final Map<String, dynamic> marchand;
