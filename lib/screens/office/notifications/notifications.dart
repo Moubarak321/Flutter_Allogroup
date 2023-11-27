@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class Notifications extends StatelessWidget {
   User? getCurrentUser() {
@@ -58,37 +58,7 @@ class Notifications extends StatelessWidget {
   }
 
   void sendNotificationForPromotion(dynamic promotion) async {
-    // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-    String? fcmToken = await getFCMToken();
-
-    if (fcmToken != null) {
-      // Initialiser Firebase Messaging
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-      // Configurer la notification avec les détails de la promotion
-      NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
-
-      print('User granted permission: ${settings.authorizationStatus}');
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Une nouvelle promotion est disponible : ${promotion.title}');
-        print('Message data: ${message.data}');
-
-        if (message.notification != null) {
-          print(
-              'Message also contained a notification: ${message.notification}');
-        }
-      });
-    } else {
-      print('Impossible d\'obtenir le token FCM de l\'utilisateur');
-    }
+    
   }
 
   void navigateToDetailsNotifications(
@@ -101,36 +71,6 @@ class Notifications extends StatelessWidget {
     );
   }
 
-  Future<String?> getFCMToken() async {
-    final User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      try {
-        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-
-        final userData = userDoc.data();
-
-        if (userData != null &&
-            userData is Map &&
-            userData.containsKey('fcmToken')) {
-          final fcmToken = userData['fcmToken'];
-          return fcmToken;
-        } else {
-          print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
-          return null;
-        }
-      } catch (error) {
-        print('Erreur lors de la récupération du FCM Token: $error');
-        return null;
-      }
-    } else {
-      print('Utilisateur non authentifié');
-      return null;
-    }
-  }
 
   Widget buildCourseCard(
       Map<String, dynamic> courseData, BuildContext context, int index) {
@@ -181,17 +121,6 @@ class Notifications extends StatelessWidget {
             ),
             SizedBox(height: 10),
 
-            // Affichage de l'image
-            /*if (image != null && image.isNotEmpty)
-              Image.network(
-                image,
-                width: double.infinity,
-                height: 300,
-                fit: BoxFit.cover,
-              ),*/
-            //SizedBox(height: 10),
-
-            // Affichage de la date
             if (date != null)
               Text(
                 DateFormat.yMMMMEEEEd('fr_FR').format(date),

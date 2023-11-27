@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
 
@@ -16,11 +15,8 @@ class InterFaceLivreurChampion extends StatelessWidget {
   List<dynamic> findNewPromotions(
       List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
     List<dynamic> newPromotions = [];
-
-    // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
     for (var promotion in currentPromotions) {
       if (!previousPromotions.contains(promotion)) {
-        // Ajoutez la promotion à la liste des nouvelles promotions détectées
         newPromotions.add(promotion);
       }
     }
@@ -41,122 +37,59 @@ class InterFaceLivreurChampion extends StatelessWidget {
         if (adminData.containsKey('courses')) {
           List<dynamic> promotions = adminData['coureses'] ?? [];
 
-          // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
+          
           List<dynamic> newPromotions =
               findNewPromotions(previousPromotions, promotions);
 
-          // Envoyez les notifications pour les nouvelles promotions détectées
+         
           newPromotions.forEach((newPromotion) {
-            // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
+            
             sendNotificationForPromotion(newPromotion);
           });
 
-          // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
+        
           previousPromotions = promotions;
         }
       }
     });
   }
 
-  Future<String?> getFCMToken() async {
+  
+
+  void sendNotificationForPromotion(dynamic promotion) async {
+    
+  }
+
+  Future<bool> checkIfUserIsChampion() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       try {
-        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .get();
 
-        final userData = userDoc.data();
+        if (userDoc.exists) {
+          // Vérifier si l'utilisateur a le champ "role" égal à "Champion"
+          Map<String, dynamic>? userData =
+              userDoc.data() as Map<String, dynamic>?;
 
-        if (userData != null &&
-            userData is Map &&
-            userData.containsKey('fcmToken')) {
-          final fcmToken = userData['fcmToken'];
-          return fcmToken;
-        } else {
-          print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
-          return null;
-        }
-      } catch (error) {
-        print('Erreur lors de la récupération du FCM Token: $error');
-        return null;
-      }
-    } else {
-      print('Utilisateur non authentifié');
-      return null;
-    }
-  }
-
-  void sendNotificationForPromotion(dynamic promotion) async {
-    // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-    String? fcmToken = await getFCMToken();
-
-    if (fcmToken != null) {
-      // Initialiser Firebase Messaging
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-      // Vérifier si l'utilisateur a le champ "champion" à true
-      bool isChampion = await checkIfUserIsChampion();
-
-      if (isChampion) {
-        // Configurer la notification avec les détails de la promotion
-        NotificationSettings settings = await messaging.requestPermission(
-          alert: true,
-          announcement: false,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true,
-        );
-
-        print('User granted permission: ${settings.authorizationStatus}');
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          print('Une nouvelle demande de livraison est disponible');
-          print('Message data: ${message.data}');
-
-          if (message.notification != null) {
-            print(
-                'Message also contained a notification: ${message.notification}');
-          }
-        });
-      }
-    } else {
-      print('Impossible d\'obtenir le token FCM de l\'utilisateur');
-    }
-  }
-
- Future<bool> checkIfUserIsChampion() async {
-  final User? user = FirebaseAuth.instance.currentUser;
-
-  if (user != null) {
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (userDoc.exists) {
-        // Vérifier si l'utilisateur a le champ "role" égal à "Champion"
-        Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
-
-        if (userData != null && userData.containsKey('role')) {
-          var role = userData['role'];
-          if (role == 'Champion') {
-            // L'utilisateur a le rôle de champion
-            return true;
+          if (userData != null && userData.containsKey('role')) {
+            var role = userData['role'];
+            if (role == 'Champion') {
+              // L'utilisateur a le rôle de champion
+              return true;
+            }
           }
         }
+      } catch (e) {
+        print('Erreur lors de la récupération du rôle de champion : $e');
       }
-    } catch (e) {
-      print('Erreur lors de la récupération du rôle de champion : $e');
     }
-  }
 
-  return false;
-}
+    return false;
+  }
 
   Future<bool> isUserEligibleForCourse(double coursePrice) async {
     final User? user = FirebaseAuth.instance.currentUser;

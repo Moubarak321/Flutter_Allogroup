@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../components/recuperation.dart';
 import '../components/livraison.dart';
 import '../components/details.dart';
-// import './attente_livreur.dart';
 import 'package:get/get.dart';
 
 class DeliveryFormPage extends StatefulWidget {
@@ -24,29 +23,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   // TimeOfDay? deliveryTime;
   DateTime? selectedDateTime = DateTime.now();
   int currentStep = 0; // Étape actuelle du formulaire
-
-  Future<String?> getFCMToken() async {
-    final user = getCurrentUser();
-    if (user != null) {
-      try {
-        final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-        final userData = userDoc.data();
-
-        if (userData != null && userData.containsKey('fcmToken')) {
-          final fcmToken = userData['fcmToken'];
-          //print('FCM Token: $fcmToken');
-          return fcmToken;
-        } else {
-          print('Le champ "fmctoken" est manquant dans le document de l\'utilisateur');
-          return null;
-        }
-      } catch (e) {
-        print('Erreur lors de la récupération du FCM Token: $e');
-        return null;
-      }
-    }
-    return null;
-  }
 
 /** 
   double calculatePrice(Position startPoint, Position endPoint) {
@@ -96,14 +72,11 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'addressLivraison': deliveryAddress,
         'numeroALivraison': deliveryNumero,
         'dateDeLivraison': selectedDateTime,
-        // 'heureDeLivraison': deliveryTime != null
-        //     ? "${deliveryTime!.hour}:${deliveryTime!.minute}"
-        //     : null,
         'title': title,
         'details': details,
         'prix': 500,
         'status': false,
-        'fcmToken':getFCMToken(),
+        
       };
       print("******************* $userData");
       FirebaseFirestore.instance.collection('administrateur').doc("commandeCourses").set({
@@ -118,70 +91,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     }
   }
 
-  // Future<DateTime?> setDate(BuildContext context) async {
-  //   DateTime? selectedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now(),
-  //     lastDate: DateTime(2101),
-  //   );
-
-  //   if (selectedDate != null) {
-  //     TimeOfDay? selectedTime = await showTimePicker(
-  //       context: context,
-  //       initialTime: TimeOfDay.now(),
-  //     );
-
-  //     if (selectedTime != null) {
-  //       // Combine date and time into a single DateTime object
-  //       DateTime selectedDateTime = DateTime(
-  //         selectedDate.year,
-  //         selectedDate.month,
-  //         selectedDate.day,
-  //         selectedTime.hour,
-  //         selectedTime.minute,
-  //       );
-
-  //       // Return the selected DateTime
-  //       return selectedDateTime;
-  //     }
-  //   }
-
-  //   // Return null if the user cancels the date or time picker
-  //   return null;
-  // }
-
-  // Future<void> setDate(BuildContext context) async {
-  //   DateTime? selectedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now(),
-  //     lastDate: DateTime(2101),
-  //   );
-
-  //   if (selectedDate != null) {
-  //     TimeOfDay? selectedTime = await showTimePicker(
-  //       context: context,
-  //       initialTime: TimeOfDay.now(),
-  //     );
-
-  //     if (selectedTime != null) {
-  //       // Combine date and time into a single DateTime object
-  //       DateTime selectedDateTime = DateTime(
-  //         selectedDate.year,
-  //         selectedDate.month,
-  //         selectedDate.day,
-  //         selectedTime.hour,
-  //         selectedTime.minute,
-  //       );
-
-  //       // Set the selectedDateTime value
-  //       setState(() {
-  //         this.selectedDateTime = selectedDateTime;
-  //       });
-  //     }
-  //   }
-  // }
 
   Future<DateTime?> setDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
@@ -425,13 +334,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
-                        // Text(
-                        //   'Heure de Livraison:  ${deliveryTime != null ? '${deliveryTime!.hour}:${deliveryTime!.minute}' : 'Non défini'}',
-                        //   style: TextStyle(
-                        //     fontSize: 18.0,
-                        //     color: Colors.white, // Couleur du texte
-                        //   ),
-                        // ),
                         Text(
                           'Prix du service : 500 F',
                           style: TextStyle(

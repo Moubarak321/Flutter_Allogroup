@@ -9,7 +9,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import '../widgets/big_text.dart';
 import '../widgets/icon_and_text_widget.dart';
 import '../widgets/small_text.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -18,7 +17,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
     List<dynamic> previousPromotions = [];
 
     final User? user = FirebaseAuth.instance.currentUser;
-    
+
     FirebaseFirestore.instance
         .collection('marchands')
         .doc(user!.uid)
@@ -47,36 +46,60 @@ class InterfaceFoodMarchand extends StatelessWidget {
     });
   }
 
-  Future<String?> getFCMToken() async {
-    final User? user = FirebaseAuth.instance.currentUser;
+  void removeFromCommandList(Map<String, dynamic> commandData, Map<String, dynamic> marchandData) {
+  final User? user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      try {
-        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
+  if (user != null) {
+    // Récupérez la liste de commandes actuelle
+    var commandes = marchandData['commandes'] as List<dynamic>;
 
-        final userData = userDoc.data();
+    // Supprimez le produit spécifique de la liste
+    commandes.remove(commandData);
 
-        if (userData != null &&
-            userData is Map &&
-            userData.containsKey('fcmToken')) {
-          final fcmToken = userData['fcmToken'];
-          return fcmToken;
-        } else {
-          print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
-          return null;
-        }
-      } catch (error) {
-        print('Erreur lors de la récupération du FCM Token: $error');
-        return null;
-      }
-    } else {
-      print('Utilisateur non authentifié');
-      return null;
-    }
+    // Mettez à jour les données du marchand avec la liste de commandes modifiée
+    FirebaseFirestore.instance
+        .collection('marchands')
+        .doc(user.uid)
+        .update({'commandes': commandes})
+        .then((_) {
+          // Succès : la suppression a été effectuée avec succès.
+          print("Produit supprimé de la liste avec succès");
+
+          // Ajoutez le produit retiré à la clé 'livraison' du marchand
+          addToLivraison(commandData, marchandData);
+        })
+        .catchError((error) {
+          // Erreur : une erreur est survenue lors de la suppression du produit.
+          print("Erreur lors de la suppression du produit : $error");
+        });
   }
+}
+
+  void addToLivraison(Map<String, dynamic> removedProduct, Map<String, dynamic> marchandData) {
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    // Récupérez la liste de produits déjà en livraison
+    var produitsLivraison = marchandData['livraison'] as List<dynamic>;
+
+    // Ajoutez le produit retiré à la liste des produits en livraison
+    produitsLivraison.add(removedProduct);
+
+    // Mettez à jour les données du marchand avec le produit ajouté à la liste de livraison
+    FirebaseFirestore.instance
+        .collection('marchands')
+        .doc(user.uid)
+        .update({'livraison': produitsLivraison})
+        .then((_) {
+          // Succès : le produit a été ajouté à la liste de livraison avec succès.
+          print("Produit ajouté à la liste de livraison avec succès");
+        })
+        .catchError((error) {
+          // Erreur : une erreur est survenue lors de l'ajout du produit à la liste de livraison.
+          print("Erreur lors de l'ajout du produit à la liste de livraison : $error");
+        });
+  }
+}
 
   List<dynamic> findNewPromotions(
       List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
@@ -93,39 +116,9 @@ class InterfaceFoodMarchand extends StatelessWidget {
     return newPromotions;
   }
 
-
   void sendNotificationForPromotion(dynamic promotion) async {
     // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-    String? fcmToken = await getFCMToken();
-
-    if (fcmToken != null) {
-      // Initialiser Firebase Messaging
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-      // Configurer la notification avec les détails de la promotion
-      NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
-
-      print('User granted permission: ${settings.authorizationStatus}');
-      FirebaseMessaging.onMessage.listen((RemoteMessage promotion) {
-        print('Une nouvelle commande est disponible');
-        print('Message data: ${promotion.data}');
-
-        if (promotion.notification != null) {
-          print(
-              'Message also contained a notification: ${promotion.notification}');
-        }
-      });
-    } else {
-      print('Impossible d\'obtenir le token FCM de l\'utilisateur');
-    }
+    
   }
 
   Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
@@ -145,6 +138,43 @@ class InterfaceFoodMarchand extends StatelessWidget {
     }
 
     return commandesGroupedByAddress;
+  }
+
+  void sendFormDataToDelivery(Map<String, dynamic> commande, Map<String, dynamic> marchandData) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final courseId = DateTime.now();
+      
+      final userData = {
+        'id': courseId,
+        'type_courses': 'Livraison de repas',
+        'addressRecuperation': marchandData['adresse'],
+        'numeroARecuperation': marchandData['phoneNumber'],
+        'addressLivraison': commande['lieuLivraison'],
+        'numeroALivraison': commande['numeroLivraison'],
+        'dateDeLivraison': courseId,
+        'title': "Spéciale commande restaurant",
+        'details': "Cette livraison sera en deux tours",
+        'prix': 1000,
+        'status': false,
+      };
+      
+      // Enregistrement des données de livraison dans Firestore
+      FirebaseFirestore.instance
+          .collection('administrateur')
+          .doc("commandeCourses")
+          .set({
+        'courses': FieldValue.arrayUnion([userData]),
+      }, SetOptions(merge: true))
+      .then((_) {
+        // Succès : les données ont été enregistrées avec succès.
+        print("Données enregistrées avec succès");
+      })
+      .catchError((error) {
+        // Erreur : une erreur est survenue lors de l'enregistrement des données.
+        print("Erreur lors de l'enregistrement des données : $error");
+      });
+    }
   }
 
   @override
@@ -248,16 +278,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
                     ),
                   ),
                 ),
-                /*SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      marchandDescription,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),*/
-                // Mapping des commandes groupées par adresse en SliverList
                 ...commandesGroupedByAddress.entries.map((entry) {
                   var adresse = entry.key;
                   var commandesParAdresse = entry.value;
@@ -268,7 +288,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,                            
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                 'Livraison à : $adresse',
@@ -284,14 +304,14 @@ class InterfaceFoodMarchand extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  
                                   GestureDetector(
                                     onTap: () {
                                       // Action à effectuer pour Mon Livreur
+                                       removeFromCommandList(commandesParAdresse[1], marchandData);
+                                      Get.snackbar("Infos", "OK, votre champion s'occupe de la livraison");
                                     },
                                     child: Column(
                                       children: [
-                                        
                                         Icon(Icons
                                             .directions_bike), // Icône pour Mon Livreur
                                         Text(
@@ -303,7 +323,9 @@ class InterfaceFoodMarchand extends StatelessWidget {
                                       width: 10), // Espacement entre les icônes
                                   GestureDetector(
                                     onTap: () {
-                                      // Action à effectuer pour Allo Livreur
+                                      removeFromCommandList(commandesParAdresse[1], marchandData);
+                                      sendFormDataToDelivery(commandesParAdresse[1], marchandData);
+                                      Get.snackbar("Infos", "Un Champion Allo livreur passera chercher la commande");
                                     },
                                     child: Column(
                                       children: [
@@ -323,8 +345,8 @@ class InterfaceFoodMarchand extends StatelessWidget {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: commandesParAdresse.length,
-                          itemBuilder: (context, i) {
-                            var commandData = commandesParAdresse[i];
+                          itemBuilder: (context, index) { 
+                            var commandData = commandesParAdresse[index];
                             var image = commandData["image"];
                             var titre = commandData["titre"];
                             var prix = commandData["prix"];
