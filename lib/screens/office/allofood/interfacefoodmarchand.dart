@@ -9,9 +9,124 @@ import 'package:intl/date_symbol_data_local.dart';
 import '../widgets/big_text.dart';
 import '../widgets/icon_and_text_widget.dart';
 import '../widgets/small_text.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
+
+  void listenForPromotionsChanges() {
+    List<dynamic> previousPromotions = [];
+
+    final User? user = FirebaseAuth.instance.currentUser;
+    
+    FirebaseFirestore.instance
+        .collection('marchands')
+        .doc(user!.uid)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        final adminData = snapshot.data() as Map<String, dynamic>;
+
+        if (adminData.containsKey('commandes')) {
+          List<dynamic> promotions = adminData['commandes'] ?? [];
+
+          // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
+          List<dynamic> newPromotions =
+              findNewPromotions(previousPromotions, promotions);
+
+          // Envoyez les notifications pour les nouvelles promotions détectées
+          newPromotions.forEach((newPromotion) {
+            // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
+            sendNotificationForPromotion(newPromotion);
+          });
+
+          // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
+          previousPromotions = promotions;
+        }
+      }
+    });
+  }
+
+  Future<String?> getFCMToken() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        final userData = userDoc.data();
+
+        if (userData != null &&
+            userData is Map &&
+            userData.containsKey('fcmToken')) {
+          final fcmToken = userData['fcmToken'];
+          return fcmToken;
+        } else {
+          print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
+          return null;
+        }
+      } catch (error) {
+        print('Erreur lors de la récupération du FCM Token: $error');
+        return null;
+      }
+    } else {
+      print('Utilisateur non authentifié');
+      return null;
+    }
+  }
+
+  List<dynamic> findNewPromotions(
+      List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
+    List<dynamic> newPromotions = [];
+
+    // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
+    for (var promotion in currentPromotions) {
+      if (!previousPromotions.contains(promotion)) {
+        // Ajoutez la promotion à la liste des nouvelles promotions détectées
+        newPromotions.add(promotion);
+      }
+    }
+
+    return newPromotions;
+  }
+
+
+  void sendNotificationForPromotion(dynamic promotion) async {
+    // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
+    String? fcmToken = await getFCMToken();
+
+    if (fcmToken != null) {
+      // Initialiser Firebase Messaging
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      // Configurer la notification avec les détails de la promotion
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      print('User granted permission: ${settings.authorizationStatus}');
+      FirebaseMessaging.onMessage.listen((RemoteMessage promotion) {
+        print('Une nouvelle commande est disponible');
+        print('Message data: ${promotion.data}');
+
+        if (promotion.notification != null) {
+          print(
+              'Message also contained a notification: ${promotion.notification}');
+        }
+      });
+    } else {
+      print('Impossible d\'obtenir le token FCM de l\'utilisateur');
+    }
+  }
 
   Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
       List<dynamic> commandes) {
