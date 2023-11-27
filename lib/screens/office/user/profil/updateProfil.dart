@@ -77,6 +77,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (user != null) {
       try {
         await user.updateProfile(displayName: _fullNameController.text);
+        
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .update({
+              'phoneNumber': _phoneController.text,
+              'fullName': _fullNameController.text,
+            });
+
+            _showSuccesDialog("Vos données ont été mises à jour");
 
         if (_pickedImagePath.isNotEmpty) {
           final String imageFileName = 'profile_images/${user.uid}.jpg';
