@@ -18,7 +18,7 @@ class SignUp extends StatefulWidget {
 
       try {
         token = await _firebaseMessaging.getToken();
-        print('Token FCM : $token');
+        
       } catch (e) {
        print('Erreur lors de la récupération du token FCM : $e');
       }
