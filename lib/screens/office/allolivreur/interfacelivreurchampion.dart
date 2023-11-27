@@ -1,4 +1,3 @@
-
 import 'package:allogroup/screens/office/allolivreur/detailsOnLivreur.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -58,45 +57,50 @@ class InterFaceLivreurChampion extends StatelessWidget {
       }
     });
   }
-    Future<String?> getFCMToken() async {
-      final User? user = FirebaseAuth.instance.currentUser;
 
-      if (user != null) {
-        try {
-          final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
+  Future<String?> getFCMToken() async {
+    final User? user = FirebaseAuth.instance.currentUser;
 
-          final userData = userDoc.data();
+    if (user != null) {
+      try {
+        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
 
-          if (userData != null &&
-              userData is Map &&
-              userData.containsKey('fcmToken')) {
-            final fcmToken = userData['fcmToken'];
-            return fcmToken;
-          } else {
-            print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
-            return null;
-          }
-        } catch (error) {
-          print('Erreur lors de la récupération du FCM Token: $error');
+        final userData = userDoc.data();
+
+        if (userData != null &&
+            userData is Map &&
+            userData.containsKey('fcmToken')) {
+          final fcmToken = userData['fcmToken'];
+          return fcmToken;
+        } else {
+          print('Champ "fcmToken" manquant dans le document de l\'utilisateur');
           return null;
         }
-      } else {
-        print('Utilisateur non authentifié');
+      } catch (error) {
+        print('Erreur lors de la récupération du FCM Token: $error');
         return null;
       }
+    } else {
+      print('Utilisateur non authentifié');
+      return null;
     }
+  }
 
-    void sendNotificationForPromotion(dynamic promotion) async {
-      // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-      String? fcmToken = await getFCMToken();
+  void sendNotificationForPromotion(dynamic promotion) async {
+    // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
+    String? fcmToken = await getFCMToken();
 
-      if (fcmToken != null) {
-        // Initialiser Firebase Messaging
-        FirebaseMessaging messaging = FirebaseMessaging.instance;
+    if (fcmToken != null) {
+      // Initialiser Firebase Messaging
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+      // Vérifier si l'utilisateur a le champ "champion" à true
+      bool isChampion = await checkIfUserIsChampion();
+
+      if (isChampion) {
         // Configurer la notification avec les détails de la promotion
         NotificationSettings settings = await messaging.requestPermission(
           alert: true,
@@ -118,74 +122,106 @@ class InterFaceLivreurChampion extends StatelessWidget {
                 'Message also contained a notification: ${message.notification}');
           }
         });
-      } else {
-        print('Impossible d\'obtenir le token FCM de l\'utilisateur');
       }
+    } else {
+      print('Impossible d\'obtenir le token FCM de l\'utilisateur');
+    }
   }
-    Future<bool> isUserEligibleForCourse(double coursePrice) async {
-      final User? user = FirebaseAuth.instance.currentUser;
 
-      if (user != null) {
-        try {
-          final userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-          final userData = userDoc.data();
+ Future<bool> checkIfUserIsChampion() async {
+  final User? user = FirebaseAuth.instance.currentUser;
 
-          if (userData != null && userData.containsKey('wallet')) {
-            final double walletAmount = userData['wallet'];
+  if (user != null) {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
 
-            // Vérifier si le montant dans le wallet est suffisant pour la course
-            if (walletAmount >= coursePrice) {
-              // Vérifier s'il n'y a pas de cours en instance dans le champ 'courses' du document 'champions'
-              final champDoc = await FirebaseFirestore.instance
-                  .collection('champions')
-                  .doc(user.uid)
-                  .get();
-              final champData = champDoc.data();
+      if (userDoc.exists) {
+        // Vérifier si l'utilisateur a le champ "role" égal à "Champion"
+        Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
 
-              if (champData != null && champData.containsKey('courses')) {
-                final List<dynamic> userCourses = champData['courses'];
+        if (userData != null && userData.containsKey('role')) {
+          var role = userData['role'];
+          if (role == 'Champion') {
+            // L'utilisateur a le rôle de champion
+            return true;
+          }
+        }
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération du rôle de champion : $e');
+    }
+  }
 
-                if (userCourses.isEmpty) {
-                  // Mettre à jour le wallet de l'utilisateur dans Firestore
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(user.uid)
-                      .update({
-                    'wallet': walletAmount - coursePrice * 0.20,
-                  });
-                  return true;
-                } else {
-                  print('L\'utilisateur a des cours en instance');
-                  return false;
-                }
+  return false;
+}
+
+  Future<bool> isUserEligibleForCourse(double coursePrice) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        final userData = userDoc.data();
+
+        if (userData != null && userData.containsKey('wallet')) {
+          final double walletAmount = userData['wallet'];
+
+          // Vérifier si le montant dans le wallet est suffisant pour la course
+          if (walletAmount >= coursePrice) {
+            // Vérifier s'il n'y a pas de cours en instance dans le champ 'courses' du document 'champions'
+            final champDoc = await FirebaseFirestore.instance
+                .collection('champions')
+                .doc(user.uid)
+                .get();
+            final champData = champDoc.data();
+
+            if (champData != null && champData.containsKey('courses')) {
+              final List<dynamic> userCourses = champData['courses'];
+
+              if (userCourses.isEmpty) {
+                // Mettre à jour le wallet de l'utilisateur dans Firestore
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(user.uid)
+                    .update({
+                  'wallet': walletAmount - coursePrice * 0.20,
+                });
+                return true;
               } else {
-                print('Champ "courses" manquant dans le document de champion');
+                print('L\'utilisateur a des cours en instance');
                 return false;
               }
             } else {
-              print('Solde insuffisant dans le portefeuille');
+              print('Champ "courses" manquant dans le document de champion');
               return false;
             }
           } else {
-            print('Champ "wallet" manquant dans le document de l\'utilisateur');
+            print('Solde insuffisant dans le portefeuille');
             return false;
           }
-        } catch (error) {
-          print(
-              'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
-          return false; // Erreur lors de la récupération des données de l'utilisateur
+        } else {
+          print('Champ "wallet" manquant dans le document de l\'utilisateur');
+          return false;
         }
-      } else {
-        print('Utilisateur non authentifié');
-        return false; // Utilisateur non authentifié
+      } catch (error) {
+        print(
+            'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
+        return false; // Erreur lors de la récupération des données de l'utilisateur
       }
+    } else {
+      print('Utilisateur non authentifié');
+      return false; // Utilisateur non authentifié
     }
+  }
 
-Future<void> validerCourse(Map<String, dynamic> courseData) async {   
-  final User? user = getCurrentUser();
+  Future<void> validerCourse(Map<String, dynamic> courseData) async {
+    final User? user = getCurrentUser();
     if (user != null) {
       try {
         // Récupérer le document de l'utilisateur dans la collection "champions"
@@ -235,13 +271,10 @@ Future<void> validerCourse(Map<String, dynamic> courseData) async {
             'courses': updateCourses,
           });
 
-        
           Get.to(
             DetailsOnLivraison(),
             arguments: courseData,
           );
-
-                        
         } else {
           print('Document utilisateur non trouvé');
         }
