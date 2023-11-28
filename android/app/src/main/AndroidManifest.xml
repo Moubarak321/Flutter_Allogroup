@@ -30,4 +30,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <!-- Nouvelle ligne pour autorisation des permissions.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 </manifest>
