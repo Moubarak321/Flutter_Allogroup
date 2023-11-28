@@ -107,8 +107,8 @@ class PresentationScreen extends StatelessWidget {
             buildExpansionTile('Comment parrainer un nouvel utilisateur ?',
                 "Pour parrainer un nouvel utilisateur, prière entrer dans l’application et suivre les différentes étapes suivantes: Entrez dans le Menu de l’application situé au niveau des paramètres.  Appuyez sur le boutton de parrainage pour générer un code . Partagez votre code de parrainage à votre ami qui vient juste de créer son compte Allô Group. Mais attention !!! La limite du parrainage est fixée à 15 personnes, passé ce nombre, votre code devient obsolète. Bénéficier un code promo généré en parrainant un(e) ami(e) qui effectue une course avec l’application Allô Group dans un délai de 30 jours."),
 
-            // buildExpansionTile('Comment me faire livrer ?',
-            //     "Text"),
+            buildExpansionTile('Comment fonctionne le systeme de portefeuille ?',
+                "Le système de portefeuille vise à payer un service à l'avance en envoyant de l'argent par un canal électronique"),
 
             buildExpansionTile(
                 'Comment faire livrer à une adresse autre que la mienne ?',
