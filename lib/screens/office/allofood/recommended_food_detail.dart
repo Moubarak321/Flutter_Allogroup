@@ -29,10 +29,10 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
 
   Widget buildProductList() {
     List tousLesProduitsMarchant = marchand['products'];
-    print("...........................$marchand");
+    //print("...........................$marchand");
     String boutique = marchand["name"];
     // print("////////////$boutique");
-    print("Tous les produits********************$tousLesProduitsMarchant");
+    //print("Tous les produits********************$tousLesProduitsMarchant");
     if (tousLesProduitsMarchant.isNotEmpty) {
       return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -57,7 +57,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                 MaterialPageRoute(
                   builder: (context) {
                     // return Home();
-                    print(tousLesProduitsMarchant[index]);
+                    //print(tousLesProduitsMarchant[index]);
                     return PopularFoodDetail(
                         produit: tousLesProduitsMarchant[index]);
                   },

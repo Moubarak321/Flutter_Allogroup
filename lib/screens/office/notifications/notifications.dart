@@ -6,7 +6,6 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
 
-
 class Notifications extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
@@ -21,10 +20,11 @@ class Notifications extends StatelessWidget {
         .listen((DocumentSnapshot snapshot) {
       if (snapshot.exists && snapshot.data() != null) {
         final adminData = snapshot.data() as Map<String, dynamic>;
+        print("J'écoute le systeme de notification");
 
         if (adminData.containsKey('promotion')) {
           List<dynamic> promotions = adminData['promotion'] ?? [];
-
+          print("J'écoute le systeme de notification en prenant en compte le champ promotion ");
           // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
           List<dynamic> newPromotions =
               findNewPromotions(previousPromotions, promotions);
@@ -57,9 +57,7 @@ class Notifications extends StatelessWidget {
     return newPromotions;
   }
 
-  void sendNotificationForPromotion(dynamic promotion) async {
-    
-  }
+  void sendNotificationForPromotion(dynamic promotion) async {}
 
   void navigateToDetailsNotifications(
       BuildContext context, Map<String, dynamic> courseData, int index) {
@@ -70,7 +68,6 @@ class Notifications extends StatelessWidget {
               Detailsnotifications(courseData: courseData, index: index)),
     );
   }
-
 
   Widget buildCourseCard(
       Map<String, dynamic> courseData, BuildContext context, int index) {

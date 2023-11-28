@@ -50,8 +50,8 @@ class _MainFoodPageState extends State<MainFoodPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("height ${MediaQuery.of(context).size.height}");
-    print("width ${MediaQuery.of(context).size.width}");
+    //print("height ${MediaQuery.of(context).size.height}");
+    //print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
       // appBar: AppBar(backgroundColor: Colors.white,),
       body: Column(

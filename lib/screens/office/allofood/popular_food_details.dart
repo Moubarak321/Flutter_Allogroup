@@ -195,8 +195,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
 
   @override
   Widget build(BuildContext context) {
-    print("height ${MediaQuery.of(context).size.height}");
-    print("width ${MediaQuery.of(context).size.width}");
+    //print("height ${MediaQuery.of(context).size.height}");
+    //print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -342,7 +342,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print("increment");
+                      //print("increment");
                       setQuantity(true);
                     },
                     child: Icon(

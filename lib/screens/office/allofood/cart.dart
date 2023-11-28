@@ -82,8 +82,8 @@ class _CartState extends State<Cart> {
       List<Map<String, dynamic>> updatedCart =
           List.from(tousLesProduits); // Copie de la liste
       // print("...........$updatedCart");
-      final productToRemove = updatedCart.removeAt(index);
-      print("...........$productToRemove");
+      updatedCart.removeAt(index);
+      //print("...........$productToRemove");   final productToRemove = 
 
       // Mettez à jour le panier dans Firestore avec le produit supprimé.
       final user = getCurrentUser();
