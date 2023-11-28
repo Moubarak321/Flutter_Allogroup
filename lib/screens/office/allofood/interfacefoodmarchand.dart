@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import '../widgets/big_text.dart';
 import '../widgets/icon_and_text_widget.dart';
 import '../widgets/small_text.dart';
+import 'dart:async';
 
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -46,52 +47,45 @@ class InterfaceFoodMarchand extends StatelessWidget {
     });
   }
 
-  void removeFromCommandList(List<Map<String, dynamic>> commandesASupprimer,
-      Map<String, dynamic> marchandData) {
+  Future<void> removeFromCommandList(List<Map<String, dynamic>> commandesASupprimer, Map<String, dynamic> marchandData) async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      // Récupérez la liste de commandes actuelle
-      var commandes = marchandData['commandes'] as List<dynamic>;
+      final currentTime = DateTime.now();
+      final List<Map<String, dynamic>> commandes = List.from(marchandData['commandes']);
 
       for (var commandeASupprimer in commandesASupprimer) {
         // Recherchez l'index de chaque commande à supprimer dans la liste
-        int index = commandes
-            .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+        int index = commandes.indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
 
         if (index != -1) {
-          // Enregistrez les données de la commande sous la clé 'traitement'
-          Map<String, dynamic> commandeTraitement = commandes[index];
-          FirebaseFirestore.instance
-              .collection('marchands')
-              .doc(user.uid)
-              .update({
-            'traitement': commandeTraitement
-          }) // Enregistrez sous 'traitement'
-              .then((_) {
-            // Succès : données de commande enregistrées avec succès.
-            print(
-                "Données de commande enregistrées avec succès sous 'traitement'");
+          final deliveryTime = DateTime.fromMillisecondsSinceEpoch(commandes[index]['dateLivraison'].seconds * 1000);
+          final difference = deliveryTime.difference(currentTime);
 
-            // Supprimez le produit spécifique de la liste
-            commandes.removeAt(index);
+          if (difference.inHours > 1) {
+            // Enregistrez les données de la commande sous la clé 'traitement'
+            Map<String, dynamic> commandeTraitement = commandes[index];
 
-            // Mettez à jour les données du marchand avec la liste de commandes modifiée
-            FirebaseFirestore.instance
-                .collection('marchands')
-                .doc(user.uid)
-                .update({'commandes': commandes}).then((_) {
-              // Succès : la suppression a été effectuée avec succès.
-              print("Commandes supprimées de la liste avec succès");
-            }).catchError((error) {
-              // Erreur : une erreur est survenue lors de la suppression des produits.
-              print("Erreur lors de la suppression des commandes : $error");
-            });
-          }).catchError((error) {
-            // Erreur : une erreur est survenue lors de l'enregistrement des données de commande.
-            print(
-                "Erreur lors de l'enregistrement des données de commande : $error");
-          });
+            try {
+              await FirebaseFirestore.instance.collection('marchands').doc(user.uid).update({
+                'traitement': commandeTraitement
+              });
+
+              // Supprimez le produit spécifique de la liste
+              commandes.removeAt(index);
+
+              // Mettez à jour les données du marchand avec la liste de commandes modifiée
+              await FirebaseFirestore.instance.collection('marchands').doc(user.uid).update({
+                'commandes': commandes
+              });
+
+              print("Commande supprimée de la liste avec succès");
+            } catch (error) {
+              print("Erreur lors de la suppression de la commande : $error");
+            }
+          } else {
+            print("La commande à l'index $index ne doit pas être supprimée car sa date de livraison est inférieure à 1 heure après la date actuelle.");
+          }
         } else {
           print("La commande n'a pas été trouvée dans la liste");
         }
