@@ -123,16 +123,7 @@ class _SignInState extends State<SignIn> {
                             height: 250,
                             width: 200,
                           ),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          "Avec Allô Group, c'est le sens de l'engagement",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                        ), 
                       ],
                     ),
                     SizedBox(height: 16),
