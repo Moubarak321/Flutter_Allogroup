@@ -6,58 +6,67 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class InterFaceLivreurChampion extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
 
-  List<dynamic> findNewPromotions(
-      List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
-    List<dynamic> newPromotions = [];
-    for (var promotion in currentPromotions) {
-      if (!previousPromotions.contains(promotion)) {
-        newPromotions.add(promotion);
-      }
-    }
+  // List<dynamic> findNewPromotions(
+  //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
+  //   List<dynamic> newPromotions = [];
+  //   for (var promotion in currentPromotions) {
+  //     if (!previousPromotions.contains(promotion)) {
+  //       newPromotions.add(promotion);
+  //     }
+  //   }
 
-    return newPromotions;
-  }
+  //   return newPromotions;
+  // }
 
-  void listenForPromotionsChanges() {
-    List<dynamic> previousPromotions = [];
-    FirebaseFirestore.instance
-        .collection('administrateur')
-        .doc('commandeCourses')
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (snapshot.exists && snapshot.data() != null) {
-        final adminData = snapshot.data() as Map<String, dynamic>;
+  // void listenForPromotionsChanges() {
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   List<dynamic> previousPromotions = [];
+  //   if (auth.currentUser != null) {
+  //     FirebaseFirestore.instance
+  //         .collection('administrateur')
+  //         .doc('commandeCourses')
+  //         .snapshots()
+  //         .listen((DocumentSnapshot snapshot) {
+  //       if (snapshot.exists && snapshot.data() != null) {
+  //         final adminData = snapshot.data() as Map<String, dynamic>;
 
-        if (adminData.containsKey('courses')) {
-          List<dynamic> promotions = adminData['coureses'] ?? [];
+  //         if (adminData.containsKey('courses')) {
+  //           List<dynamic> promotions = adminData['courses'] ?? [];
 
-          
-          List<dynamic> newPromotions =
-              findNewPromotions(previousPromotions, promotions);
+  //           List<dynamic> newPromotions =
+  //               findNewPromotions(previousPromotions, promotions);
 
-         
-          newPromotions.forEach((newPromotion) {
-            
-            sendNotificationForPromotion(newPromotion);
-          });
+  //           newPromotions.forEach((newPromotion) {
+  //             sendNotificationForPromotion(newPromotion);
+  //           });
 
-        
-          previousPromotions = promotions;
-        }
-      }
-    });
-  }
-
-  
+  //           previousPromotions = promotions;
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //   // Redirection de l'utilisateur vers l'écran de connexion, par exemple :
+  //   // Navigator.pushNamed(context, '/login');
+  //   print("L'utilisateur n'est pas authentifié.");
+  // }
+  // }
 
   void sendNotificationForPromotion(dynamic promotion) async {
-    
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: 'Alerte Livraison !',
+        body: 'Une nouvelle livraison vous attend: $promotion',
+      ),
+    );
   }
 
   Future<bool> checkIfUserIsChampion() async {
@@ -114,8 +123,8 @@ class InterFaceLivreurChampion extends StatelessWidget {
                 .get();
             final champData = champDoc.data();
 
-            if (champData != null && champData.containsKey('courses')) {
-              final List<dynamic> userCourses = champData['courses'];
+            if (champData != null && champData.containsKey('commandes')) {
+              final List<dynamic> userCourses = champData['commandes'];
 
               if (userCourses.isEmpty) {
                 // Mettre à jour le wallet de l'utilisateur dans Firestore

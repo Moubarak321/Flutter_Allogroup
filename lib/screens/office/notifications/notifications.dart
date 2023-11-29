@@ -5,59 +5,88 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class Notifications extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
 
-  void listenForPromotionsChanges() {
-    List<dynamic> previousPromotions = [];
-    FirebaseFirestore.instance
-        .collection('administrateur')
-        .doc('admin')
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (snapshot.exists && snapshot.data() != null) {
-        final adminData = snapshot.data() as Map<String, dynamic>;
-        print("J'écoute le systeme de notification");
+  // void listenForPromotionsChanges() {
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   List<dynamic> previousPromotions = [];
 
-        if (adminData.containsKey('promotion')) {
-          List<dynamic> promotions = adminData['promotion'] ?? [];
-          print("J'écoute le systeme de notification en prenant en compte le champ promotion ");
-          // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
-          List<dynamic> newPromotions =
-              findNewPromotions(previousPromotions, promotions);
+  //   // Vérifier si l'utilisateur est connecté
+  //   if (auth.currentUser != null) {
+  //     // L'utilisateur est déjà connecté, commencer l'écoute des modifications
+  //     print("++++++++++++++++++++Utilisateur connecté");
 
-          // Envoyez les notifications pour les nouvelles promotions détectées
-          newPromotions.forEach((newPromotion) {
-            // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
-            sendNotificationForPromotion(newPromotion);
-          });
+  //     FirebaseFirestore.instance
+  //         .collection('administrateur')
+  //         .doc('admin')
+  //         .snapshots()
+  //         .listen((DocumentSnapshot snapshot) {
+  //       if (snapshot.exists && snapshot.data() != null) {
+  //         final adminData = snapshot.data() as Map<String, dynamic>?;
+  //         print("J'écoute le système de notification");
 
-          // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
-          previousPromotions = promotions;
-        }
-      }
-    });
+  //         if (adminData != null && adminData.containsKey('promotion')) {
+  //           List<dynamic> promotions = adminData['promotion'] ?? [];
+  //           print("+++++++++++++++++++++J'écoute le système de notification en prenant en compte le champ promotion");
+  //           // Comparer les nouvelles promotions avec les anciennes pour détecter les ajouts
+  //           List<dynamic> newPromotions =
+  //               findNewPromotions(previousPromotions, promotions);
+
+  //           // Envoyer les notifications pour les nouvelles promotions détectées
+  //           for (var newPromotion in newPromotions) {
+  //             // Appeler la fonction d'envoi de notification avec les détails de la nouvelle promotion
+  //           print("+++++++++++++++++++++Notif envoyée");
+              
+  //             sendNotificationForPromotion(newPromotion);
+  //           print("+++++++++++++++++++++fin notif");
+
+
+  //           }
+
+  //           // Mettre à jour la liste des anciennes promotions pour la prochaine comparaison
+  //           previousPromotions = promotions;
+  //           print("+++++++++++++++++++++Mettre à jour la liste des anciennes promotions");
+
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     // Redirection de l'utilisateur vers l'écran de connexion, par exemple :
+  //     // Navigator.pushNamed(context, '/login');
+  //     print("L'utilisateur n'est pas authentifié.");
+  //   }
+  // }
+
+  // List<dynamic> findNewPromotions(
+  //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
+  //   List<dynamic> newPromotions = [];
+
+  //   // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
+  //   for (var promotion in currentPromotions) {
+  //     if (!previousPromotions.contains(promotion)) {
+  //       // Ajoutez la promotion à la liste des nouvelles promotions détectées
+  //       newPromotions.add(promotion);
+  //     }
+  //   }
+
+  //   return newPromotions;
+  // }
+
+  void sendNotificationForPromotion(dynamic promotion) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: 'Nouvelle promotion disponible !',
+        body: 'Découvrez notre nouvelle promotion : $promotion',
+      ),
+    );
   }
-
-  List<dynamic> findNewPromotions(
-      List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
-    List<dynamic> newPromotions = [];
-
-    // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
-    for (var promotion in currentPromotions) {
-      if (!previousPromotions.contains(promotion)) {
-        // Ajoutez la promotion à la liste des nouvelles promotions détectées
-        newPromotions.add(promotion);
-      }
-    }
-
-    return newPromotions;
-  }
-
-  void sendNotificationForPromotion(dynamic promotion) async {}
 
   void navigateToDetailsNotifications(
       BuildContext context, Map<String, dynamic> courseData, int index) {
@@ -68,6 +97,8 @@ class Notifications extends StatelessWidget {
               Detailsnotifications(courseData: courseData, index: index)),
     );
   }
+
+ 
 
   Widget buildCourseCard(
       Map<String, dynamic> courseData, BuildContext context, int index) {
@@ -194,6 +225,7 @@ class Notifications extends StatelessWidget {
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
                     final courseData = courses[index] as Map<String, dynamic>;
+                    
                     return buildCourseCard(courseData, context, index);
                   },
                 );
@@ -205,3 +237,63 @@ class Notifications extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  var func = listenForPromotionsChanges();
+//              func;
+
+
+
+ // void listenForPromotionsChanges() {
+  //   List<dynamic> previousPromotions = [];
+  //   FirebaseFirestore.instance
+  //       .collection('administrateur')
+  //       .doc('admin')
+  //       .snapshots()
+  //       .listen((DocumentSnapshot snapshot) {
+  //     if (snapshot.exists && snapshot.data() != null) {
+  //       final adminData = snapshot.data() as Map<String, dynamic>;
+  //       print("J'écoute le systeme de notification");
+
+  //       if (adminData.containsKey('promotion')) {
+  //         List<dynamic> promotions = adminData['promotion'] ?? [];
+  //         print("J'écoute le systeme de notification en prenant en compte le champ promotion ");
+  //         // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
+  //         List<dynamic> newPromotions =
+  //             findNewPromotions(previousPromotions, promotions);
+
+  //         // Envoyez les notifications pour les nouvelles promotions détectées
+  //         newPromotions.forEach((newPromotion) {
+  //           // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
+  //           sendNotificationForPromotion(newPromotion);
+  //         });
+
+  //         // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
+  //         previousPromotions = promotions;
+  //       }
+  //     }
+  //   });
+  // }

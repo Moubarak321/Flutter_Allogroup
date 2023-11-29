@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/components/livraison.dart';
 import 'package:get/get.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class Utilisateur extends StatefulWidget {
   const Utilisateur({Key? key}) : super(key: key);
@@ -58,41 +59,33 @@ Future<dynamic> GetProductFromCart() async {
   }
 }
 
-Future<String?> getFCMToken() async {
-    final user = getCurrentUser();
-    if (user != null) {
-      try {
-        final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-        final userData = userDoc.data();
-
-        if (userData != null && userData.containsKey('fcmToken')) {
-          final fcmToken = userData['fcmToken'];
-          //print('FCM Token: $fcmToken');
-          return fcmToken;
-        } else {
-          print('Le champ "fmctoken" est manquant dans le document de l\'utilisateur');
-          return null;
-        }
-      } catch (e) {
-        print('Erreur lors de la récupération du FCM Token: $e');
-        return null;
-      }
-    }
-    return null;
+void sendNotificationForPromo() async {
+  try {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: 'Alerte Livraison !',
+        body: 'Une nouvelle livraison vous attend: ',
+      ),
+    );
+  } catch (e) {
+    print('Error creating notification: $e');
   }
+}
 
 int calculateTotalPrice() {
-    int totalPrice = 0;
-    for (var product in tousLesProduits) {
-      var prix = product['prix'];
-      var qte = product['quantite'];
-      var intQuantite = int.parse(qte);
-      var intPrix = int.parse(prix);
-      var sousTotal = intQuantite * intPrix;
-      totalPrice += sousTotal;
-    }
-    return totalPrice;
+  int totalPrice = 0;
+  for (var product in tousLesProduits) {
+    var prix = product['prix'];
+    var qte = product['quantite'];
+    var intQuantite = int.parse(qte);
+    var intPrix = int.parse(prix);
+    var sousTotal = intQuantite * intPrix;
+    totalPrice += sousTotal;
   }
+  return totalPrice;
+}
 
 Future<void> clearCart() async {
   try {
@@ -132,12 +125,13 @@ Future<void> envoi() async {
 
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
-            'commandes': FieldValue.arrayUnion([{
-              ...order,
-              'lieuLivraison': deliveryAddress,
-              'numeroLivraison': deliveryNumero,
-              'fcmToken':getFCMToken(),
-            }]),
+            'commandes': FieldValue.arrayUnion([
+              {
+                ...order,
+                'lieuLivraison': deliveryAddress,
+                'numeroLivraison': deliveryNumero,
+              }
+            ]),
           });
         }
       }
@@ -151,7 +145,6 @@ Future<void> envoi() async {
   }
 }
 
-
 Future<void> commande() async {
   try {
     products = await GetProductFromCart();
@@ -164,17 +157,19 @@ Future<void> commande() async {
       // Mettre à jour la base de données avec le lieu et le numéro de livraison
       await userDocRef.update({
         'paiementBoutique': FieldValue.arrayUnion(
-          products.map((order) => {
-            ...order,
-            'lieuLivraison': deliveryAddress,
-            'numeroLivraison': deliveryNumero,
-          }).toList(),
+          products
+              .map((order) => {
+                    ...order,
+                    'lieuLivraison': deliveryAddress,
+                    'numeroLivraison': deliveryNumero,
+                  })
+              .toList(),
         ),
       });
 
       // Mettre à jour le statut et supprimer les produits du panier
       for (var order in products) {
-        order['status'] = true; 
+        order['status'] = true;
         commandes.add(order);
       }
 
@@ -188,13 +183,12 @@ Future<void> commande() async {
   }
 }
 
-
 bool isStepValid() {
   switch (currentStep) {
     case 0:
       return true;
     case 1:
-      return true;  
+      return true;
     case 2:
       return deliveryAddress != null && deliveryNumero != null;
     default:
@@ -222,6 +216,7 @@ class _UtilisateurState extends State<Utilisateur> {
                 } else {
                   envoi();
                   commande();
+                  sendNotificationForPromo();
                 }
               }
             },

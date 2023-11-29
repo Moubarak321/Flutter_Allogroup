@@ -12,7 +12,7 @@ import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
 import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
-// import 'package:allogroup/screens/office/user/utilisateur/details/favoris.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:allogroup/screens/office/user/wallet/wallet.dart';
@@ -38,6 +38,32 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+  // AwesomeNotifications().initialize(
+  //   // Configuration de l'initialisation, si nécessaire
+  //   'resource://drawable/app_icon',
+  //   [
+  //     NotificationChannel(
+  //       channelKey: 'basic_channel',
+  //       channelName: 'Basic notifications',
+  //       channelDescription: 'Notifications de base',
+  //       defaultColor: Color(0xFF9D50DD),
+  //       ledColor: Colors.white,
+  //     ),
+  //   ],
+  // );
+  await AwesomeNotifications().initialize(
+  'resource://drawable/res_app_icon',
+  [
+    NotificationChannel(
+      channelKey: 'basic_channel',
+      channelName: 'Basic notifications',
+      channelDescription: 'Notifications de base',
+      defaultColor: Color(0xFF9D50DD),
+      ledColor: Colors.white,
+    ),
+  ],
+);
+
   runApp(MyApp());
 }
 

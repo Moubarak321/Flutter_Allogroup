@@ -1,5 +1,6 @@
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,77 +15,193 @@ import 'dart:async';
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
-  void listenForPromotionsChanges() {
-    List<dynamic> previousPromotions = [];
+  // void listenForPromotionsChanges() {
+  //   List<dynamic> previousPromotions = [];
 
-    final User? user = FirebaseAuth.instance.currentUser;
+  //   final User? user = FirebaseAuth.instance.currentUser;
 
-    FirebaseFirestore.instance
-        .collection('marchands')
-        .doc(user!.uid)
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (snapshot.exists && snapshot.data() != null) {
-        final adminData = snapshot.data() as Map<String, dynamic>;
+  //   FirebaseFirestore.instance
+  //       .collection('marchands')
+  //       .doc(user!.uid)
+  //       .snapshots()
+  //       .listen((DocumentSnapshot snapshot) {
+  //     if (snapshot.exists && snapshot.data() != null) {
+  //       final adminData = snapshot.data() as Map<String, dynamic>;
 
-        if (adminData.containsKey('commandes')) {
-          List<dynamic> promotions = adminData['commandes'] ?? [];
+  //       if (adminData.containsKey('commandes')) {
+  //         List<dynamic> promotions = adminData['commandes'] ?? [];
 
-          // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
-          List<dynamic> newPromotions =
-              findNewPromotions(previousPromotions, promotions);
+  //         // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
+  //         List<dynamic> newPromotions =
+  //             findNewPromotions(previousPromotions, promotions);
 
-          // Envoyez les notifications pour les nouvelles promotions détectées
-          newPromotions.forEach((newPromotion) {
-            // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
-            sendNotificationForPromotion(newPromotion);
-          });
+  //         // Envoyez les notifications pour les nouvelles promotions détectées
+  //         newPromotions.forEach((newPromotion) {
+  //           // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
+  //           sendNotificationForPromotion(newPromotion);
+  //         });
 
-          // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
-          previousPromotions = promotions;
-        }
-      }
-    });
+  //         // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
+  //         previousPromotions = promotions;
+  //       }
+  //     }
+  //   });
+  // }
+
+  void sendNotificationForPromo() async {
+    try {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 10,
+          channelKey: 'basic_channel',
+          title: 'Alerte Livraison !',
+          body: 'Une nouvelle livraison vous attend: ',
+        ),
+      );
+    } catch (e) {
+      print('Error creating notification: $e');
+    }
   }
 
-  Future<void> removeFromCommandList(List<Map<String, dynamic>> commandesASupprimer, Map<String, dynamic> marchandData) async {
+  // Future<void> removeFromCommandList(
+  //     List<Map<String, dynamic>> commandesASupprimer,
+  //     Map<String, dynamic> marchandData) async {
+  //   final User? user = FirebaseAuth.instance.currentUser;
+
+  //   if (user != null) {
+  //     final currentTime = DateTime.now();
+  //     final List<Map<String, dynamic>> commandes =
+  //         List.from(marchandData['commandes']);
+
+  //     for (var commandeASupprimer in commandesASupprimer) {
+  //       // Recherchez l'index de chaque commande à supprimer dans la liste
+  //       print("---------------Commande Select");
+  //       int index = commandes
+  //           .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+  //       print("---------------Fin Commande Select");
+
+  //       if (index != -1) {
+  //         // final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
+  //         //     commandes[index]['dateLivraison'].seconds * 1000);
+  //         // print("*******************$deliveryTime");
+  //         // final difference = deliveryTime.difference(currentTime);
+  //         // print("*******************$difference");
+
+  //         final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
+  //         commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+
+  //       final currentTimeInSeconds = currentTime.millisecondsSinceEpoch ~/ 1000;
+  //       final deliveryTimeInSeconds = deliveryTime.millisecondsSinceEpoch ~/ 1000;
+
+  //       final differenceInSeconds = deliveryTimeInSeconds - currentTimeInSeconds;
+
+  //         if (difference.inHours > 1) {
+  //           // Enregistrez les données de la commande sous la clé 'traitement'
+  //           Map<String, dynamic> commandeTraitement = commandes[index];
+
+  //           try {
+  //             await FirebaseFirestore.instance
+  //                 .collection('marchands')
+  //                 .doc(user.uid)
+  //                 .update({'traitement': commandeTraitement});
+
+  //             // Supprimez le produit spécifique de la liste
+  //             commandes.removeAt(index);
+
+  //             // Mettez à jour les données du marchand avec la liste de commandes modifiée
+  //             await FirebaseFirestore.instance
+  //                 .collection('marchands')
+  //                 .doc(user.uid)
+  //                 .update({'commandes': commandes});
+
+  //             print("Commande supprimée de la liste avec succès");
+  //           } catch (error) {
+  //             print("Erreur lors de la suppression de la commande : $error");
+  //           }
+  //         } else {
+  //           print(
+  //               "La commande à l'index $index ne doit pas être supprimée car sa date de livraison est inférieure à 1 heure après la date actuelle.");
+  //         }
+  //       } else {
+  //         print("La commande n'a pas été trouvée dans la liste");
+  //       }
+  //     }
+  //   }
+  // }
+
+
+
+
+
+  Future<void> removeFromCommandList(
+    List<Map<String, dynamic>> commandesASupprimer,
+    Map<String, dynamic> marchandData,
+  ) async {
     final User? user = FirebaseAuth.instance.currentUser;
+    initializeDateFormatting('fr_FR', null);
+
+    
 
     if (user != null) {
       final currentTime = DateTime.now();
-      final List<Map<String, dynamic>> commandes = List.from(marchandData['commandes']);
+      final List<Map<String, dynamic>> commandes =
+          List.from(marchandData['commandes']);
 
       for (var commandeASupprimer in commandesASupprimer) {
         // Recherchez l'index de chaque commande à supprimer dans la liste
-        int index = commandes.indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+        print("---------------Commande Select");
+        int index = commandes
+            .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+        print("---------------Fin Commande Select");
 
+
+        
         if (index != -1) {
-          final deliveryTime = DateTime.fromMillisecondsSinceEpoch(commandes[index]['dateLivraison'].seconds * 1000);
-          final difference = deliveryTime.difference(currentTime);
+          final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
+              commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+          print("deliveryTime*******************$deliveryTime");
 
-          if (difference.inHours > 1) {
+          final currentTimeInSeconds =
+              currentTime.millisecondsSinceEpoch ~/ 1000;
+          print("currentTimeInSeconds*******************$currentTimeInSeconds");
+
+          final deliveryTimeInSeconds =
+              deliveryTime.millisecondsSinceEpoch ~/ 1000;
+          print(
+              "deliveryTimeInSeconds*******************$deliveryTimeInSeconds");
+
+          final differenceInSeconds =
+              (deliveryTimeInSeconds - currentTimeInSeconds).abs();
+
+          print(
+              "*******************Difference en secondes : $differenceInSeconds");
+
+          if (differenceInSeconds < 3600) {
             // Enregistrez les données de la commande sous la clé 'traitement'
             Map<String, dynamic> commandeTraitement = commandes[index];
 
             try {
-              await FirebaseFirestore.instance.collection('marchands').doc(user.uid).update({
-                'traitement': commandeTraitement
-              });
+              await FirebaseFirestore.instance
+                  .collection('marchands')
+                  .doc(user.uid)
+                  .update({'traitement': FieldValue.arrayUnion([commandeTraitement])});
 
               // Supprimez le produit spécifique de la liste
               commandes.removeAt(index);
 
               // Mettez à jour les données du marchand avec la liste de commandes modifiée
-              await FirebaseFirestore.instance.collection('marchands').doc(user.uid).update({
-                'commandes': commandes
-              });
+              await FirebaseFirestore.instance
+                  .collection('marchands')
+                  .doc(user.uid)
+                  .update({'commandes': commandes});
 
               print("Commande supprimée de la liste avec succès");
             } catch (error) {
               print("Erreur lors de la suppression de la commande : $error");
             }
           } else {
-            print("La commande à l'index $index ne doit pas être supprimée car sa date de livraison est inférieure à 1 heure après la date actuelle.");
+            Get.snackbar("Infos",
+                "Cette commande ne peut pas être livrée pour le moment.");
           }
         } else {
           print("La commande n'a pas été trouvée dans la liste");
@@ -93,24 +210,125 @@ class InterfaceFoodMarchand extends StatelessWidget {
     }
   }
 
-  List<dynamic> findNewPromotions(
-      List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
-    List<dynamic> newPromotions = [];
 
-    // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
-    for (var promotion in currentPromotions) {
-      if (!previousPromotions.contains(promotion)) {
-        // Ajoutez la promotion à la liste des nouvelles promotions détectées
-        newPromotions.add(promotion);
-      }
-    }
 
-    return newPromotions;
-  }
 
-  void sendNotificationForPromotion(dynamic promotion) async {
-    // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-  }
+
+
+
+// Future<void> removeFromCommandList(
+//   List<Map<String, dynamic>> commandesASupprimer,
+//   Map<String, dynamic> marchandData,
+// ) async {
+//   final User? user = FirebaseAuth.instance.currentUser;
+//   initializeDateFormatting('fr_FR', null);
+
+//   if (user != null) {
+//     final currentTime = DateTime.now();
+//     final List<Map<String, dynamic>> commandes =
+//         List.from(marchandData['commandes']);
+
+//     for (var commandeASupprimer in commandesASupprimer) {
+//       int index = commandes
+//           .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+
+//       if (index != -1) {
+//         final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
+//             commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+
+//         final currentTimeInSeconds =
+//             currentTime.millisecondsSinceEpoch ~/ 1000;
+//         final deliveryTimeInSeconds =
+//             deliveryTime.millisecondsSinceEpoch ~/ 1000;
+//         final differenceInSeconds =
+//             (deliveryTimeInSeconds - currentTimeInSeconds).abs();
+
+//         if (differenceInSeconds < 3600) {
+//           Map<String, dynamic> commandeTraitement = commandes[index];
+
+//           try {
+//             // Vérifier si le champ 'traitement' existe
+//             if (marchandData.containsKey('traitement')) {
+//               // Mise à jour du champ existant
+//               Map<String, dynamic> traitementExistante =
+//                   marchandData['traitement'];
+              
+//               // Ajouter de nouvelles informations à la traitement existante
+//               // ...
+
+//               // Mettre à jour le champ 'traitement'
+//               await FirebaseFirestore.instance
+//                   .collection('marchands')
+//                   .doc(user.uid)
+//                   .update({'traitement': traitementExistante});
+//             } else {
+//               // Créer le champ 'traitement' et ajouter le nouveau contenu
+//               await FirebaseFirestore.instance
+//                   .collection('marchands')
+//                   .doc(user.uid)
+//                   .update({'traitement': commandeTraitement});
+//             }
+
+//             // Supprimer la commande spécifique de la liste
+//             commandes.removeAt(index);
+
+//             // Mettre à jour les données du marchand avec la liste de commandes modifiée
+//             await FirebaseFirestore.instance
+//                 .collection('marchands')
+//                 .doc(user.uid)
+//                 .update({'commandes': commandes});
+
+//             print("Commande supprimée de la liste avec succès");
+//           } catch (error) {
+//             print("Erreur lors de la suppression de la commande : $error");
+//           }
+//         } else {
+//           Get.snackbar("Infos",
+//               "Cette commande ne peut pas être livrée pour le moment.");
+//         }
+//       } else {
+//         print("La commande n'a pas été trouvée dans la liste");
+//       }
+//     }
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // List<dynamic> findNewPromotions(
+  //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
+  //   List<dynamic> newPromotions = [];
+
+  //   // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
+  //   for (var promotion in currentPromotions) {
+  //     if (!previousPromotions.contains(promotion)) {
+  //       // Ajoutez la promotion à la liste des nouvelles promotions détectées
+  //       newPromotions.add(promotion);
+  //     }
+  //   }
+
+  //   return newPromotions;
+  // }
+
+  // void sendNotificationForPromotion(dynamic promotion) async {
+  //   // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
+  // }
 
   Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
       List<dynamic> commandes) {
@@ -138,7 +356,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
       final courseId = DateTime.now();
       final List<Map<String, dynamic>> userDataList = [];
       var adresseRestaurant = marchandData['adresse'];
-      
+
       var userData = {
         'id': courseId,
         'type_courses': 'Livraison de repas',
@@ -147,7 +365,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
         'addressLivraison': commandes[0]['lieuLivraison'],
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
-        'title': "Spéciale commande restaurant {$adresseRestaurant}",
+        'title': "Spéciale commande restaurant '$adresseRestaurant'",
         'details': "Cette livraison sera en deux tours.",
         'prix': 1000,
         'status': false,
@@ -162,7 +380,8 @@ class InterfaceFoodMarchand extends StatelessWidget {
         'courses': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
         // Succès : les données ont été enregistrées avec succès.
-        print("Données enregistrées avec succès");
+        // print("Données enregistrées avec succès");
+        sendNotificationForPromo();
       }).catchError((error) {
         // Erreur : une erreur est survenue lors de l'enregistrement des données.
         print("Erreur lors de l'enregistrement des données : $error");
@@ -436,7 +655,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                                                 SizedBox(
                                                   height: Dimensions.height10,
                                                 ),
-                                                SmallText(text: formattedDate),
+                                                SmallText(text: adresseClient),
                                                 SizedBox(
                                                   height: Dimensions.height10,
                                                 ),

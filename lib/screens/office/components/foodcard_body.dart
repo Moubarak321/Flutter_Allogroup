@@ -53,7 +53,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           products.add(produit as Map<String, dynamic>);
           // .add(produit as Map<String, dynamic>);
           // print("Produit : $produit");
-          print("Voilà le nom de la boutique " + produit["fullName"]);
+          // print("Voilà le nom de la boutique " + produit["fullName"]);
         }
       }
       return products;
