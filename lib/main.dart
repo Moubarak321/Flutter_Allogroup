@@ -28,6 +28,8 @@ import 'package:allogroup/screens/office/user/signInScreen/signInScreen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
+import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
+
 //51518759
 
 void main() async {
@@ -155,8 +157,8 @@ class _MyAppState extends State<MyApp> {
         '/detailsnotifications': (context) => Detailsnotifications(courseData: {}, index: 0,),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
         Routes.interfaceLivreur: (context) => InterFaceLivreurChampion(),
-        'recommended_food_detail': (context) =>
-            RecommendedFoodDetail(marchand: {})
+        'recommended_food_detail': (context) => RecommendedFoodDetail(marchand: {}),
+        'courseLivreur': (context) => CourseLivreur(),
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

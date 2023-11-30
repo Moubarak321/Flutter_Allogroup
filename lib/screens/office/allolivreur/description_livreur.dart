@@ -6,7 +6,6 @@ import '../components/livraison.dart';
 import '../components/details.dart';
 import 'package:get/get.dart';
 
-
 class DeliveryFormPage extends StatefulWidget {
   @override
   _DeliveryFormPageState createState() => _DeliveryFormPageState();
@@ -20,6 +19,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   int? deliveryNumero;
   String? title;
   String? details;
+  String? password;
   // DateTime? deliveryDate;
   // TimeOfDay? deliveryTime;
   DateTime? selectedDateTime = DateTime.now();
@@ -73,6 +73,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'addressLivraison': deliveryAddress,
         'numeroALivraison': deliveryNumero,
         'dateDeLivraison': selectedDateTime,
+        'password': password,
         'title': title,
         'details': details,
         'prix': 500,
@@ -104,9 +105,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   //     ),
   //   );
   // }
-  void sendNotificationForPromo() async {
- }
-
+  void sendNotificationForPromo() async {}
 
   Future<DateTime?> setDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
@@ -162,8 +161,10 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       case 3:
         return selectedDateTime != null;
       case 4:
-        return title != null && details != null;
+        return password != null;
       case 5:
+        return title != null && details != null;
+      case 6:
         return true;
       default:
         return false;
@@ -184,7 +185,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
             currentStep: currentStep,
             onStepContinue: () {
               if (isStepValid()) {
-                if (currentStep < 5) {
+                if (currentStep < 6) {
                   setState(() {
                     currentStep++;
                     print("currentStep: ********************$currentStep");
@@ -303,6 +304,28 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       ),
                     ),
                     SizedBox(height: 16.0),
+                  ],
+                ),
+              ),
+              Step(
+                title: Text('Sécurisez votre course'),
+                content: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText:
+                            'Code de sécurité', // Vous pouvez personnaliser le texte d'invite
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                      password = value;
+                        });
+                        // Vous pouvez utiliser la valeur entrée par l'utilisateur ici
+                        // La valeur est accessible via la variable "value"
+                        // Vous pouvez la stocker dans une variable d'état ou la traiter comme nécessaire
+                      },
+                    ),
+                    // Ajoutez d'autres champs ou widgets selon vos besoins
                   ],
                 ),
               ),

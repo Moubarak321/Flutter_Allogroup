@@ -1,4 +1,5 @@
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
+import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -86,18 +87,12 @@ class InterfaceFoodMarchand extends StatelessWidget {
   //   }
   // }
 
-
-
-
-
   Future<void> removeFromCommandList(
     List<Map<String, dynamic>> commandesASupprimer,
     Map<String, dynamic> marchandData,
   ) async {
     final User? user = FirebaseAuth.instance.currentUser;
     initializeDateFormatting('fr_FR', null);
-
-    
 
     if (user != null) {
       final currentTime = DateTime.now();
@@ -111,8 +106,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
             .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
         print("---------------Fin Commande Select");
 
-
-        
         if (index != -1) {
           final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
               commandes[index]['dateLivraison'].millisecondsSinceEpoch);
@@ -141,7 +134,9 @@ class InterfaceFoodMarchand extends StatelessWidget {
               await FirebaseFirestore.instance
                   .collection('marchands')
                   .doc(user.uid)
-                  .update({'traitement': FieldValue.arrayUnion([commandeTraitement])});
+                  .update({
+                'traitement': FieldValue.arrayUnion([commandeTraitement])
+              });
 
               // Supprimez le produit spécifique de la liste
               commandes.removeAt(index);
@@ -166,12 +161,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
       }
     }
   }
-
-
-
-
-
-
 
 // Future<void> removeFromCommandList(
 //   List<Map<String, dynamic>> commandesASupprimer,
@@ -209,7 +198,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
 //               // Mise à jour du champ existant
 //               Map<String, dynamic> traitementExistante =
 //                   marchandData['traitement'];
-              
+
 //               // Ajouter de nouvelles informations à la traitement existante
 //               // ...
 
@@ -249,24 +238,6 @@ class InterfaceFoodMarchand extends StatelessWidget {
 //     }
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // List<dynamic> findNewPromotions(
   //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
@@ -326,6 +297,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
         'details': "Cette livraison sera en deux tours.",
         'prix': 1000,
         'status': false,
+        "password": marchandData["password"]
       };
       userDataList.add(userData);
 
@@ -352,7 +324,39 @@ class InterfaceFoodMarchand extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vos Commandes'),
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context); // Revenir à la page précédente
+              },
+              child: AppIcon(
+                icon: Icons.arrow_back,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
+            Text("Vos commandes"),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return EnCoursDeTraitement(); // Remplacez DetailPage par votre propre page.
+                    },
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.bar_chart_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance
@@ -386,34 +390,34 @@ class InterfaceFoodMarchand extends StatelessWidget {
                   toolbarHeight: 75,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(
-                              context); // Revenir à la page précédente
-                        },
-                        child: Icon(
-                          Icons.clear,
-                          color: Colors.white,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return EnCoursDeTraitement(); // Remplacez DetailPage par votre propre page.
-                              },
-                            ),
-                          );
-                        },
-                        child: Icon(
-                          Icons.bar_chart_rounded,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                    // children: [
+                    //   GestureDetector(
+                    //     onTap: () {
+                    //       Navigator.pop(
+                    //           context); // Revenir à la page précédente
+                    //     },
+                    //     child: Icon(
+                    //       Icons.clear,
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    //   GestureDetector(
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) {
+                    //             return EnCoursDeTraitement(); // Remplacez DetailPage par votre propre page.
+                    //           },
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: Icon(
+                    //       Icons.bar_chart_rounded,
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    // ],
                   ),
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(20),

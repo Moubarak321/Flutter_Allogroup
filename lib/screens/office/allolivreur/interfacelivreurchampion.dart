@@ -1,4 +1,6 @@
+import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:allogroup/screens/office/allolivreur/detailsOnLivreur.dart';
+import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -6,7 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
-
 
 class InterFaceLivreurChampion extends StatelessWidget {
   User? getCurrentUser() {
@@ -58,9 +59,7 @@ class InterFaceLivreurChampion extends StatelessWidget {
   // }
   // }
 
-  void sendNotificationForPromotion(dynamic promotion) async {
-    
-  }
+  void sendNotificationForPromotion(dynamic promotion) async {}
 
   Future<bool> checkIfUserIsChampion() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -172,9 +171,7 @@ class InterFaceLivreurChampion extends StatelessWidget {
           List<dynamic>? userCourses = userData.get('commandes');
 
           // Vérifier si la liste des commandes existe
-          if (userCourses == null) {
-            userCourses = [];
-          }
+          userCourses ??= [];
 
           // Ajouter les données de la course à la liste des commandes de l'utilisateur
           userCourses.add(courseData);
@@ -220,6 +217,7 @@ class InterFaceLivreurChampion extends StatelessWidget {
       print('Utilisateur non authentifié');
     }
   }
+
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
@@ -306,8 +304,8 @@ class InterFaceLivreurChampion extends StatelessWidget {
                 Get.snackbar(
                     "Infos", "Vous pouvez passer à la livraison, bonne chance");
               } else {
-                Get.snackbar("Infos",
-                    "Vous n'êtes pas éligible pour la course");
+                Get.snackbar(
+                    "Infos", "Vous n'êtes pas éligible pour la course");
               }
             },
             style: ElevatedButton.styleFrom(
@@ -337,7 +335,41 @@ class InterFaceLivreurChampion extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vos demandes'),
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context); // Revenir à la page précédente
+              },
+              child: AppIcon(
+                icon: Icons.arrow_back,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
+            Text("Vos Demandes"),
+            GestureDetector(
+              onTap: () {
+                // Redirect to DetailsOnLivraison() when sticky note icon is clicked
+                // Get.showSnackbar(GetSnackBar(message:"ddddddd",));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CourseLivreur();
+                    },
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.sticky_note_2_outlined,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: <Widget>[

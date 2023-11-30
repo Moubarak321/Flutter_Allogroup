@@ -16,7 +16,6 @@
 //     );  }
 // }
 
-
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:intl/date_symbol_data_local.dart';
@@ -76,12 +75,12 @@
 //             "Bilan d'un achat",
 //             style: TextStyle(fontSize: 18.0, color: Colors.white),
 //           ),
-          
+
 //           Text(
 //             'Article: $titre',
 //             style: TextStyle(fontSize: 18.0, color: Colors.white),
 //           ),
-          
+
 //           Text(
 //             'Prix unitaire: $prix FCFA',
 //             style: TextStyle(fontSize: 18.0, color: Colors.white),
@@ -147,7 +146,6 @@
 
 //                 final courses = userData['traitement'] as Map<String, dynamic>;
 //                 print("courses...................$courses");
-               
 
 //                 if (courses.isEmpty) {
 //                   return Center(
@@ -178,9 +176,6 @@
 //     );
 //   }
 // }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
@@ -347,38 +342,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:allogroup/screens/office/components/function.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
@@ -406,7 +369,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
 
   String getTotalPrice() {
     int totalPrice = calculateTotalPrice();
-    return "$totalPrice F"; 
+    return "$totalPrice F";
   }
 
   Future<dynamic> GetProductFromCart() async {
@@ -425,7 +388,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
 
         for (var cartItem in cart) {
           // if (cartItem['status'] == false) {
-            products.add(cartItem);
+          products.add(cartItem);
           // }
         }
       }
@@ -464,7 +427,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
           List.from(tousLesProduits); // Copie de la liste
       // print("...........$updatedCart");
       updatedCart.removeAt(index);
-      //print("...........$productToRemove");   final productToRemove = 
+      //print("...........$productToRemove");   final productToRemove =
 
       // Mettez à jour le panier dans Firestore avec le produit supprimé.
       final user = getCurrentUser();
@@ -487,7 +450,8 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
           "Une erreur s'est produite lors de la suppression du produit : $e");
     }
   }
- int calculateTotalPrice() {
+
+  int calculateTotalPrice() {
     int totalPrice = 0;
     for (var product in tousLesProduits) {
       var prix = product['prix'];
@@ -499,7 +463,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
     }
     return totalPrice;
   }
- 
 
   @override
   void initState() {
@@ -525,22 +488,22 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Traitement"),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Utilisateur(),
-                  ),
-                );
-              },
-              child: AppIcon(
-                icon: Icons.delivery_dining_sharp,
-                backgroundColor: Color(0xCC0A5089),
-                iconColor: Colors.white,
-              ),
-            ),
+            Text("Commandes traitées"),
+            // GestureDetector(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => Utilisateur(),
+            //       ),
+            //     );
+            //   },
+            //   child: AppIcon(
+            //     icon: Icons.delivery_dining_sharp,
+            //     backgroundColor: Color(0xCC0A5089),
+            //     iconColor: Colors.white,
+            //   ),
+            // ),
           ],
         ),
       ),
