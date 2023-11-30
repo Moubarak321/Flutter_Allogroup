@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 
 class Notifications extends StatelessWidget {
   User? getCurrentUser() {
@@ -78,14 +77,7 @@ class Notifications extends StatelessWidget {
   // }
 
   void sendNotificationForPromotion(dynamic promotion) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Nouvelle promotion disponible !',
-        body: 'Découvrez notre nouvelle promotion : $promotion',
-      ),
-    );
+    
   }
 
   void navigateToDetailsNotifications(

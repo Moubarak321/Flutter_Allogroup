@@ -50,11 +50,9 @@ dependencies:
   flutter_native_splash: ^2.3.3
   get_storage: ^2.1.1
   # google_maps_flutter: ^2.1.1
-  # google_maps_webservice: ^0.0.19 
   intl: ^0.18.1
   firebase_database: ^10.3.3
   firebase_messaging: ^14.7.5
-  awesome_notifications: ^0.8.2
 
   
 

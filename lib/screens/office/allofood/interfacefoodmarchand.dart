@@ -1,6 +1,5 @@
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,53 +14,11 @@ import 'dart:async';
 class InterfaceFoodMarchand extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
-  // void listenForPromotionsChanges() {
-  //   List<dynamic> previousPromotions = [];
-
-  //   final User? user = FirebaseAuth.instance.currentUser;
-
-  //   FirebaseFirestore.instance
-  //       .collection('marchands')
-  //       .doc(user!.uid)
-  //       .snapshots()
-  //       .listen((DocumentSnapshot snapshot) {
-  //     if (snapshot.exists && snapshot.data() != null) {
-  //       final adminData = snapshot.data() as Map<String, dynamic>;
-
-  //       if (adminData.containsKey('commandes')) {
-  //         List<dynamic> promotions = adminData['commandes'] ?? [];
-
-  //         // Comparez les nouvelles promotions avec les anciennes pour détecter les ajouts
-  //         List<dynamic> newPromotions =
-  //             findNewPromotions(previousPromotions, promotions);
-
-  //         // Envoyez les notifications pour les nouvelles promotions détectées
-  //         newPromotions.forEach((newPromotion) {
-  //           // Appelez la fonction d'envoi de notification avec les détails de la nouvelle promotion
-  //           sendNotificationForPromotion(newPromotion);
-  //         });
-
-  //         // Mettez à jour la liste des anciennes promotions pour la prochaine comparaison
-  //         previousPromotions = promotions;
-  //       }
-  //     }
-  //   });
-  // }
+  /** 
 
   void sendNotificationForPromo() async {
-    try {
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 10,
-          channelKey: 'basic_channel',
-          title: 'Alerte Livraison !',
-          body: 'Une nouvelle livraison vous attend: ',
-        ),
-      );
-    } catch (e) {
-      print('Error creating notification: $e');
-    }
-  }
+    
+  }*/
 
   // Future<void> removeFromCommandList(
   //     List<Map<String, dynamic>> commandesASupprimer,
@@ -381,7 +338,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
       }, SetOptions(merge: true)).then((_) {
         // Succès : les données ont été enregistrées avec succès.
         // print("Données enregistrées avec succès");
-        sendNotificationForPromo();
+        //sendNotificationForPromo();
       }).catchError((error) {
         // Erreur : une erreur est survenue lors de l'enregistrement des données.
         print("Erreur lors de l'enregistrement des données : $error");

@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/components/livraison.dart';
 import 'package:get/get.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 
 class Utilisateur extends StatefulWidget {
   const Utilisateur({Key? key}) : super(key: key);
@@ -59,20 +58,10 @@ Future<dynamic> GetProductFromCart() async {
   }
 }
 
+/** 
 void sendNotificationForPromo() async {
-  try {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Alerte Livraison !',
-        body: 'Une nouvelle livraison vous attend: ',
-      ),
-    );
-  } catch (e) {
-    print('Error creating notification: $e');
-  }
-}
+  
+} */
 
 int calculateTotalPrice() {
   int totalPrice = 0;
@@ -216,7 +205,7 @@ class _UtilisateurState extends State<Utilisateur> {
                 } else {
                   envoi();
                   commande();
-                  sendNotificationForPromo();
+                  //sendNotificationForPromo();
                 }
               }
             },

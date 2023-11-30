@@ -5,7 +5,7 @@ import '../components/recuperation.dart';
 import '../components/livraison.dart';
 import '../components/details.dart';
 import 'package:get/get.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 
 class DeliveryFormPage extends StatefulWidget {
   @override
@@ -105,19 +105,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   //   );
   // }
   void sendNotificationForPromo() async {
-  try {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Alerte Livraison !',
-        body: 'Une nouvelle livraison vous attend: ',
-      ),
-    );
-  } catch (e) {
-    print('Error creating notification: $e');
-  }
-}
+ }
 
 
   Future<DateTime?> setDate(BuildContext context) async {

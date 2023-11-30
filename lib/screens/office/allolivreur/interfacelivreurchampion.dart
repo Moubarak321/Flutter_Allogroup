@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 
 class InterFaceLivreurChampion extends StatelessWidget {
   User? getCurrentUser() {
@@ -59,14 +59,7 @@ class InterFaceLivreurChampion extends StatelessWidget {
   // }
 
   void sendNotificationForPromotion(dynamic promotion) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Alerte Livraison !',
-        body: 'Une nouvelle livraison vous attend: $promotion',
-      ),
-    );
+    
   }
 
   Future<bool> checkIfUserIsChampion() async {
@@ -314,7 +307,7 @@ class InterFaceLivreurChampion extends StatelessWidget {
                     "Infos", "Vous pouvez passer à la livraison, bonne chance");
               } else {
                 Get.snackbar("Infos",
-                    "Vous n'êtes pas éligible pour la course, veillez bien vouloir rechargez votre portefeuille");
+                    "Vous n'êtes pas éligible pour la course");
               }
             },
             style: ElevatedButton.styleFrom(

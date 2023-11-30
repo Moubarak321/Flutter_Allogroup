@@ -12,7 +12,7 @@ import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
 import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:allogroup/screens/office/user/wallet/wallet.dart';
@@ -38,35 +38,21 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
-  // AwesomeNotifications().initialize(
-  //   // Configuration de l'initialisation, si nécessaire
-  //   'resource://drawable/app_icon',
-  //   [
-  //     NotificationChannel(
-  //       channelKey: 'basic_channel',
-  //       channelName: 'Basic notifications',
-  //       channelDescription: 'Notifications de base',
-  //       defaultColor: Color(0xFF9D50DD),
-  //       ledColor: Colors.white,
-  //     ),
-  //   ],
-  // );
-  await AwesomeNotifications().initialize(
-  'resource://drawable/res_app_icon',
-  [
-    NotificationChannel(
-      channelKey: 'basic_channel',
-      channelName: 'Basic notifications',
-      channelDescription: 'Notifications de base',
-      defaultColor: Color(0xFF9D50DD),
-      ledColor: Colors.white,
-    ),
-  ],
-);
+ 
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // Gérez les notifications lorsque l'application est en premier plan
+    print('Message data: ${message.data}');
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(MyApp());
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Gérez les notifications lorsque l'application est en arrière-plan
+  print('Handling a background message: ${message.data}');
+}
 class MyApp extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
