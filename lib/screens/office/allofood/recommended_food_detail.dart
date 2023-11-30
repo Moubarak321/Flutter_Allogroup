@@ -29,7 +29,8 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
 
   Widget buildProductList() {
     List tousLesProduitsMarchant = marchand['products'];
-    //print("...........................$marchand");
+    print(
+        "tousLesProduitsMarchant...........................$tousLesProduitsMarchant");
     String boutique = marchand["name"];
     // print("////////////$boutique");
     //print("Tous les produits********************$tousLesProduitsMarchant");
@@ -41,6 +42,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
         itemBuilder: (context, index) {
           // var tousLesProduitsMarchant = marchand['products'];
           var produit = tousLesProduitsMarchant[index];
+          produit['boutiqueId'] = marchand['id'];
           produit["fullName"] = boutique;
           var categorie = produit['categorie'];
           var title = produit['title'];
@@ -137,8 +139,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.snackbar("Promo",
-                                        "$promo");
+                                    Get.snackbar("Promo", "$promo");
                                   },
                                   child: IconAndTextWidget(
                                     icon: Icons.discount_rounded,
