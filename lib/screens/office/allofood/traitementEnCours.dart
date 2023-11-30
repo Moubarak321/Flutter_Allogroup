@@ -351,7 +351,6 @@ import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:allogroup/screens/office/allofood/paiement.dart';
 
 class EnCoursDeTraitement extends StatefulWidget {
   const EnCoursDeTraitement({super.key});
