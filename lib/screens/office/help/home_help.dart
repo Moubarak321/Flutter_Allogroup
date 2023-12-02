@@ -125,7 +125,18 @@ class PresentationScreen extends StatelessWidget {
               'Que faire si mon colis/repas m\'est livré tout endommagé ?',
               "Ecrivez au service client via le numéro +22953899427 ou via la partie Aide de l’application en précisant le numéro de commande puis en envoyant des photos de la commande erronée. Le service client se changera de rentrer en contact avec les parties prennantes (restaurant/boutique et livreur) afin de déterminer les responsabilités et reviendra vers vous avec un apport de solution. Vous pouvez toutefois nous contacter sur nos différents numéros du service client.",
             ),
-
+            buildExpansionTile(
+              'Système de sécurisation des livraisons',
+              "Lorsque, vous effectuez une demande de livraison, un code de sécurisation est demandé. Ce code doit etre fournir à celui ou celle qui recoit le bien. Ainsi quand le livreur rejoint ce dernier, il lui fournie le code en vue de marquer une bonne fin d'éxcécution",
+            ),
+            buildExpansionTile(
+              'Système de sécurisation des livraisons des repas',
+              "Le code de sécurisation à ce niveau est fournie par le restaurant.",
+            ),
+            buildExpansionTile(
+              'Système de sécurisation des livraisons des repas',
+              "Lorsque le marchand du restaurant à finir de préparer la commande alors vous le type de livraison qui change en livraison de repas",
+            ),
             buildExpansionTile(
                 'Que faire si je ne reçois pas le repas commandé à temps ?',
                 "Ecrivez au service client via le numéro +22953899427 ou via la partie Aide de l’application en précisant le numéro de commande puis en envoyant des photos de la commande erronée. Le service client se changera de rentrer en contact avec les parties prennantes (restaurant/boutique et livreur) afin de déterminer les responsabilités et reviendra vers vous avec un apport de solution. Vous pouvez toutefois nous contacter sur nos différents numéros du service client."),

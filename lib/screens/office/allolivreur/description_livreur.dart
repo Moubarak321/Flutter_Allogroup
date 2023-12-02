@@ -5,6 +5,7 @@ import '../components/recuperation.dart';
 import '../components/livraison.dart';
 import '../components/details.dart';
 import 'package:get/get.dart';
+import './attente_livreur.dart';
 
 class DeliveryFormPage extends StatefulWidget {
   @override
@@ -59,11 +60,11 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return FirebaseAuth.instance.currentUser;
   }
 
+  
   void saveFormDataToFirestore() {
     final user = getCurrentUser();
     if (user != null) {
-      final courseId = DateTime.now();
-      print("******************* Yooo");
+      final courseId = DateTime.now().millisecondsSinceEpoch.toString();
 
       final userData = {
         'id': courseId,
@@ -79,32 +80,34 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'prix': 500,
         'status': false,
       };
-      print("******************* $userData");
+
+      // Adding data to 'administrateur' collection
       FirebaseFirestore.instance
           .collection('administrateur')
           .doc("commandeCourses")
-          .set({
-        'courses': FieldValue.arrayUnion([userData]),
-      }, SetOptions(merge: true)).then((_) {
+          .update({
+        'courses': FieldValue.arrayUnion([userData])
+      }).then((_) {
         // Data saved successfully.
-        print("Data saved successfully");
+        print("Data saved successfully to 'administrateur' collection");
       }).catchError((error) {
         // An error occurred while updating the data.
-        print("Error+++++++++++++++++++++++: $error");
+        
+      });
+
+      // Adding data to 'users' collection
+      FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'courses': FieldValue.arrayUnion([userData])
+      }).then((_) {
+        // Data saved successfully.
+        
+      }).catchError((error) {
+        // An error occurred while updating the data.
+        print("Error in 'users' collection: $error");
       });
     }
   }
 
-  // void sendNotificationForPromo() async {
-  //   await AwesomeNotifications().createNotification(
-  //     content: NotificationContent(
-  //       id: 10,
-  //       channelKey: 'basic_channel',
-  //       title: 'Alerte Livraison !',
-  //       body: 'Une nouvelle livraison vous attend: ',
-  //     ),
-  //   );
-  // }
   void sendNotificationForPromo() async {}
 
   Future<DateTime?> setDate(BuildContext context) async {
@@ -176,6 +179,22 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Informations sur la Course'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.location_on), // Icône de suivi
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    
+                    return ConfirmationLivraison();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -188,21 +207,17 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 if (currentStep < 6) {
                   setState(() {
                     currentStep++;
-                    print("currentStep: ********************$currentStep");
                   });
                 } else {
-                  // Soumission du formulaire, faites ce que vous voulez ici
-                  // print("Soummission du formulaire");
                   saveFormDataToFirestore();
-                  sendNotificationForPromo();
-                  Get.snackbar("Succès", "Statut mis à jour");
+                  Get.snackbar("Succès", "Votre comande est envoyée au livreur");
 
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => DeliveryMapPage(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                   MaterialPageRoute(
+                      builder: (context) => ConfirmationLivraison(),
+                    ),
+                  );
                 }
               }
             },
@@ -318,7 +333,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                      password = value;
+                          password = value;
                         });
                         // Vous pouvez utiliser la valeur entrée par l'utilisateur ici
                         // La valeur est accessible via la variable "value"

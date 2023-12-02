@@ -9,7 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
 
-class InterFaceLivreurChampion extends StatelessWidget {
+
+class InterFaceLivreurChampion extends StatefulWidget {
+  @override
+  _InterFaceLivreurChampionState createState() => _InterFaceLivreurChampionState();
+}
+class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }

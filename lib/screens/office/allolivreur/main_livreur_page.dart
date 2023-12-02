@@ -11,6 +11,15 @@ class Delivery extends StatelessWidget {
     return FirebaseAuth.instance.currentUser;
   }
 
+  String gestioncode(typeLivraison, codesecret) {
+    if (typeLivraison == 'Livraison de bien') {
+      return codesecret.toString();  
+    } else {
+      var message = "gestion du code par le restaurant";
+      return message; 
+    }
+  }
+
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
@@ -20,11 +29,13 @@ class Delivery extends StatelessWidget {
     final typeLivraison = courseData['type_courses'];
     final title = courseData['title'];
     final depense = courseData['prix'];
-    final timestamp = courseData['id'];
+    final codesecret = courseData['password'];
+    final timestamp = courseData['dateDeLivraison'];
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-
+    final codeMessage = gestioncode(typeLivraison, codesecret);
+    
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(8.0),
@@ -78,6 +89,10 @@ class Delivery extends StatelessWidget {
           ),
           Text(
             'Prix: $depense',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
+          Text(
+            'Code de course à communiquer à la partie prenante: $codeMessage',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],
@@ -166,7 +181,7 @@ class Delivery extends StatelessWidget {
                     final courseData =
                         displayedCourses[index] as Map<String, dynamic>;
                     // if ( courseData['status'] ?? false);
-                    final bool courseStatus = courseData['status'] == true;
+                    final bool courseStatus = courseData['status'] == false;
 
                     // Check if the product status is true before displaying the card
                     if (courseStatus) {

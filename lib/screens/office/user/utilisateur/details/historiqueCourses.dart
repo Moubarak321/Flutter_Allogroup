@@ -139,21 +139,19 @@ class HistoriqueCourses extends StatelessWidget {
                 final courses = userData['courses'] as List<dynamic>;
                 
                 return ListView.builder(
-  scrollDirection: Axis.vertical,
-  itemCount: courses.length,
-  itemBuilder: (context, index) {
-    final courseData = courses[index] as Map<String, dynamic>;
-
-    // Check if the status is true before building the course card
-    if (courseData['status'] == true) {
-      return buildCourseCard(courseData);
-    } else {
-      // If the status is false, return an empty container or null
-      return Container(); // You can also return null if you want to skip this item
-    }
-  },
-);
-
+                scrollDirection: Axis.vertical,
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                final courseData = courses[index] as Map<String, dynamic>;
+                  // Check if the status is true before building the course card
+                  if (courseData['status'] == false) {
+                    return buildCourseCard(courseData);
+                  } else {
+                    // If the status is false, return an empty container or null
+                    return Container(); // You can also return null if you want to skip this item
+                  }
+                },
+              );
               },
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/components/livraison.dart';
 import 'package:get/get.dart';
+import '../allolivreur/attente_livreur.dart';
 
 class Utilisateur extends StatefulWidget {
   const Utilisateur({Key? key}) : super(key: key);
@@ -117,6 +118,7 @@ Future<void> envoi() async {
             'commandes': FieldValue.arrayUnion([
               {
                 ...order,
+                'commandaire':user.uid, 
                 'lieuLivraison': deliveryAddress,
                 'numeroLivraison': deliveryNumero,
               }
@@ -189,7 +191,24 @@ class _UtilisateurState extends State<Utilisateur> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Livraison de la commande")),
+      appBar: AppBar(
+        title: Text('Livraison de la commande'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.location_on), 
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ConfirmationLivraison();
+                  },
+                ),
+              );
+            },
+          ),
+          ],
+          ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -206,6 +225,14 @@ class _UtilisateurState extends State<Utilisateur> {
                   envoi();
                   commande();
                   //sendNotificationForPromo();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ConfirmationLivraison();
+                      },
+                    ),
+                  );
                 }
               }
             },

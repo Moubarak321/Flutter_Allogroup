@@ -12,7 +12,12 @@ import '../widgets/icon_and_text_widget.dart';
 import '../widgets/small_text.dart';
 import 'dart:async';
 
-class InterfaceFoodMarchand extends StatelessWidget {
+class InterfaceFoodMarchand extends StatefulWidget {
+  @override
+  _InterfaceFoodMarchand createState() => _InterfaceFoodMarchand();
+}
+
+class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
   final User? user = FirebaseAuth.instance.currentUser;
 
   /** 
@@ -277,6 +282,47 @@ class InterfaceFoodMarchand extends StatelessWidget {
     return commandesGroupedByAddress;
   }
 
+  void envoicommandaire(
+      List<Map<String, dynamic>> commandes, Map<String, dynamic> marchandData) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final courseId = DateTime.now();
+      final List<Map<String, dynamic>> userDataList = [];
+      var adresseRestaurant = marchandData['adresse'];
+
+      var userData = {
+        'id': courseId,
+        'type_courses': 'Livraison de repas',
+        'addressRecuperation': marchandData['adresse'],
+        'numeroARecuperation': marchandData['phoneNumber'],
+        'addressLivraison': commandes[0]['lieuLivraison'],
+        'numeroALivraison': commandes[0]['numeroLivraison'],
+        'dateDeLivraison': courseId,
+        'title': "Spéciale commande restaurant $adresseRestaurant",
+        'details': "Cette livraison sera en deux tours.",
+        'prix': 1000,
+        'status': false,
+        "password": marchandData["password"]
+      };
+      userDataList.add(userData);
+      print("Je suis le commanditaire, $commandes[0]['commandaire']");
+      // Enregistrement des données de livraison dans Firestore
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(commandes[0]['commandaire'])
+          .set({
+        'courses': FieldValue.arrayUnion(userDataList),
+      }, SetOptions(merge: true)).then((_) {
+        // Succès : les données ont été enregistrées avec succès.
+        // print("Données enregistrées avec succès");
+        //sendNotificationForPromo();
+      }).catchError((error) {
+        // Erreur : une erreur est survenue lors de l'enregistrement des données.
+        print("Erreur lors de l'enregistrement des données : $error");
+      });
+    }
+  }
+
   void sendFormDataToDelivery(
       List<Map<String, dynamic>> commandes, Map<String, dynamic> marchandData) {
     final user = FirebaseAuth.instance.currentUser;
@@ -293,7 +339,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
         'addressLivraison': commandes[0]['lieuLivraison'],
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
-        'title': "Spéciale commande restaurant '$adresseRestaurant'",
+        'title': "Spéciale commande restaurant $adresseRestaurant",
         'details': "Cette livraison sera en deux tours.",
         'prix': 1000,
         'status': false,
@@ -345,7 +391,7 @@ class InterfaceFoodMarchand extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return EnCoursDeTraitement(); // Remplacez DetailPage par votre propre page.
+                      return EnCoursDeTraitement();
                     },
                   ),
                 );
@@ -480,6 +526,8 @@ class InterfaceFoodMarchand extends StatelessWidget {
                                   GestureDetector(
                                     onTap: () {
                                       // Action à effectuer pour Mon Livreur
+                                      envoicommandaire(
+                                          commandesParAdresse, marchandData);
                                       removeFromCommandList(
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
@@ -499,6 +547,8 @@ class InterfaceFoodMarchand extends StatelessWidget {
                                   GestureDetector(
                                     onTap: () {
                                       sendFormDataToDelivery(
+                                          commandesParAdresse, marchandData);
+                                      envoicommandaire(
                                           commandesParAdresse, marchandData);
                                       removeFromCommandList(
                                           commandesParAdresse, marchandData);
