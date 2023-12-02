@@ -40,10 +40,9 @@ class Notifications extends StatelessWidget {
   //           for (var newPromotion in newPromotions) {
   //             // Appeler la fonction d'envoi de notification avec les détails de la nouvelle promotion
   //           print("+++++++++++++++++++++Notif envoyée");
-              
+
   //             sendNotificationForPromotion(newPromotion);
   //           print("+++++++++++++++++++++fin notif");
-
 
   //           }
 
@@ -76,9 +75,7 @@ class Notifications extends StatelessWidget {
   //   return newPromotions;
   // }
 
-  void sendNotificationForPromotion(dynamic promotion) async {
-    
-  }
+  void sendNotificationForPromotion(dynamic promotion) async {}
 
   void navigateToDetailsNotifications(
       BuildContext context, Map<String, dynamic> courseData, int index) {
@@ -89,8 +86,6 @@ class Notifications extends StatelessWidget {
               Detailsnotifications(courseData: courseData, index: index)),
     );
   }
-
- 
 
   Widget buildCourseCard(
       Map<String, dynamic> courseData, BuildContext context, int index) {
@@ -217,7 +212,7 @@ class Notifications extends StatelessWidget {
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
                     final courseData = courses[index] as Map<String, dynamic>;
-                    
+
                     return buildCourseCard(courseData, context, index);
                   },
                 );

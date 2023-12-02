@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+//import 'package:allogroup/screens/office/user/wallet/sucessScreen.dart';
 
 class Wallet extends StatefulWidget {
   const Wallet({Key? key}) : super(key: key);
@@ -17,6 +20,7 @@ class _WalletState extends State<Wallet> {
   String dropdownValue = 'Option 1';
   String fund = '';
   String solde = "0";
+  String name = "";
 
   Future<int?> getUserWalletBalance() async {
     try {
@@ -46,6 +50,46 @@ class _WalletState extends State<Wallet> {
     return null;
   }
 
+  Future<String?> getUserName() async {
+    try {
+      // Récupérer l'utilisateur authentifié
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Accéder au document de l'utilisateur dans Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        // Vérifier si le document de l'utilisateur existe et contient la clé 'wallet'
+        if (userDoc.exists &&
+            userDoc.data() is Map<String, dynamic> &&
+            (userDoc.data() as Map<String, dynamic>).containsKey('phoneNumber')) {
+          // Récupérer et retourner la valeur de la clé 'wallet'
+          return (userDoc.data() as Map<String, dynamic>)['phoneNumber'];
+        }
+      }
+    } catch (e) {
+      print("Erreur lors de la récupération du solde du portefeuille : $e");
+    }
+
+    // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
+    return null;
+  }
+
+
+ _paiement() async {
+    var url = Uri.parse("https://allogroupweb.vercel.app/");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+//-------------------------------
+
+  ///----------------------------
   @override
   void initState() {
     super.initState();
@@ -56,10 +100,20 @@ class _WalletState extends State<Wallet> {
           fund = walletBalance
               .toString(); // Convertir le solde du portefeuille en String
         });
-      }else {
+      } else {
         return solde;
       }
-      
+    });
+
+    getUserName().then((username) {
+      if (username != null) {
+        setState(() {
+          name = username
+              .toString(); // Convertir le solde du portefeuille en String
+        });
+      } else {
+        return "John DOE";
+      }
     });
   }
 
@@ -82,47 +136,63 @@ class _WalletState extends State<Wallet> {
                   text: "Rechargez votre portefeuille",
                   size: Dimensions.font20),
             ),
-            Text("Solde Actuel : $fund FCFA"),
             Container(
               padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Montant à recharger :",
+                    "Votre solde:$fund ",
                     style: TextStyle(fontSize: Dimensions.font16),
                   ),
                   SizedBox(height: 8.0),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: "Montant",
+                      labelText: "$fund FCFA",
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
+                    /*inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],*/
+                    enabled: false,
+                    // Utilisation de initialValue pour afficher fund par défaut
+                  ),
+                  Text(
+                    "Votre numéro:",
+                    style: TextStyle(fontSize: Dimensions.font16),
+                  ),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "$name",
+                      border: OutlineInputBorder(),
+                    ),
+                    // keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
                     ],
+                    enabled: false,
                   ),
                 ],
               ),
             ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () => Get.snackbar("Info", "En cours de développement..."),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    side: BorderSide.none,
-                    shape: const StadiumBorder()),
-                child: const Text(
-                  "Rechargez",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Poppins',
-                  ),
+            ElevatedButton(
+              onPressed: () =>
+                  _paiement(),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  side: BorderSide.none,
+                  shape: const StadiumBorder()),
+              child: const Text(
+                "Rechargez",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
