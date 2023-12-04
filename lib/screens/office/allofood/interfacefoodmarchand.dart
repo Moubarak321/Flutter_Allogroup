@@ -167,101 +167,68 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     }
   }
 
-// Future<void> removeFromCommandList(
-//   List<Map<String, dynamic>> commandesASupprimer,
-//   Map<String, dynamic> marchandData,
-// ) async {
-//   final User? user = FirebaseAuth.instance.currentUser;
-//   initializeDateFormatting('fr_FR', null);
+  Future<void> enCoursLivraison(
+    List<Map<String, dynamic>> commandesASupprimer,
+    Map<String, dynamic> marchandData,
+  ) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    initializeDateFormatting('fr_FR', null);
 
-//   if (user != null) {
-//     final currentTime = DateTime.now();
-//     final List<Map<String, dynamic>> commandes =
-//         List.from(marchandData['commandes']);
+    if (user != null) {
+      final currentTime = DateTime.now();
+      final List<Map<String, dynamic>> commandes =
+          List.from(marchandData['commandes']);
 
-//     for (var commandeASupprimer in commandesASupprimer) {
-//       int index = commandes
-//           .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+      for (var commandeASupprimer in commandesASupprimer) {
+        // Recherchez l'index de chaque commande à supprimer dans la liste
+        print("---------------Commande Select");
+        int index = commandes
+            .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
+        print("---------------Fin Commande Select");
 
-//       if (index != -1) {
-//         final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
-//             commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+        if (index != -1) {
+          final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
+              commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+          print("deliveryTime*******************$deliveryTime");
 
-//         final currentTimeInSeconds =
-//             currentTime.millisecondsSinceEpoch ~/ 1000;
-//         final deliveryTimeInSeconds =
-//             deliveryTime.millisecondsSinceEpoch ~/ 1000;
-//         final differenceInSeconds =
-//             (deliveryTimeInSeconds - currentTimeInSeconds).abs();
+          final currentTimeInSeconds =
+              currentTime.millisecondsSinceEpoch ~/ 1000;
+          print("currentTimeInSeconds*******************$currentTimeInSeconds");
 
-//         if (differenceInSeconds < 3600) {
-//           Map<String, dynamic> commandeTraitement = commandes[index];
+          final deliveryTimeInSeconds =
+              deliveryTime.millisecondsSinceEpoch ~/ 1000;
+          print(
+              "deliveryTimeInSeconds*******************$deliveryTimeInSeconds");
 
-//           try {
-//             // Vérifier si le champ 'traitement' existe
-//             if (marchandData.containsKey('traitement')) {
-//               // Mise à jour du champ existant
-//               Map<String, dynamic> traitementExistante =
-//                   marchandData['traitement'];
+          final differenceInSeconds =
+              (deliveryTimeInSeconds - currentTimeInSeconds).abs();
 
-//               // Ajouter de nouvelles informations à la traitement existante
-//               // ...
+          print(
+              "*******************Difference en secondes : $differenceInSeconds");
 
-//               // Mettre à jour le champ 'traitement'
-//               await FirebaseFirestore.instance
-//                   .collection('marchands')
-//                   .doc(user.uid)
-//                   .update({'traitement': traitementExistante});
-//             } else {
-//               // Créer le champ 'traitement' et ajouter le nouveau contenu
-//               await FirebaseFirestore.instance
-//                   .collection('marchands')
-//                   .doc(user.uid)
-//                   .update({'traitement': commandeTraitement});
-//             }
+          if (differenceInSeconds < 3600) {
+            // Enregistrez les données de la commande sous la clé 'traitement'
+            Map<String, dynamic> commandeTraitement = commandes[index];
 
-//             // Supprimer la commande spécifique de la liste
-//             commandes.removeAt(index);
-
-//             // Mettre à jour les données du marchand avec la liste de commandes modifiée
-//             await FirebaseFirestore.instance
-//                 .collection('marchands')
-//                 .doc(user.uid)
-//                 .update({'commandes': commandes});
-
-//             print("Commande supprimée de la liste avec succès");
-//           } catch (error) {
-//             print("Erreur lors de la suppression de la commande : $error");
-//           }
-//         } else {
-//           Get.snackbar("Infos",
-//               "Cette commande ne peut pas être livrée pour le moment.");
-//         }
-//       } else {
-//         print("La commande n'a pas été trouvée dans la liste");
-//       }
-//     }
-//   }
-// }
-
-  // List<dynamic> findNewPromotions(
-  //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
-  //   List<dynamic> newPromotions = [];
-
-  //   // Parcourez les promotions actuelles pour trouver celles qui ne sont pas présentes dans les promotions précédentes
-  //   for (var promotion in currentPromotions) {
-  //     if (!previousPromotions.contains(promotion)) {
-  //       // Ajoutez la promotion à la liste des nouvelles promotions détectées
-  //       newPromotions.add(promotion);
-  //     }
-  //   }
-
-  //   return newPromotions;
-  // }
-
-  // void sendNotificationForPromotion(dynamic promotion) async {
-  //   // Récupérer le token FCM de chaque utilisateur pour l'envoi de la notification
-  // }
+            try {
+              await FirebaseFirestore.instance
+                  .collection('marchands')
+                  .doc(user.uid)
+                  .update({
+                'encoursLivraison': FieldValue.arrayUnion([commandeTraitement])
+              });
+            } catch (error) {
+              print("Erreur lors de la suppression de la commande : $error");
+            }
+          } else {
+            
+          }
+        } else {
+          print("La commande n'a pas été trouvée dans la liste");
+        }
+      }
+    }
+  }
 
   Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
       List<dynamic> commandes) {
@@ -325,11 +292,11 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
   void sendFormDataToDelivery(
       List<Map<String, dynamic>> commandes, Map<String, dynamic> marchandData) {
     final user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
       final courseId = DateTime.now();
       final List<Map<String, dynamic>> userDataList = [];
       var adresseRestaurant = marchandData['adresse'];
-      var paye = commandes[0]['paye'];
       var userData = {
         'id': courseId,
         'type_courses': 'Livraison de repas',
@@ -339,8 +306,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
         'title': "Spéciale commande restaurant $adresseRestaurant",
-        'details':
-            "Cette livraison sera en deux tours et vous devez remettre $paye au marchand.",
+        'details': "Cette livraison sera en deux tours maximun.",
         'prix': commandes[0]['prix'],
         'status': false,
         "password": marchandData["password"]
@@ -436,34 +402,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                   toolbarHeight: 75,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // children: [
-                    //   GestureDetector(
-                    //     onTap: () {
-                    //       Navigator.pop(
-                    //           context); // Revenir à la page précédente
-                    //     },
-                    //     child: Icon(
-                    //       Icons.clear,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ),
-                    //   GestureDetector(
-                    //     onTap: () {
-                    //       Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //           builder: (context) {
-                    //             return EnCoursDeTraitement(); // Remplacez DetailPage par votre propre page.
-                    //           },
-                    //         ),
-                    //       );
-                    //     },
-                    //     child: Icon(
-                    //       Icons.bar_chart_rounded,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ),
-                    // ],
                   ),
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(20),
@@ -526,6 +464,8 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                   GestureDetector(
                                     onTap: () {
                                       // Action à effectuer pour Mon Livreur
+                                      enCoursLivraison(commandesParAdresse, 
+                                                              marchandData);
                                       envoicommandaire(
                                           commandesParAdresse, marchandData);
                                       removeFromCommandList(
@@ -546,6 +486,8 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                       width: 10), // Espacement entre les icônes
                                   GestureDetector(
                                     onTap: () {
+                                      enCoursLivraison(commandesParAdresse, 
+                                                              marchandData);
                                       sendFormDataToDelivery(
                                           commandesParAdresse, marchandData);
                                       envoicommandaire(

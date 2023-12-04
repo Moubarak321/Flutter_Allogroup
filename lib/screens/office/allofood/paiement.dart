@@ -177,7 +177,7 @@ Future<void> envoi() async {
           DocumentReference merchantDocRef = FirebaseFirestore.instance
               .collection('marchands')
               .doc(merchantId);
-
+        
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
             'commandes': FieldValue.arrayUnion([
@@ -187,7 +187,7 @@ Future<void> envoi() async {
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
-                'paye': await calculateTotalPrice(),
+                'paye':  int.parse(order['prix']) * int.parse(order['quantite']) ,
               }
             ]),
           });
@@ -440,10 +440,15 @@ class _UtilisateurState extends State<Utilisateur> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        isLoading
-                            ? CircularProgressIndicator() // Afficher un indicateur de chargement si les données ne sont pas encore chargées
-                            : Text(
-                                'Votre panier coûte $totalPrice F et votre livraison coûte $deliveryCost F',
+                         Text(
+                            "Vos achat sont effectués dans boutiques",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                        Text(
+                            'Votre panier coûte  F et votre livraison coûte F',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.white,
