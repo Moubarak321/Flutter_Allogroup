@@ -167,69 +167,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     }
   }
 
-  Future<void> enCoursLivraison(
-    List<Map<String, dynamic>> commandesASupprimer,
-    Map<String, dynamic> marchandData,
-  ) async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    initializeDateFormatting('fr_FR', null);
-
-    if (user != null) {
-      final currentTime = DateTime.now();
-      final List<Map<String, dynamic>> commandes =
-          List.from(marchandData['commandes']);
-
-      for (var commandeASupprimer in commandesASupprimer) {
-        // Recherchez l'index de chaque commande à supprimer dans la liste
-        print("---------------Commande Select");
-        int index = commandes
-            .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
-        print("---------------Fin Commande Select");
-
-        if (index != -1) {
-          final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
-              commandes[index]['dateLivraison'].millisecondsSinceEpoch);
-          print("deliveryTime*******************$deliveryTime");
-
-          final currentTimeInSeconds =
-              currentTime.millisecondsSinceEpoch ~/ 1000;
-          print("currentTimeInSeconds*******************$currentTimeInSeconds");
-
-          final deliveryTimeInSeconds =
-              deliveryTime.millisecondsSinceEpoch ~/ 1000;
-          print(
-              "deliveryTimeInSeconds*******************$deliveryTimeInSeconds");
-
-          final differenceInSeconds =
-              (deliveryTimeInSeconds - currentTimeInSeconds).abs();
-
-          print(
-              "*******************Difference en secondes : $differenceInSeconds");
-
-          if (differenceInSeconds < 3600) {
-            // Enregistrez les données de la commande sous la clé 'traitement'
-            Map<String, dynamic> commandeTraitement = commandes[index];
-
-            try {
-              await FirebaseFirestore.instance
-                  .collection('marchands')
-                  .doc(user.uid)
-                  .update({
-                'encoursLivraison': FieldValue.arrayUnion([commandeTraitement])
-              });
-            } catch (error) {
-              print("Erreur lors de la suppression de la commande : $error");
-            }
-          } else {
-            
-          }
-        } else {
-          print("La commande n'a pas été trouvée dans la liste");
-        }
-      }
-    }
-  }
-
   Map<String, List<Map<String, dynamic>>> groupCommandsByAddress(
       List<dynamic> commandes) {
     Map<String, List<Map<String, dynamic>>> commandesGroupedByAddress = {};
@@ -464,8 +401,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                   GestureDetector(
                                     onTap: () {
                                       // Action à effectuer pour Mon Livreur
-                                      enCoursLivraison(commandesParAdresse, 
-                                                              marchandData);
+                                      
                                       envoicommandaire(
                                           commandesParAdresse, marchandData);
                                       removeFromCommandList(
@@ -486,8 +422,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                       width: 10), // Espacement entre les icônes
                                   GestureDetector(
                                     onTap: () {
-                                      enCoursLivraison(commandesParAdresse, 
-                                                              marchandData);
+                                     
                                       sendFormDataToDelivery(
                                           commandesParAdresse, marchandData);
                                       envoicommandaire(
