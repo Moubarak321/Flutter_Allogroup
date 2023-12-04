@@ -43,6 +43,7 @@ Future<dynamic> GetProductFromCart() async {
       List<dynamic> cart = userData['cart'] as List<dynamic>;
 
       for (var cartItem in cart) {
+        
         if (cartItem['status'] == false) {
           products.add(cartItem);
         }
@@ -66,8 +67,7 @@ void sendNotificationForPromo() async {
 
 
 int calculateTotalPrice() {
-  int totalPrice = 0;
-  
+  int totalPrice = 0; 
   for (var product in tousLesProduits) {
     var prix = product['prix'];
     var qte = product['quantite'];
@@ -270,12 +270,26 @@ class _UtilisateurState extends State<Utilisateur> {
 
   Future<void> fetchData() async {
     // Récupération des valeurs du panier et de la livraison
+    fetchProductsFromCart();
     totalPrice = calculateTotalPrice();
     deliveryCost = await Recuperationprix(pickupAddress ?? '');
     isLoading = false; // Mettre à jour l'état du chargement
     setState(() {});
   }
 
+  Future<void> fetchProductsFromCart() async {
+    try {
+      List<Map<String, dynamic>>? products = await GetProductFromCart();
+      setState(() {
+        tousLesProduits = products!;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
