@@ -187,6 +187,7 @@ Future<void> envoi() async {
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
+                'paye': await calculateTotalPrice(),
               }
             ]),
           });

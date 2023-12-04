@@ -511,6 +511,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                   var title = article['titre'];
                   var imageUrl = article['image'];
                   var prix = article['prix'];
+                  var paye = article['paye'];
                   var qte = article['quantite'];
                   var intQuantite = int.parse(qte);
                   var intPrix = int.parse(prix);
@@ -569,7 +570,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                     //   height: Dimensions.height10,
                                     // ),
                                     SmallText(
-                                      text: prix + " FCFA",
+                                      text: paye + " FCFA",
                                       size: Dimensions.font20,
                                     ),
                                     // SizedBox(

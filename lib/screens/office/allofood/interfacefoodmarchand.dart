@@ -305,7 +305,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
         "password": marchandData["password"]
       };
       userDataList.add(userData);
-      print("Je suis le commanditaire, $commandes[0]['commandaire']");
       // Enregistrement des données de livraison dans Firestore
       FirebaseFirestore.instance
           .collection('users')
@@ -330,7 +329,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
       final courseId = DateTime.now();
       final List<Map<String, dynamic>> userDataList = [];
       var adresseRestaurant = marchandData['adresse'];
-
+      var paye = commandes[0]['paye'];
       var userData = {
         'id': courseId,
         'type_courses': 'Livraison de repas',
@@ -340,8 +339,9 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
         'title': "Spéciale commande restaurant $adresseRestaurant",
-        'details': "Cette livraison sera en deux tours.",
-        'prix': 1000,
+        'details':
+            "Cette livraison sera en deux tours et vous devez remettre $paye au marchand.",
+        'prix': commandes[0]['prix'],
         'status': false,
         "password": marchandData["password"]
       };
@@ -577,7 +577,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                             var commandData = commandesParAdresse[index];
                             var image = commandData["image"];
                             var titre = commandData["titre"];
-                            var prix = commandData["prix"];
                             var numeroClient = commandData["numeroLivraison"];
                             var adresseClient = commandData["lieuLivraison"];
                             var quantite = commandData["quantite"];
@@ -675,12 +674,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    IconAndTextWidget(
-                                                      icon: Icons
-                                                          .monetization_on_rounded,
-                                                      text: prix + " FCFA",
-                                                      iconColor: Colors.orange,
-                                                    ),
                                                     IconAndTextWidget(
                                                       icon:
                                                           Icons.balance_rounded,
