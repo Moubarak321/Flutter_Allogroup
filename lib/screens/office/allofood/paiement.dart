@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:allogroup/screens/office/components/livraison.dart';
+import 'package:allogroup/screens/office/components/recuperation.dart';
 import 'package:get/get.dart';
 import '../allolivreur/attente_livreur.dart';
 
@@ -13,8 +13,8 @@ class Utilisateur extends StatefulWidget {
 }
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-String? deliveryAddress;
-int? deliveryNumero;
+String? pickupAddress;
+int? pickupNumero;
 String? error;
 List<Map<String, dynamic>> tousLesProduits = [];
 List<Map<String, dynamic>> commandes = [];
@@ -64,8 +64,10 @@ void sendNotificationForPromo() async {
   
 } */
 
+
 int calculateTotalPrice() {
   int totalPrice = 0;
+  
   for (var product in tousLesProduits) {
     var prix = product['prix'];
     var qte = product['quantite'];
@@ -75,6 +77,69 @@ int calculateTotalPrice() {
     totalPrice += sousTotal;
   }
   return totalPrice;
+}
+
+Future<int> Recuperationprix(String pickupAddress) async {
+  try {
+    // Récupérer les données depuis Firestore
+    DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
+        .collection('administrateur')
+        .doc('zone')
+        .get();
+
+    // Vérifier si le document existe et s'il contient la clé 'livraison'
+    if (zoneSnapshot.exists) {
+      Map<String, dynamic>? data = zoneSnapshot.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('livraison')) {
+        List<dynamic> livraisonList = data['livraison'];
+
+        // Parcourir la liste des adresses de livraison pour trouver l'indice
+        for (int i = 0; i < livraisonList.length; i++) {
+          // Vérifier si l'adresse correspond à celle fournie
+          if (livraisonList[i] == pickupAddress) {
+            return await getPrixForIndice(i);
+          }
+        }
+
+        return -1;
+      }
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération des adresses de livraison : $e');
+
+    throw e;
+  }
+
+  return -1;
+}
+
+Future<int> getPrixForIndice(int indice) async {
+  try {
+    // Récupérer les données depuis Firestore pour les prix
+    DocumentSnapshot prixSnapshot = await FirebaseFirestore.instance
+        .collection('administrateur')
+        .doc('zone')
+        .get();
+
+    // Vérifier si le document existe et s'il contient la clé 'prix'
+    if (prixSnapshot.exists) {
+      Map<String, dynamic>? data = prixSnapshot.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('prix')) {
+        List<dynamic> prixList = data['prix'];
+
+        if (indice >= 0 && indice < prixList.length) {
+          return prixList[indice]; // Retourner le prix correspondant à l'indice
+        }
+      }
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération des prix : $e');
+    throw e; // Gérer l'erreur selon vos besoins
+  }
+
+  return -1; // Prix non trouvé pour l'indice donné
 }
 
 Future<void> clearCart() async {
@@ -118,9 +183,10 @@ Future<void> envoi() async {
             'commandes': FieldValue.arrayUnion([
               {
                 ...order,
-                'commandaire':user.uid, 
-                'lieuLivraison': deliveryAddress,
-                'numeroLivraison': deliveryNumero,
+                'commandaire': user.uid,
+                'lieuLivraison': pickupAddress,
+                'numeroLivraison': pickupNumero,
+                'prix': await Recuperationprix(pickupAddress ?? ''),
               }
             ]),
           });
@@ -151,8 +217,8 @@ Future<void> commande() async {
           products
               .map((order) => {
                     ...order,
-                    'lieuLivraison': deliveryAddress,
-                    'numeroLivraison': deliveryNumero,
+                    'lieuLivraison': pickupAddress,
+                    'numeroLivraison': pickupNumero,
                   })
               .toList(),
         ),
@@ -181,21 +247,42 @@ bool isStepValid() {
     case 1:
       return true;
     case 2:
-      return deliveryAddress != null && deliveryNumero != null;
+      return pickupAddress != null && pickupNumero != null;
+    case 3:
+      return true;
+    case 4:
+      return true;  
     default:
       return false;
   }
 }
 
 class _UtilisateurState extends State<Utilisateur> {
+  int totalPrice = 0;
+  int deliveryCost = 0;
+  bool isLoading = true; 
+
   @override
+  void initState() {
+    super.initState();
+    fetchData(); // Appel de la méthode pour récupérer les valeurs
+  }
+
+  Future<void> fetchData() async {
+    // Récupération des valeurs du panier et de la livraison
+    totalPrice = calculateTotalPrice();
+    deliveryCost = await Recuperationprix(pickupAddress ?? '');
+    isLoading = false; // Mettre à jour l'état du chargement
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Livraison de la commande'),
         actions: [
           IconButton(
-            icon: Icon(Icons.location_on), 
+            icon: Icon(Icons.location_on),
             onPressed: () {
               Navigator.push(
                 context,
@@ -207,8 +294,8 @@ class _UtilisateurState extends State<Utilisateur> {
               );
             },
           ),
-          ],
-          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -217,7 +304,7 @@ class _UtilisateurState extends State<Utilisateur> {
             currentStep: currentStep,
             onStepContinue: () {
               if (isStepValid()) {
-                if (currentStep < 2) {
+                if (currentStep < 4) {
                   setState(() {
                     currentStep++;
                   });
@@ -254,28 +341,7 @@ class _UtilisateurState extends State<Utilisateur> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Prix en fonction de la distance :',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Inférieur à 5km : 500 F',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Entre 5km et 10km : 1000 F',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Supérieur à 10km : 2000 F',
+                          'Nous vous prions de consulter le contrat de livraison',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
@@ -302,7 +368,7 @@ class _UtilisateurState extends State<Utilisateur> {
                               side: BorderSide.none,
                               shape: const StadiumBorder()),
                           child: const Text(
-                            "Payez maintenant",
+                            "Payez à la livraison",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -317,16 +383,60 @@ class _UtilisateurState extends State<Utilisateur> {
               ),
               Step(
                 title: Text('Processus de Livraison'),
-                content: DeliveryInfoWidget(
+                content: PickupInfoWidget(
                   formKey: _formKey,
-                  deliveryAddress: deliveryAddress,
-                  deliveryNumero: deliveryNumero,
-                  updateDeliveryInfo: (address, numero) {
+                  pickupAddress: pickupAddress,
+                  pickupNumero: pickupNumero,
+                  updatePickupInfo: (address, numero) {
                     setState(() {
-                      deliveryAddress = address;
-                      deliveryNumero = numero;
+                      pickupAddress = address;
+                      pickupNumero = numero;
                     });
                   },
+                ),
+              ),
+              Step(
+                title: Text('Pour le livreur'),
+                content: Card(
+                  color: Colors.orange, // Couleur de l'arrière-plan
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Une fois le livreur sur place, vous pourrez lui payer le service de livraison et le prix des produits. Dans le cas où la commande est effectuée dans divers boutique, vous aurez autant de livraison',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Step(
+                title: Text("Bilan d'achat"),
+                content: Card(
+                  color: Colors.orange,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        isLoading
+                            ? CircularProgressIndicator() // Afficher un indicateur de chargement si les données ne sont pas encore chargées
+                            : Text(
+                                'Votre panier coûte $totalPrice F et votre livraison coûte $deliveryCost F',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

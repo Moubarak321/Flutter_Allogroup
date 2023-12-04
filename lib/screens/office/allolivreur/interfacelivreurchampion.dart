@@ -238,7 +238,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-    double commission = courseData['prix'] * 0.20;
+    
 
     return Container(
       width: double.infinity,
@@ -295,10 +295,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             'Prix: $prix FCFA',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
-          Text(
-            '20% de comission Allo Group: $commission FCFA',
-            style: TextStyle(fontSize: 18.0, color: Colors.white),
-          ),
+          
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {

@@ -21,47 +21,84 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   String? title;
   String? details;
   String? password;
+  //final prix = Recuperationprix(pickupAddress);
   // DateTime? deliveryDate;
   // TimeOfDay? deliveryTime;
   DateTime? selectedDateTime = DateTime.now();
   int currentStep = 0; // Étape actuelle du formulaire
-
-/** 
-  double calculatePrice(Position startPoint, Position endPoint) {
-  // Supposons que Position est une classe qui contient les coordonnées
-  // Vous devrez ajuster cela en fonction de votre propre modèle de données
-
-  // Calculez la distance entre les deux points (par exemple, en kilomètres)
-  double distance = calculateDistance(startPoint, endPoint);
-
-  // Appliquez vos tarifs en fonction de la distance
-    if (distance < 5) {
-      return 500.0; // Prix si la distance est inférieure à 5 km
-    } else if (distance >= 5 && distance <= 10) {
-      return 1000.0; // Prix si la distance est entre 5 km et 10 km
-    } else {
-      return 2000.0; // Prix si la distance est supérieure à 10 km
-    }
-  }
-
-  double calculateDistance(Position startPoint, Position endPoint) {
-    // Ici, vous pouvez utiliser des formules mathématiques ou des bibliothèques
-    // pour calculer la distance entre les deux points. Par exemple, la formule de Haversine
-    // ou utiliser une bibliothèque comme geolocator
-
-    // Pour cet exemple, supposons que vous avez une méthode pour calculer la distance
-    // entre deux points (en kilomètres)
-    double distance = startPoint.distanceTo(endPoint);
-
-    return distance;
-  } */
+  
 
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
 
-  
-  void saveFormDataToFirestore() {
+  Future<int> Recuperationprix(String pickupAddress) async {
+    try {
+      // Récupérer les données depuis Firestore
+      DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
+          .collection('administrateur')
+          .doc('zone')
+          .get();
+
+      // Vérifier si le document existe et s'il contient la clé 'livraison'
+      if (zoneSnapshot.exists) {
+        Map<String, dynamic>? data =
+            zoneSnapshot.data() as Map<String, dynamic>?;
+
+        if (data != null && data.containsKey('livraison')) {
+          List<dynamic> livraisonList = data['livraison'];
+
+          // Parcourir la liste des adresses de livraison pour trouver l'indice
+          for (int i = 0; i < livraisonList.length; i++) {
+            // Vérifier si l'adresse correspond à celle fournie
+            if (livraisonList[i] == pickupAddress) {
+              return await getPrixForIndice(i);
+            }
+          }
+
+          return -1; 
+        }
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération des adresses de livraison : $e');
+      
+      throw e; 
+    }
+
+    return -1; 
+  }
+
+  Future<int> getPrixForIndice(int indice) async {
+    try {
+      // Récupérer les données depuis Firestore pour les prix
+      DocumentSnapshot prixSnapshot = await FirebaseFirestore.instance
+          .collection('administrateur')
+          .doc('zone')
+          .get();
+
+      // Vérifier si le document existe et s'il contient la clé 'prix'
+      if (prixSnapshot.exists) {
+        Map<String, dynamic>? data =
+            prixSnapshot.data() as Map<String, dynamic>?;
+
+        if (data != null && data.containsKey('prix')) {
+          List<dynamic> prixList = data['prix'];
+
+          if (indice >= 0 && indice < prixList.length) {
+            return prixList[indice]; // Retourner le prix correspondant à l'indice
+          }
+        }
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération des prix : $e');
+      throw e; // Gérer l'erreur selon vos besoins
+    }
+
+    return -1; // Prix non trouvé pour l'indice donné
+  }
+
+
+  void saveFormDataToFirestore () {
     final user = getCurrentUser();
     if (user != null) {
       final courseId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -77,7 +114,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'password': password,
         'title': title,
         'details': details,
-        'prix': 500,
+        'prix': Recuperationprix(pickupAddress ?? ''),
         'status': false,
       };
 
@@ -92,7 +129,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         print("Data saved successfully to 'administrateur' collection");
       }).catchError((error) {
         // An error occurred while updating the data.
-        
       });
 
       // Adding data to 'users' collection
@@ -100,7 +136,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         'courses': FieldValue.arrayUnion([userData])
       }).then((_) {
         // Data saved successfully.
-        
       }).catchError((error) {
         // An error occurred while updating the data.
         print("Error in 'users' collection: $error");
@@ -187,7 +222,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    
                     return ConfirmationLivraison();
                   },
                 ),
@@ -210,11 +244,12 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   });
                 } else {
                   saveFormDataToFirestore();
-                  Get.snackbar("Succès", "Votre comande est envoyée au livreur");
+                  Get.snackbar(
+                      "Succès", "Votre comande est envoyée au livreur");
 
                   Navigator.push(
                     context,
-                   MaterialPageRoute(
+                    MaterialPageRoute(
                       builder: (context) => ConfirmationLivraison(),
                     ),
                   );
@@ -239,28 +274,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Prix en fonction de la distance :',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Inférieur à 5km : 500 F',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Entre 5km et 10km : 1000 F',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                        Text(
-                          'Supérieur à 10km : 2000 F',
+                          'Nous vous prions de consulter le contrat de livraison',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
@@ -368,14 +382,14 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Lieu de Récupération: $pickupAddress',
+                          'Zone de Récupération: $pickupAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
                         Text(
-                          'Lieu de Livraison: $deliveryAddress',
+                          'Destinataire: $deliveryAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
@@ -388,12 +402,34 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
-                        Text(
-                          'Prix du service : 500 F',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
+                        FutureBuilder<int>(
+                          future: Recuperationprix(pickupAddress ?? ''),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              // Afficher un indicateur de chargement si nécessaire
+                              return CircularProgressIndicator();
+                            } else {
+                              if (snapshot.hasError) {
+                                // Gérer les erreurs si elles se produisent pendant le chargement des données
+                                return Text(
+                                  'Erreur lors de la récupération du prix',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white, // Couleur du texte
+                                  ),
+                                );
+                              } else {
+                                // Afficher le prix récupéré
+                                return Text(
+                                  'Prix du service : ${snapshot.data ?? ''}',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white, // Couleur du texte
+                                  ),
+                                );
+                              }
+                            }
+                          },
                         ),
                       ],
                     ),

@@ -300,7 +300,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
         'dateDeLivraison': courseId,
         'title': "Spéciale commande restaurant $adresseRestaurant",
         'details': "Cette livraison sera en deux tours.",
-        'prix': 1000,
+        'prix': commandes[0]['prix'],
         'status': false,
         "password": marchandData["password"]
       };

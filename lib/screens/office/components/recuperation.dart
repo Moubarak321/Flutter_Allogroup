@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: must_be_immutable
-class PickupInfoWidget extends StatelessWidget {
+class PickupInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   String? pickupAddress;
   int? pickupNumero;
@@ -16,12 +17,53 @@ class PickupInfoWidget extends StatelessWidget {
   });
 
   @override
+  _PickupInfoWidgetState createState() => _PickupInfoWidgetState();
+}
+
+class _PickupInfoWidgetState extends State<PickupInfoWidget> {
+  List<String> addressList = [];
+  String? selectedAddress;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDeliveryAddresses(); // Appel de la fonction au démarrage de la page
+  }
+
+  void fetchDeliveryAddresses() async {
+  try {
+    // Récupérer les données depuis Firestore
+    DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
+        .collection('administrateur')
+        .doc('zone')
+        .get();
+
+    // Vérifier si le document existe et s'il contient la clé 'livraison'
+    if (zoneSnapshot.exists) {
+      Map<String, dynamic>? data = zoneSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('livraison')) {
+        List<dynamic> livraisonList = data['livraison'];
+        setState(() {
+          addressList =
+              List<String>.from(livraisonList); 
+          selectedAddress = addressList.isNotEmpty ? addressList.first : null;
+        });
+      }
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération des adresses de livraison : $e');
+    // Gérer l'erreur selon vos besoins
+  }
+}
+
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Adresse de Récupération',
+          "Zone d'échange",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -35,13 +77,24 @@ class PickupInfoWidget extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: TextFormField(
+          child: DropdownButtonFormField<String>(
             decoration: InputDecoration(
-              labelText: 'Adresse de récupération',
+              labelText: 'Zone',
               prefixIcon: Icon(Icons.location_on),
             ),
-            onChanged: (value) {
-              updatePickupInfo(value, pickupNumero ?? 0);
+            value: selectedAddress ?? addressList.first,
+            items: addressList.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              // Mettre à jour la valeur sélectionnée
+              setState(() {
+                selectedAddress = newValue;
+              });
+              widget.updatePickupInfo(newValue ?? '', widget.pickupNumero ?? 0);
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -53,16 +106,15 @@ class PickupInfoWidget extends StatelessWidget {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Numéro à contacter au lieu de récupération',
+          'Numéro à contacter une fois sur place',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
             color: Colors.orange,
           ),
         ),
-
         IntlPhoneField(
-          key: Key('phoneFieldKey'), 
+          key: Key('phoneFieldKey'),
           flagsButtonPadding: const EdgeInsets.all(5),
           dropdownIconPosition: IconPosition.trailing,
           initialCountryCode: 'BJ',
@@ -77,12 +129,13 @@ class PickupInfoWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(35)),
             ),
           ),
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.phone,
           onChanged: (value) {
             // Extraire le numéro de téléphone
             final phoneNumber = value.completeNumber;
-              // Appeler la fonction pour mettre à jour les données
-              updatePickupInfo(pickupAddress ?? '', int.parse(phoneNumber));    
+            // Appeler la fonction pour mettre à jour les données
+            widget.updatePickupInfo(
+                widget.pickupAddress ?? '', int.tryParse(phoneNumber) ?? 0);
           },
           validator: (value) {
             if (value == null) {

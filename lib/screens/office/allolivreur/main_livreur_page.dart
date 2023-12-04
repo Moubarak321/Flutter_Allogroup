@@ -72,11 +72,11 @@ class Delivery extends StatelessWidget {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de Récupération: $addressRecuperation',
+            "Zone d'échange : $addressRecuperation",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de Livraison: $addressLivraison',
+            'Destinataire: $addressLivraison',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(

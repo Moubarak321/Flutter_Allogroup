@@ -21,7 +21,7 @@ class DeliveryInfoWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Adresse de Destination',
+          'Identifiant',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -37,8 +37,8 @@ class DeliveryInfoWidget extends StatelessWidget {
           ),
           child: TextFormField(
             decoration: InputDecoration(
-              labelText: 'Adresse de livraison',
-              prefixIcon: Icon(Icons.location_on),
+              labelText: 'Prénom',
+              prefixIcon: Icon(Icons.person_2_rounded),
             ),
             onChanged: (value) {
               // Appeler la fonction pour mettre à jour les données
@@ -55,7 +55,7 @@ class DeliveryInfoWidget extends StatelessWidget {
         SizedBox(height: 20.0),
 
         Text(
-          'Numéro à contacter au lieu de livraison',
+          'Numéro à contacter une fois sur place',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,

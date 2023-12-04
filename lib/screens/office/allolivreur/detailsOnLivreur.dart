@@ -116,7 +116,7 @@ class DetailsOnLivraison extends StatelessWidget {
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
-              'Adresse de récupération: ${courseData['addressRecuperation']}',
+              "Zone d'échange: ${courseData['addressRecuperation']}",
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
@@ -124,7 +124,7 @@ class DetailsOnLivraison extends StatelessWidget {
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
-              'Adresse de Livraison: ${courseData['addressLivraison']}',
+              'Destinataire: ${courseData['addressLivraison']}',
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(

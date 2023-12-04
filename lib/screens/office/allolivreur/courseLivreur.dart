@@ -68,68 +68,6 @@ class _CourseLivreurState extends State<CourseLivreur> {
     }
   }
 
-  // void verificationCourseTermine(String password) async {
-  //   print("---------------------$password");
-  //   final User? user = FirebaseAuth.instance.currentUser;
-  //   if (user != null) {
-  //     try {
-  //       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-  //           .collection('champions')
-  //           .doc(user.uid)
-  //           .get();
-  //       // print("$userDoc----------------------------");
-
-  //       if (userDoc.exists) {
-  //         // Vérifier si l'utilisateur a le champ "role" égal à "Champion"
-  //         Map<String, dynamic>? userData =
-  //             userDoc.data() as Map<String, dynamic>?;
-  //         // print("$userData----------------------------");
-
-  //         if (userData != null && userData.containsKey('commandes')) {
-  //           List<dynamic>? commandes = userData['commandes'];
-
-  //           String pass = commandes?[0]["password"] ?? "";
-  //           String pass0 = pass.trim();
-  //           password = password.trim();
-  //           print("pass----------------------------$pass0");
-  //           print("password----------------------------$password");
-
-  //           if (password == pass0) {
-  //             // L'utilisateur a le rôle de champion
-  //             print("ok----------------------------");
-  //             final User? user = FirebaseAuth.instance.currentUser;
-
-  //             await FirebaseFirestore.instance
-  //                 .collection('champions')
-  //                 .doc(user?.uid)
-  //                 .update({
-  //               'livraisons': FieldValue.arrayUnion(userData['commandes'][0])
-  //             });
-  //             print("ok2----------------------------------");
-
-  //             // Supprimez le produit spécifique de la liste
-  //             // commandes.removeAt(index);
-
-  //             // Mettez à jour les données du marchand avec la liste de commandes modifiée
-  //             await FirebaseFirestore.instance
-  //                 .collection('champions')
-  //                 .doc(user?.uid)
-  //                 .update({'commandes': []});
-
-  //             Get.snackbar("Super!", "Vous venez de terminer votre course.");
-  //           }
-  //           Get.snackbar("Erreur", "Votre course n'est pas encore terminée");
-  //         }
-  //       }
-  //     } catch (e) {
-  //       print('Erreur lors de la récupération du rôle de champion : $e');
-  //     }
-  //   }
-  // }
-
-
-
-
 
  void verificationCourseTermine(String password) async {
   print("---------------------$password");
@@ -244,7 +182,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de récupération: $adresseRecuperation',
+            "Zone d'échange: $adresseRecuperation",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
@@ -252,7 +190,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de Livraison: $adresseLivraison',
+            'Destinataire: $adresseLivraison',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
