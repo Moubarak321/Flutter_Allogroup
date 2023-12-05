@@ -109,7 +109,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
         final userData = userDoc.data();
 
         if (userData != null && userData.containsKey('wallet')) {
-          final double walletAmount = userData['wallet'];
+          final int walletAmount = userData['wallet'];
 
           // Vérifier si le montant dans le wallet est suffisant pour la course
           if (walletAmount >= coursePrice) {
