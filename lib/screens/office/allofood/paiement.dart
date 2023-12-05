@@ -172,7 +172,7 @@ Future<void> envoi() async {
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
-                'paye': int.parse(order['prix']) * int.parse(order['quantite']),
+                'paye': (int.parse(order['prix']) * int.parse(order['quantite'])).toString(),
               }
             ]),
           });

@@ -21,10 +21,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
   List<Map<String, dynamic>> tousLesProduits = [];
   List<Map<String, dynamic>> commandes = [];
 
-  String getTotalPrice() {
-    int totalPrice = calculateTotalPrice();
-    return "$totalPrice F";
-  }
+  
 
   Future<dynamic> GetProductFromCart() async {
     try {
@@ -72,18 +69,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
     return FirebaseAuth.instance.currentUser;
   }
 
-  int calculateTotalPrice() {
-    int totalPrice = 0;
-    for (var product in tousLesProduits) {
-      var prix = product['prix'];
-      var qte = product['quantite'];
-      var intQuantite = int.parse(qte);
-      var intPrix = int.parse(prix);
-      var sousTotal = intQuantite * intPrix;
-      totalPrice += sousTotal;
-    }
-    return totalPrice;
-  }
 
   @override
   void initState() {
@@ -116,16 +101,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "Votre avoir est de ${getTotalPrice()}",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange),
-              ),
-            ),
             if (isLoading)
               Center(
                 child: CircularProgressIndicator(),
@@ -147,7 +122,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                   var imageUrl = article['image'];
                   var qte = article['quantite'];
                   var paye = article['paye'];
-                  var prix = article['prix'];
+                 
                   
                   return SingleChildScrollView(
                     child: Container(
@@ -199,10 +174,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                   children: [
                                     BigText(
                                       text: title,
-                                    ),
-                                    SmallText(
-                                      text: prix + " FCFA",
-                                      size: Dimensions.font20,
                                     ),
                                     SmallText(
                                       text: paye + " FCFA",
