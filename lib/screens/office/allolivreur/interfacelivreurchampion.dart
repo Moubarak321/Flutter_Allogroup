@@ -9,11 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
 
-
 class InterFaceLivreurChampion extends StatefulWidget {
   @override
-  _InterFaceLivreurChampionState createState() => _InterFaceLivreurChampionState();
+  _InterFaceLivreurChampionState createState() =>
+      _InterFaceLivreurChampionState();
 }
+
 class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
@@ -124,12 +125,14 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
               final List<dynamic> userCourses = champData['commandes'];
 
               if (userCourses.isEmpty) {
+                var commision = coursePrice * 0.2;
+                int roundedCommission = (commision).toInt();
                 // Mettre à jour le wallet de l'utilisateur dans Firestore
                 await FirebaseFirestore.instance
                     .collection('users')
                     .doc(user.uid)
                     .update({
-                  'wallet': walletAmount - coursePrice * 0.20,
+                  'wallet': walletAmount - roundedCommission,
                 });
                 return true;
               } else {
@@ -223,7 +226,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     }
   }
 
-
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
@@ -238,7 +240,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-    
 
     return Container(
       width: double.infinity,
@@ -299,7 +300,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             '20% de commission Allô Group: $commission FCFA',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
-          
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
