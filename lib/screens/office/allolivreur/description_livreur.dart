@@ -98,50 +98,48 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   }
 
 
-  void saveFormDataToFirestore () {
-    final user = getCurrentUser();
-    if (user != null) {
-      final courseId = DateTime.now().millisecondsSinceEpoch.toString();
+ void saveFormDataToFirestore() async {
+  final user = getCurrentUser();
+  if (user != null) {
+    final courseId = DateTime.now().millisecondsSinceEpoch.toString();
 
-      final userData = {
-        'id': courseId,
-        'type_courses': 'Livraison de bien',
-        'addressRecuperation': pickupAddress,
-        'numeroARecuperation': pickupNumero,
-        'addressLivraison': deliveryAddress,
-        'numeroALivraison': deliveryNumero,
-        'dateDeLivraison': selectedDateTime,
-        'password': password,
-        'title': title,
-        'details': details,
-        'prix': Recuperationprix(pickupAddress ?? ''),
-        'status': false,
-      };
+    final userData = {
+      'id': courseId,
+      'type_courses': 'Livraison de bien',
+      'addressRecuperation': pickupAddress,
+      'numeroARecuperation': pickupNumero,
+      'addressLivraison': deliveryAddress,
+      'numeroALivraison': deliveryNumero,
+      'dateDeLivraison': selectedDateTime,
+      'password': password,
+      'title': title,
+      'details': details,
+      'prix': await Recuperationprix(pickupAddress ?? ''),
+      'status': false,
+    };
 
+    try {
       // Adding data to 'administrateur' collection
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('administrateur')
           .doc("commandeCourses")
           .update({
         'courses': FieldValue.arrayUnion([userData])
-      }).then((_) {
-        // Data saved successfully.
-        print("Data saved successfully to 'administrateur' collection");
-      }).catchError((error) {
-        // An error occurred while updating the data.
       });
+      print("Data saved successfully to 'administrateur' collection");
 
       // Adding data to 'users' collection
-      FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
         'courses': FieldValue.arrayUnion([userData])
-      }).then((_) {
-        // Data saved successfully.
-      }).catchError((error) {
-        // An error occurred while updating the data.
-        print("Error in 'users' collection: $error");
       });
+      print("Data saved successfully to 'users' collection");
+    } catch (error) {
+      // Handle errors if any
+      print("Error: $error");
     }
   }
+}
+
 
   void sendNotificationForPromo() async {}
 

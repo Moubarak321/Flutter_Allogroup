@@ -408,6 +408,14 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
                                           "OK, votre champion s'occupe de la livraison");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                          return EnCoursDeTraitement();
+                                              },
+                                            ),
+                                        );     
                                     },
                                     child: Column(
                                       children: [
@@ -431,6 +439,14 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
                                           "Un Champion Allo livreur passera chercher la commande");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                          return EnCoursDeTraitement();
+                                              },
+                                            ),
+                                        );    
                                     },
                                     child: Column(
                                       children: [
