@@ -109,7 +109,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Commandes traitées"),
+            Text("Commandes en cours de traitement"),
           ],
         ),
       ),
@@ -148,8 +148,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                   var qte = article['quantite'];
                   var paye = article['paye'];
                   var prix = article['prix'];
-                  print(paye);
-                  print(prix);
+                  
                   return SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.only(

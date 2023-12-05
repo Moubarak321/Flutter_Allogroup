@@ -97,7 +97,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     return false;
   }
 
-  Future<bool> isUserEligibleForCourse(double coursePrice) async {
+  Future<bool> isUserEligibleForCourse(int coursePrice) async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -233,7 +233,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     final prix = courseData['prix'];
     final adresseLivraison = courseData['addressLivraison'];
     final titre = courseData['title'];
-
+    final commission = courseData['prix'] * 0.2;
     final livraison = courseData['dateDeLivraison'];
     final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
     final formattedDate =
@@ -293,6 +293,10 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
           ),
           Text(
             'Prix: $prix FCFA',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
+          Text(
+            '20% de commission Allo Groupe: $commission FCFA',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           
