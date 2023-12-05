@@ -296,7 +296,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            '20% de commission Allo Groupe: $commission FCFA',
+            '20% de commission Allô Group: $commission FCFA',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           
