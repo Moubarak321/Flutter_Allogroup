@@ -94,7 +94,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Commandes en cours de traitement"),
+            Text("En traitement"),
           ],
         ),
       ),
