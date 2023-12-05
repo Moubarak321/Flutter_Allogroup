@@ -43,7 +43,6 @@ Future<dynamic> GetProductFromCart() async {
       List<dynamic> cart = userData['cart'] as List<dynamic>;
 
       for (var cartItem in cart) {
-        
         if (cartItem['status'] == false) {
           products.add(cartItem);
         }
@@ -64,20 +63,6 @@ Future<dynamic> GetProductFromCart() async {
 void sendNotificationForPromo() async {
   
 } */
-
-
-int calculateTotalPrice() {
-  int totalPrice = 0; 
-  for (var product in tousLesProduits) {
-    var prix = product['prix'];
-    var qte = product['quantite'];
-    var intQuantite = int.parse(qte);
-    var intPrix = int.parse(prix);
-    var sousTotal = intQuantite * intPrix;
-    totalPrice += sousTotal;
-  }
-  return totalPrice;
-}
 
 Future<int> Recuperationprix(String pickupAddress) async {
   try {
@@ -177,7 +162,7 @@ Future<void> envoi() async {
           DocumentReference merchantDocRef = FirebaseFirestore.instance
               .collection('marchands')
               .doc(merchantId);
-        
+
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
             'commandes': FieldValue.arrayUnion([
@@ -187,14 +172,17 @@ Future<void> envoi() async {
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
-                'paye':  int.parse(order['prix']) * int.parse(order['quantite']) ,
+                'paye': int.parse(order['prix']) * int.parse(order['quantite']),
               }
             ]),
           });
+          final prix = int.parse(order['prix']) * int.parse(order['quantite']);
+          final nom = order['boutique'];
+
+          Get.snackbar("Succès",
+              "Commande envoyée au marchand $nom et vous payerai $prix F");
         }
       }
-
-      Get.snackbar("Succès", "Commandes envoyées aux marchands");
     } else {
       Get.snackbar("Erreur", "Impossible d'envoyer les produits");
     }
@@ -252,7 +240,7 @@ bool isStepValid() {
     case 3:
       return true;
     case 4:
-      return true;  
+      return true;
     default:
       return false;
   }
@@ -261,7 +249,7 @@ bool isStepValid() {
 class _UtilisateurState extends State<Utilisateur> {
   int totalPrice = 0;
   int deliveryCost = 0;
-  bool isLoading = true; 
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -272,7 +260,6 @@ class _UtilisateurState extends State<Utilisateur> {
   Future<void> fetchData() async {
     // Récupération des valeurs du panier et de la livraison
     fetchProductsFromCart();
-    totalPrice = calculateTotalPrice();
     deliveryCost = await Recuperationprix(pickupAddress ?? '');
     isLoading = false; // Mettre à jour l'état du chargement
     setState(() {});
@@ -291,6 +278,7 @@ class _UtilisateurState extends State<Utilisateur> {
       });
     }
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -432,7 +420,7 @@ class _UtilisateurState extends State<Utilisateur> {
                 ),
               ),
               Step(
-                title: Text("Bilan d'achat"),
+                title: Text("Sécurisation"),
                 content: Card(
                   color: Colors.orange,
                   child: Padding(
@@ -440,20 +428,13 @@ class _UtilisateurState extends State<Utilisateur> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                         Text(
-                            "Vos achat sont effectués dans boutiques",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
                         Text(
-                            'Votre panier coûte  F et votre livraison coûte F',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
+                          "Le code de sécurité est confié à la charge du marchand",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
+                        ),
                       ],
                     ),
                   ),

@@ -45,7 +45,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
       }
 
       if (products.isEmpty) {
-        return "Le panier est vide"; 
+        return "Le panier est vide";
       }
 
       return products;
@@ -71,8 +71,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
-
-  
 
   int calculateTotalPrice() {
     int totalPrice = 0;
@@ -103,7 +101,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pop(context); 
+                Navigator.pop(context);
               },
               child: AppIcon(
                 icon: Icons.arrow_back,
@@ -138,7 +136,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
               )
             else
               // Expanded(
-      
+
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -149,7 +147,9 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                   var imageUrl = article['image'];
                   var qte = article['quantite'];
                   var paye = article['paye'];
-                  var prix = article['prix'];        
+                  var prix = article['prix'];
+                  print(paye);
+                  print(prix);
                   return SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.only(
@@ -182,13 +182,14 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                               // width: 200,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(Dimensions.radius20),
+                                  topRight:
+                                      Radius.circular(Dimensions.radius20),
                                   bottomRight:
                                       Radius.circular(Dimensions.radius20),
                                 ),
                                 color: Colors.white,
                               ),
-      
+
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     left: Dimensions.width10,
@@ -202,6 +203,10 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                     ),
                                     SmallText(
                                       text: prix + " FCFA",
+                                      size: Dimensions.font20,
+                                    ),
+                                    SmallText(
+                                      text: paye + " FCFA",
                                       size: Dimensions.font20,
                                     ),
                                     Row(
@@ -224,7 +229,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                                   size: Dimensions.font20,
                                                   color: const Color.fromARGB(
                                                       255, 139, 105, 52)),
-      
                                               SizedBox(
                                                 width: Dimensions.width10 / 2,
                                               ),
@@ -238,7 +242,6 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                           ),
                                         ),
                                         GestureDetector(
-                                          
                                           child: Container(
                                             padding: EdgeInsets.only(
                                                 top: Dimensions.height10,
@@ -246,13 +249,13 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
                                                 left: Dimensions.width10,
                                                 right: Dimensions.width10),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(
-                                                  Dimensions.radius20),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      Dimensions.radius20),
                                               color: Color.fromRGBO(
                                                   10, 80, 137, 0.8),
                                             ),
                                             child: GestureDetector(
-                                              
                                               child: Icon(
                                                 Icons.sticky_note_2_outlined,
                                                 color: Colors.white,
