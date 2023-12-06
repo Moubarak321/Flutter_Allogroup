@@ -41,7 +41,7 @@ class _WalletState extends State<Wallet> {
         }
       }
     } catch (e) {
-      print("Erreur lors de la récupération du solde du portefeuille : $e");
+      // print("Erreur lors de la récupération du solde du portefeuille ");
     }
 
     // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
@@ -69,7 +69,7 @@ class _WalletState extends State<Wallet> {
         }
       }
     } catch (e) {
-      print("Erreur lors de la récupération du solde du portefeuille : $e");
+      // print("Erreur lors de la récupération du solde du portefeuille ");
     }
 
     // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
@@ -150,7 +150,7 @@ class _WalletState extends State<Wallet> {
                   SizedBox(height: 8.0),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: "$name",
+                      labelText: name,
                       border: OutlineInputBorder(),
                     ),
                     // keyboardType: TextInputType.number,

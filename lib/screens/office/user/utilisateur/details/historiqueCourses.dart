@@ -30,20 +30,20 @@ class HistoriqueCourses extends StatelessWidget {
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFe8e8e8),
-                        blurRadius: 5.0,
-                        offset: Offset(0, 5),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-5, 0),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(5, 0),
-                      ),
-                    ],
+          BoxShadow(
+            color: Color(0xFFe8e8e8),
+            blurRadius: 5.0,
+            offset: Offset(0, 5),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(-5, 0),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(5, 0),
+          ),
+        ],
         color: Colors.orange,
         // border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8.0),
@@ -98,18 +98,15 @@ class HistoriqueCourses extends StatelessWidget {
             color: Colors.blue,
             height: 100,
             child: Center(
-              
               child: Text(
-                'Toutes vos courses',
+                'Vos dernières courses',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
                 ),
-                
               ),
             ),
           ),
-         
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -136,22 +133,24 @@ class HistoriqueCourses extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['courses'] as List<dynamic>;
-                
+                final latestCourses = List<Map<String, dynamic>>.from(
+                  (userData['courses'] as List<dynamic>).take(5),
+                );
+
                 return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: courses.length,
-                itemBuilder: (context, index) {
-                final courseData = courses[index] as Map<String, dynamic>;
-                  // Check if the status is true before building the course card
-                  if (courseData['status'] == false) {
-                    return buildCourseCard(courseData);
-                  } else {
-                    // If the status is false, return an empty container or null
-                    return Container(); // You can also return null if you want to skip this item
-                  }
-                },
-              );
+                  scrollDirection: Axis.vertical,
+                  itemCount: latestCourses.length,
+                  itemBuilder: (context, index) {
+                    final courseData = latestCourses[index];
+                    // Check if the status is true before building the course card
+                    if (courseData['status'] == false) {
+                      return buildCourseCard(courseData);
+                    } else {
+                      // If the status is false, return an empty container or null
+                      return Container(); // You can also return null if you want to skip this item
+                    }
+                  },
+                );
               },
             ),
           ),

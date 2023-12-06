@@ -1,5 +1,3 @@
-// ignore: file_names
-// import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/components/foodcard_body.dart';

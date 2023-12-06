@@ -106,30 +106,21 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
 
       for (var commandeASupprimer in commandesASupprimer) {
         // Recherchez l'index de chaque commande à supprimer dans la liste
-        print("---------------Commande Select");
         int index = commandes
             .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
-        print("---------------Fin Commande Select");
 
         if (index != -1) {
           final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
               commandes[index]['dateLivraison'].millisecondsSinceEpoch);
-          print("deliveryTime*******************$deliveryTime");
 
           final currentTimeInSeconds =
               currentTime.millisecondsSinceEpoch ~/ 1000;
-          print("currentTimeInSeconds*******************$currentTimeInSeconds");
 
           final deliveryTimeInSeconds =
               deliveryTime.millisecondsSinceEpoch ~/ 1000;
-          print(
-              "deliveryTimeInSeconds*******************$deliveryTimeInSeconds");
 
           final differenceInSeconds =
               (deliveryTimeInSeconds - currentTimeInSeconds).abs();
-
-          print(
-              "*******************Difference en secondes : $differenceInSeconds");
 
           if (differenceInSeconds < 3600) {
             // Enregistrez les données de la commande sous la clé 'traitement'
@@ -151,17 +142,16 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                   .collection('marchands')
                   .doc(user.uid)
                   .update({'commandes': commandes});
-
-              print("Commande supprimée de la liste avec succès");
             } catch (error) {
-              print("Erreur lors de la suppression de la commande : $error");
+              print("");
             }
           } else {
             Get.snackbar("Infos",
-                "Cette commande ne peut pas être livrée pour le moment.");
+                "Cette commande ne peut pas être livrée pour le moment.",
+                backgroundColor: Colors.orange, colorText: Colors.white);
           }
         } else {
-          print("La commande n'a pas été trouvée dans la liste");
+          print("");
         }
       }
     }
@@ -401,21 +391,23 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                   GestureDetector(
                                     onTap: () {
                                       // Action à effectuer pour Mon Livreur
-                                      
+
                                       envoicommandaire(
                                           commandesParAdresse, marchandData);
                                       removeFromCommandList(
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
-                                          "OK, votre champion s'occupe de la livraison");
+                                          "OK, votre champion s'occupe de la livraison",
+                                          backgroundColor: Colors.orange,
+                                          colorText: Colors.white);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) {
-                                          return EnCoursDeTraitement();
-                                              },
-                                            ),
-                                        );     
+                                            return EnCoursDeTraitement();
+                                          },
+                                        ),
+                                      );
                                     },
                                     child: Column(
                                       children: [
@@ -430,7 +422,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                       width: 10), // Espacement entre les icônes
                                   GestureDetector(
                                     onTap: () {
-                                     
                                       sendFormDataToDelivery(
                                           commandesParAdresse, marchandData);
                                       envoicommandaire(
@@ -438,15 +429,17 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                       removeFromCommandList(
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
-                                          "Un Champion Allo livreur passera chercher la commande");
+                                          "Un Champion Allo livreur passera chercher la commande",
+                                          backgroundColor: Colors.orange,
+                                          colorText: Colors.white);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) {
-                                          return EnCoursDeTraitement();
-                                              },
-                                            ),
-                                        );    
+                                            return EnCoursDeTraitement();
+                                          },
+                                        ),
+                                      );
                                     },
                                     child: Column(
                                       children: [
@@ -473,6 +466,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                             var numeroClient = commandData["numeroLivraison"];
                             var adresseClient = commandData["lieuLivraison"];
                             var quantite = commandData["quantite"];
+                            var paye = commandData["paye"];
                             final livraison = commandData["dateLivraison"];
                             final date = DateTime.fromMillisecondsSinceEpoch(
                                 livraison.seconds * 1000);
@@ -572,6 +566,16 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                                           Icons.balance_rounded,
                                                       text: quantite,
                                                       iconColor: Colors.red,
+                                                    ),
+                                                    IconAndTextWidget(
+                                                      icon: Icons.money_rounded,
+                                                      text: "$paye F",
+                                                      iconColor: Color.fromRGBO(
+                                                        10,
+                                                        80,
+                                                        137,
+                                                        0.8,
+                                                      ),
                                                     ),
                                                     IconAndTextWidget(
                                                       icon:

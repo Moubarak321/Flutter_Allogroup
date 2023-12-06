@@ -29,11 +29,9 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
 
   Widget buildProductList() {
     List tousLesProduitsMarchant = marchand['products'];
-    print(
-        "tousLesProduitsMarchant...........................$tousLesProduitsMarchant");
+   
     String boutique = marchand["name"];
-    // print("////////////$boutique");
-    //print("Tous les produits********************$tousLesProduitsMarchant");
+    
     if (tousLesProduitsMarchant.isNotEmpty) {
       return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -129,7 +127,8 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 GestureDetector(
                                   onTap: () {
                                     Get.snackbar("Infos",
-                                        "Ce produit vous sera livré dans environ $duree min");
+                                        "Ce produit vous sera livré dans environ $duree min", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
                                     icon: Icons.access_time_rounded,
@@ -139,7 +138,8 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.snackbar("Promo", "$promo");
+                                    Get.snackbar("Promo", "$promo", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
                                     icon: Icons.discount_rounded,

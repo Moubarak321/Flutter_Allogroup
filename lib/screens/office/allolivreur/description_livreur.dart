@@ -21,9 +21,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   String? title;
   String? details;
   String? password;
-  //final prix = Recuperationprix(pickupAddress);
-  // DateTime? deliveryDate;
-  // TimeOfDay? deliveryTime;
+  
   DateTime? selectedDateTime = DateTime.now();
   int currentStep = 0; // Étape actuelle du formulaire
   
@@ -62,7 +60,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     } catch (e) {
       print('Erreur lors de la récupération des adresses de livraison : $e');
       
-      throw e; 
     }
 
     return -1; 
@@ -90,8 +87,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         }
       }
     } catch (e) {
-      print('Erreur lors de la récupération des prix : $e');
-      throw e; // Gérer l'erreur selon vos besoins
+      // print('Erreur lors de la récupération des prix : $e');
     }
 
     return -1; // Prix non trouvé pour l'indice donné
@@ -126,16 +122,16 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
           .update({
         'courses': FieldValue.arrayUnion([userData])
       });
-      print("Data saved successfully to 'administrateur' collection");
+      // print("Data saved successfully to 'administrateur' collection");
 
       // Adding data to 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
         'courses': FieldValue.arrayUnion([userData])
       });
-      print("Data saved successfully to 'users' collection");
+      // print("Data saved successfully to 'users' collection");
     } catch (error) {
       // Handle errors if any
-      print("Error: $error");
+      // print("Error: $error");
     }
   }
 }
@@ -243,7 +239,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 } else {
                   saveFormDataToFirestore();
                   Get.snackbar(
-                      "Succès", "Votre comande est envoyée au livreur");
+                      "Succès", "Votre comande est envoyée au livreur", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
 
                   Navigator.push(
                     context,

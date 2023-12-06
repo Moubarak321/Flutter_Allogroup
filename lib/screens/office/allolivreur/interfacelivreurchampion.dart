@@ -91,7 +91,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
           }
         }
       } catch (e) {
-        print('Erreur lors de la récupération du rôle de champion : $e');
+        // print('Erreur lors de la récupération du rôle de champion : $e');
       }
     }
 
@@ -136,28 +136,28 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                 });
                 return true;
               } else {
-                print('L\'utilisateur a des cours en instance');
+                // print('L\'utilisateur a des cours en instance');
                 return false;
               }
             } else {
-              print('Champ "courses" manquant dans le document de champion');
+              // print('Champ "courses" manquant dans le document de champion');
               return false;
             }
           } else {
-            print('Solde insuffisant dans le portefeuille');
+            // print('Solde insuffisant dans le portefeuille');
             return false;
           }
         } else {
-          print('Champ "wallet" manquant dans le document de l\'utilisateur');
+          // print('Champ "wallet" manquant dans le document de l\'utilisateur');
           return false;
         }
       } catch (error) {
-        print(
-            'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
+        // print(
+            // 'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
         return false; // Erreur lors de la récupération des données de l'utilisateur
       }
     } else {
-      print('Utilisateur non authentifié');
+      // print('Utilisateur non authentifié');
       return false; // Utilisateur non authentifié
     }
   }
@@ -216,13 +216,13 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             arguments: courseData,
           );
         } else {
-          print('Document utilisateur non trouvé');
+          // print('Document utilisateur non trouvé');
         }
       } catch (error) {
-        print('Erreur lors de la validation de la course : $error');
+        // print('Erreur lors de la validation de la course : $error');
       }
     } else {
-      print('Utilisateur non authentifié');
+      // print('Utilisateur non authentifié');
     }
   }
 
@@ -308,10 +308,12 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
               if (isEligible) {
                 validerCourse(courseData);
                 Get.snackbar(
-                    "Infos", "Vous pouvez passer à la livraison, bonne chance");
+                    "Infos", "Vous pouvez passer à la livraison, bonne chance", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
               } else {
                 Get.snackbar(
-                    "Infos", "Vous n'êtes pas éligible pour la course");
+                    "Infos", "Vous n'êtes pas éligible pour la course", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
               }
             },
             style: ElevatedButton.styleFrom(

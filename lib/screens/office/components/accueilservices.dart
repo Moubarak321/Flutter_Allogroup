@@ -39,20 +39,20 @@ class _ButtonServicesState extends State<ButtonServices> {
             .collection('users')
             .doc(user.uid)
             .get();
-        var a = userDoc.data();
-        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ $a ");
+        // var a = userDoc.data();
+        // print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ $a ");
         // Vérifier si le champ "role" existe dans le document
         if (userDoc.exists && userDoc.data() is Map<String, dynamic>) {
-          print(
-              "****************************role******************************");
+          // print(
+              // "****************************role******************************");
           // Récupérer et retourner la valeur du champ "role"
-          print("33333333333333333333333333333333333" +
-              (userDoc.data() as Map<String, dynamic>)['role']);
+          // print("33333333333333333333333333333333333" +
+              // (userDoc.data() as Map<String, dynamic>)['role']);
           return (userDoc.data() as Map<String, dynamic>)['role'];
         }
       }
     } catch (e) {
-      print("Erreur lors de la récupération du rôle de l'utilisateur : $e");
+      // print("Erreur lors de la récupération du rôle de l'utilisateur : $e");
     }
 
     // Retourner null si l'utilisateur n'a pas de rôle défini

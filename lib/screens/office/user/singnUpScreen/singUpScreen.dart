@@ -20,7 +20,7 @@ class SignUp extends StatefulWidget {
         token = await _firebaseMessaging.getToken();
         
       } catch (e) {
-       print('Erreur lors de la récupération du token FCM : $e');
+      //  print('Erreur lors de la récupération du token FCM ');
       }
 
       return token;
@@ -123,13 +123,13 @@ class _SignUpState extends State<SignUp> {
           email: email,
           password: password,
         );
-        print(
-            "==================================user created auth==================================");
+        // print(
+            // "==================================user created auth==================================");
         // Si l'utilisateur Firebase Auth est créé avec succès, enregistrez les données dans Firebase Firestore
         if (userCredential.user != null) {
           String userId = userCredential.user!.uid;
-          print(
-              "==================================ajout base et crea firestore==================================");
+          // print(
+              // "==================================ajout base et crea firestore==================================");
 
           
           // Créez une référence à la collection "users" dans Firestore
@@ -156,16 +156,16 @@ class _SignUpState extends State<SignUp> {
             });
             _showErrorDialog('Veuillez autoriser les notifications pour utiliser cette application.');
           }    
-          print("Utilisateur enregistré dans Firebase Firestore avec succès.");
+          // print("Utilisateur enregistré dans Firebase Firestore avec succès.");
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => SignIn(),
           ));
         } else {
-          print("L'utilisateur Firebase Auth n'a pas été créé avec succès.");
+          // print("L'utilisateur Firebase Auth n'a pas été créé avec succès.");
         }
       } catch (e) {
         // Gérez les erreurs d'inscription ici
-        print("Erreur d'inscription : $e");
+        // print("Erreur d'inscription : $e");
       }
     }
   }

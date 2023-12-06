@@ -37,7 +37,7 @@ void _handleSubmit() async {
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   if (_passwordController.text != _confirmPasswordController.text) {
-    print("Les mots de passe ne correspondent pas.");
+    // print("Les mots de passe ne correspondent pas.");
     return;
   }
 
@@ -48,15 +48,15 @@ void _handleSubmit() async {
     if (user != null && user.emailVerified) {
       // L'utilisateur a cliqué sur le lien de vérification de l'e-mail
       await user.updatePassword(_passwordController.text);
-      print("Mot de passe mis à jour avec succès.");
+      // print("Mot de passe mis à jour avec succès.");
       _showSuccesDialog("Votre mot de passe a été mis à jour avec succès.");
     } else {
       // L'utilisateur n'a pas confirmé la réinitialisation du mot de passe
-      print("L'utilisateur n'a pas confirmé la réinitialisation du mot de passe.");
+      // print("L'utilisateur n'a pas confirmé la réinitialisation du mot de passe.");
       // Vous pouvez afficher un message d'erreur approprié ici.
     }
   } catch (e) {
-    print("Erreur lors de la mise à jour du mot de passe : $e");
+    // print("Erreur lors de la mise à jour du mot de passe : $e");
     // Gérez les erreurs de mise à jour du mot de passe
   }
 }

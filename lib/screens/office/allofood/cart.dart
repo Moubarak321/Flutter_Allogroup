@@ -81,9 +81,7 @@ class _CartState extends State<Cart> {
     try {
       List<Map<String, dynamic>> updatedCart =
           List.from(tousLesProduits); // Copie de la liste
-      // print("...........$updatedCart");
       updatedCart.removeAt(index);
-      //print("...........$productToRemove");   final productToRemove = 
 
       // Mettez à jour le panier dans Firestore avec le produit supprimé.
       final user = getCurrentUser();
@@ -100,10 +98,12 @@ class _CartState extends State<Cart> {
         tousLesProduits = updatedCart;
       });
 
-      Get.snackbar("Succès", "Le produit a été retiré du panier");
+      Get.snackbar("Succès", "Le produit a été retiré du panier", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
     } catch (e) {
       Get.snackbar("Erreur",
-          "Une erreur s'est produite lors de la suppression du produit : $e");
+          "Une erreur s'est produite lors de la suppression du produit ", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
     }
   }
 
@@ -301,35 +301,17 @@ class _CartState extends State<Cart> {
                                               SizedBox(
                                                 width: Dimensions.width10 / 2,
                                               ),
-                                              // GestureDetector(
-                                              //   onTap: () {
-                                              //     print("increment");
-                                              //     // setQuantity(true);
-                                              //   },
-                                              //   child: Icon(
-                                              //     Icons.add,
-                                              //     color:
-                                              //         Color.fromRGBO(10, 80, 137, 0.8),
-                                              //   ),
-                                              // ),
+                                              
                                             ],
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            //  var userId;
-                                            // addProductToCart(produit as String, userId );
-                                            // AjouterAuPanier();
+                                            
                                             Get.snackbar("Succes",
-                                                "Ce produit à bien été ajouté au panier");
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder: (context) {
-                                            //       return Cart();
-                                            //     },
-                                            //   ),
-                                            // );
+                                                "Ce produit à bien été ajouté au panier", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
+                                           
                                           },
                                           child: Container(
                                             padding: EdgeInsets.only(

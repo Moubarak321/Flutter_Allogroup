@@ -44,7 +44,7 @@ class _HeaderState extends State<Header> {
         final String url = await storageReference.getDownloadURL();
         imageUrl = url;
       } catch (error) {
-        print("Erreur lors de la récupération de l'URL de l'image : $error");
+        // print("Erreur lors de la récupération de l'URL de l'image : $error");
       }
     }
 
@@ -99,7 +99,7 @@ class _HeaderState extends State<Header> {
         }
       }
     } catch (e) {
-      print("Erreur lors de la récupération du solde du portefeuille : $e");
+      // print("Erreur lors de la récupération du solde du portefeuille : $e");
     }
 
     // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
@@ -232,7 +232,7 @@ class _HeaderState extends State<Header> {
                         ),
                         const Spacer(),
                          Text(
-                          fund +" CFA",
+                          "$fund CFA",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

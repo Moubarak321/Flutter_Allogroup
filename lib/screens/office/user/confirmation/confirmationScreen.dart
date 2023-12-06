@@ -48,7 +48,7 @@ class _ConfirmationState extends State<Confirmation> {
         ));
       } catch (e) {
         // Une erreur s'est produite lors de la vérification, vous pouvez afficher un message d'erreur.
-        print("Erreur de vérification : $e");
+        // print("Erreur de vérification : $e");
       }
     }
   }

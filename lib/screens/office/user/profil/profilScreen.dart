@@ -39,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
         final String url = await storageReference.getDownloadURL();
         imageUrl = url;
       } catch (error) {
-        print("Erreur lors de la récupération de l'URL de l'image : $error");
+        // print("Erreur lors de la récupération de l'URL de l'image : $error");
       }
     }
 

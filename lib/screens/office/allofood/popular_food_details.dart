@@ -36,11 +36,13 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
       () {
         int checkQuantity(int quantity) {
           if (quantity < 0) {
-            Get.snackbar("Attention", "Vous ne pouvez pas réduire moins");
+            Get.snackbar("Attention", "Vous ne pouvez pas réduire moins",
+                backgroundColor: Colors.orange, colorText: Colors.white);
             return 0;
           } else if (quantity > 20) {
             Get.snackbar("Attention",
-                "Vous ne pouvez pas commander au delà de 20 articles");
+                "Vous ne pouvez pas commander au delà de 20 articles",
+                backgroundColor: Colors.orange, colorText: Colors.white);
             return 20;
           } else {
             return quantity;
@@ -59,64 +61,6 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
       },
     );
   }
-
-  //************************************test-marche******************************** */
-  // void AjouterAuPanier() {
-  //   User? getCurrentUser() {
-  //     return FirebaseAuth.instance.currentUser;
-  //   } // Assurez-vous que vous récupérez l'utilisateur correctement.
-
-  //   if (user != null) {
-  //     final userData = {
-  //       'id': DateTime.now()
-  //           .millisecondsSinceEpoch, // Utilisez un identifiant unique pour chaque produit ajouté.
-  //       'titre': produit["title"],
-  //       'categorie': produit["categorie"],
-  //       'prix': produit["price"],
-  //       'image': produit["image"],
-  //       'boutique': produit["fullName"],
-  //       'boutiqueId': produit["boutiqueId"],
-  //       'quantite': quantity.toString(),
-  //       // 'categorie': produit["categorie"],
-  //       'status': false,
-  //     };
-
-  //     FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(user?.uid)
-  //         .get()
-  //         .then((userDoc) {
-  //       if (userDoc.exists) {
-  //         // L'utilisateur existe, mettez à jour son panier existant.
-  //         FirebaseFirestore.instance
-  //             .collection('users')
-  //             .doc(user?.uid)
-  //             .update({
-  //               'Cart': FieldValue.arrayUnion([userData]),
-  //             })
-  //             .then((_) {})
-  //             .catchError((error) {
-  //               // Une erreur s'est produite lors de la mise à jour des données.
-  //             });
-  //       } else {
-  //         // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
-  //         final newCartData = {
-  //           'Cart': [userData], // Le premier produit est ajouté au panier.
-  //         };
-
-  //         FirebaseFirestore.instance
-  //             .collection('users')
-  //             .doc(user?.uid)
-  //             .set(newCartData)
-  //             .then((_) {
-  //           // Les données ont été enregistrées avec succès.
-  //         }).catchError((error) {
-  //           // Une erreur s'est produite lors de la création du panier.
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 
   Future<void> AjouterAuPanier() async {
     User? getCurrentUser() {
@@ -267,11 +211,10 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   ),
                   BigText(
                       text: "Prix unitaire : ${widget.produit['price']} F",
-                      color:  Color(0xFF89dad0)),
+                      color: Color(0xFF89dad0)),
                   BigText(
                       text: "Promo: ${widget.produit['note']} ",
-                      color:  Color(0xFF89dad0)
-                      ),
+                      color: Color(0xFF89dad0)),
                   BigText(text: "Description"),
                   SizedBox(
                     height: Dimensions.height10,
@@ -280,8 +223,6 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                     child: SingleChildScrollView(
                       child: ExpandableTextWidget(
                         text: widget.produit['description'],
-                      
-
                       ),
                     ),
                   ),
@@ -358,8 +299,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 //  var userId;
                 // addProductToCart(produit as String, userId );
                 await AjouterAuPanier();
-                Get.snackbar(
-                    "Succes", "Ce produit à bien été ajouté au panier");
+                Get.snackbar("Succes", "Ce produit à bien été ajouté au panier",
+                    backgroundColor: Colors.orange, colorText: Colors.white);
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(

@@ -93,7 +93,6 @@ Future<int> Recuperationprix(String pickupAddress) async {
   } catch (e) {
     print('Erreur lors de la récupération des adresses de livraison : $e');
 
-    throw e;
   }
 
   return -1;
@@ -120,8 +119,8 @@ Future<int> getPrixForIndice(int indice) async {
       }
     }
   } catch (e) {
-    print('Erreur lors de la récupération des prix : $e');
-    throw e; // Gérer l'erreur selon vos besoins
+    // print('Erreur lors de la récupération des prix : $e');
+    // throw e; // Gérer l'erreur selon vos besoins
   }
 
   return -1; // Prix non trouvé pour l'indice donné
@@ -141,7 +140,7 @@ Future<void> clearCart() async {
       });
     }
   } catch (e) {
-    print("Erreur lors de la suppression du panier : $e");
+    // print("Erreur lors de la suppression du panier : $e");
     // Gérer l'erreur selon vos besoins
   }
 }
@@ -180,14 +179,16 @@ Future<void> envoi() async {
           final nom = order['boutique'];
 
           Get.snackbar("Succès",
-              "Commande envoyée au marchand $nom et vous payerai $prix F");
+              "Commande envoyée au marchand $nom et vous payerai $prix F", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
         }
       }
     } else {
-      Get.snackbar("Erreur", "Impossible d'envoyer les produits");
+      Get.snackbar("Erreur", "Impossible d'envoyer les produits", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
     }
   } catch (e) {
-    Get.snackbar("Erreur", "Une erreur est survenue : $e");
+    Get.snackbar("Erreur", "Une erreur est survenue ");
   }
 }
 
@@ -222,10 +223,12 @@ Future<void> commande() async {
       // Supprimer le produit du panier
       await clearCart();
     } else {
-      Get.snackbar("Erreur", "Impossible de mettre à jour le statut");
+      Get.snackbar("Erreur", "Impossible de mettre à jour le statut", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
     }
   } catch (e) {
-    Get.snackbar("Erreur", "Une erreur est survenue : $e");
+    Get.snackbar("Erreur", "Une erreur est survenue ", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
   }
 }
 

@@ -21,25 +21,25 @@ class _CarouselState extends State<Carousel> {
       final Reference storageReference =
           FirebaseStorage.instance.ref("statique/promotion");
       final ListResult result = await storageReference.list();
-      print(
-          "============================== final2========================================");
+      // print(
+          // "============================== final2========================================");
 
       for (var item in result.items) {
         final String imageUrl = await item.getDownloadURL();
         images.add(imageUrl);
       }
-      print(
-          "===================================images added===================================");
+      // print(
+          // "===================================images added===================================");
     } catch (error) {
       print("Erreur lors de la récupération des images : $error");
     }
-    print(images);
-    print(
-        "======================================================================");
-    print(
-        "======================================================================");
-    print(
-        "======================================================================");
+    // print(images);
+    // print(
+        // "======================================================================");
+    // print(
+        // "======================================================================");
+    // print(
+        // "======================================================================");
     return images;
   }
 
@@ -50,8 +50,8 @@ class _CarouselState extends State<Carousel> {
     getCaroussImages().then((images) {
       setState(() {
         caroussImages = images;
-        print(
-            "===================================ooooooook===================================");
+        // print(
+            // "===================================ooooooook===================================");
       });
 
       Timer.periodic(Duration(seconds: 5), (timer) {
@@ -71,63 +71,6 @@ class _CarouselState extends State<Carousel> {
     _pageController.dispose();
     super.dispose();
   }
-// class _CarouselState extends State<Carousel> {
-//   int _currentIndex = 0;
-//   PageController _pageController =
-//       PageController(); // Ajoutez un PageController
-
-//   Future<List<String>> getCaroussImages() async {
-//       List<String> caroussImages = [];
-
-//     try {
-//       final Reference storageReference =
-//           FirebaseStorage.instance.ref("statique/");
-//       final ListResult result = await storageReference.list();
-
-//       for (var item in result.items) {
-//         final String imageUrl = await item.getDownloadURL();
-//         caroussImages.add(imageUrl);
-//       }
-//     } catch (error) {
-//       print("Erreur lors de la récupérationn des imgaes : $error");
-//     }
-//       return caroussImages;
-
-//   }
-//   List<String> caroussImages = await getCaroussImages() ;
-
-//   // List<String> imageList = [
-//     //   'assets/images/a1.jpg',
-//     //   'assets/images/a2.jpg',
-//     //   'assets/images/a3.jpg',
-//     //   'assets/images/a4.jpg',
-//     //   'assets/images/a5.jpg',
-//     // ];
-
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     // Configure un Timer pour défilement automatique toutes les 3 secondes
-//     //PageController pour contrôler le défilement des images et eviter la perte de mémoire.
-//     //Le Timer permet de passer automatiquement à la page suivante toutes les 3 secondes
-//     //en utilisant animateToPage pour déplacer le carrousel.
-//     Timer.periodic(Duration(seconds: 5), (timer) {
-//       if (_currentIndex < caroussImages.length - 1) {
-//         _currentIndex++;
-//       } else {
-//         _currentIndex = 0;
-//       }
-//       _pageController.animateToPage(_currentIndex,
-//           duration: Duration(milliseconds: 500), curve: Curves.easeOut);
-//     });
-//   }
-
-  // @override
-  // void dispose() {
-  //   _pageController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

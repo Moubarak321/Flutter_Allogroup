@@ -1,4 +1,3 @@
-
 import 'dart:math';
 import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/components/app_column_restau.dart';
@@ -12,9 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:get/get.dart';
 
-
 class FoodPageBody extends StatefulWidget {
-
   const FoodPageBody({Key? key}) : super(key: key);
 
   @override
@@ -538,7 +535,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                 GestureDetector(
                                   onTap: () {
                                     Get.snackbar("Infos",
-                                        "Ce produit vous sera livré dans environ $duree min");
+                                        "Le temps de cuisson est d'environ $duree min",
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
                                     icon: Icons.access_time_rounded,
@@ -548,8 +547,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.snackbar("Promo",
-                                        "$promo");
+                                    Get.snackbar("Promo", "$promo",
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
                                     icon: Icons.discount_rounded,

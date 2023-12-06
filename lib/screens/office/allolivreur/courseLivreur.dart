@@ -23,7 +23,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
   bool isLoading = true;
   final TextEditingController passwordController = TextEditingController();
 
-  Future<dynamic> GetProductFromCart() async {
+  Future<dynamic> getProductFromCart() async {
     try {
       List<Map<String, dynamic>> products = [];
 
@@ -56,7 +56,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
 
   Future<void> fetchProductsFromCart() async {
     try {
-      List<Map<String, dynamic>>? products = await GetProductFromCart();
+      List<Map<String, dynamic>>? products = await getProductFromCart();
       setState(() {
         tousLesProduits = products!;
         isLoading = false;
@@ -70,7 +70,6 @@ class _CourseLivreurState extends State<CourseLivreur> {
 
 
  void verificationCourseTermine(String password) async {
-  print("---------------------$password");
   final User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     try {
@@ -88,11 +87,8 @@ class _CourseLivreurState extends State<CourseLivreur> {
           String pass = commandes?[0]["password"] ?? "";
           String pass0 = pass.trim();
           password = password.trim();
-          print("pass----------------------------$pass0");
-          print("password----------------------------$password");
-
+         
           if (password == pass0) {
-            print("ok----------------------------");
             try {
                 await FirebaseFirestore.instance
                 .collection('champions')
@@ -106,12 +102,13 @@ class _CourseLivreurState extends State<CourseLivreur> {
                     .doc(user.uid)
                     .update({'commandes': []});
 
-            Get.snackbar("Super!", "Vous venez de terminer votre course.");
+            Get.snackbar("Super!", "Vous venez de terminer votre course.", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
             Get.to(
             Home(),
           );            }
             catch (e){
-                print(e);
+                // print(e);
             }
             
             return; // Quitte la fonction après avoir terminé la course
@@ -119,9 +116,10 @@ class _CourseLivreurState extends State<CourseLivreur> {
         }
       }
       // Si le mot de passe ne correspond pas ou si les conditions ne sont pas remplies
-      Get.snackbar("Erreur", "Votre course n'est pas encore terminée");
+      Get.snackbar("Erreur", "Votre course n'est pas encore terminée", backgroundColor: Colors.orange,
+                                        colorText: Colors.white);
     } catch (e) {
-      print('Erreur lors de la récupération du rôle de champion : $e');
+      // print('Erreur lors de la récupération du rôle de champion ');
     }
   }
 }
@@ -240,24 +238,22 @@ class _CourseLivreurState extends State<CourseLivreur> {
               ],
             ),
           ),
-          Container(
-            child: ElevatedButton(
-              onPressed: () {
-                String enteredPassword = passwordController.text;
-                print("$enteredPassword---------------------$enteredPassword");
-                verificationCourseTermine(enteredPassword);
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  side: BorderSide.none,
-                  shape: const StadiumBorder()),
-              child: const Text(
-                "Terminer ma course",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  // fontFamily: 'Poppins',
-                ),
+          ElevatedButton(
+            onPressed: () {
+              String enteredPassword = passwordController.text;
+              print("$enteredPassword---------------------$enteredPassword");
+              verificationCourseTermine(enteredPassword);
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                side: BorderSide.none,
+                shape: const StadiumBorder()),
+            child: const Text(
+              "Terminer ma course",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                // fontFamily: 'Poppins',
               ),
             ),
           )
@@ -291,15 +287,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
               ),
             ),
             Text("Votre course"),
-            // GestureDetector(
-            //   onTap: () {
-
-            //   },
-            //   child: Icon(
-            //     Icons.bar_chart_rounded,
-            //     color: Colors.white,
-            //   ),
-            // ),
+           
           ],
         ),
       ),

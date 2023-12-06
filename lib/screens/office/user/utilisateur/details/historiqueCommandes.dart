@@ -1,21 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class HistoriqueCommandesRepas extends StatefulWidget {
-//   const HistoriqueCommandesRepas({super.key});
-
-//   @override
-//   State<HistoriqueCommandesRepas> createState() => _HistoriqueCommandesRepasState();
-// }
-
-// class _HistoriqueCommandesRepasState extends State<HistoriqueCommandesRepas> {
-//   @override
-//   Widget build(BuildContext context) {
-//  return Scaffold(
-//        appBar: AppBar(title: Text("Vos commandes")),
-
-//     );  }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -119,7 +101,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'Tous vos achats',
+                'Vos derniers achats',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -151,13 +133,20 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                 }
 
                 final courses = userData['paiementBoutique'] as List<dynamic>;
-                print("courses...................$courses");
-                // Filter the courses list to include only those with status set to true
-                final filteredCourses = courses
-                    .where((courseData) => courseData['status'] == false)
-                    .toList();
 
-                if (filteredCourses.isEmpty) {
+                courses.sort((a, b) =>
+                    b['dateLivraison'].seconds.compareTo(a['dateLivraison'].seconds));
+
+                // Take only the first 5 courses
+                final latestCourses = courses.take(5).toList();
+
+               
+                // Filter the courses list to include only those with status set to true
+                // final filteredCourses = courses
+                //     .where((courseData) => courseData['status'] == false)
+                //     .toList();
+
+                if (latestCourses.isEmpty) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -167,13 +156,13 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                     ),
                   );
                 }
-
+                
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: filteredCourses.length,
+                  itemCount: latestCourses.length,
                   itemBuilder: (context, index) {
                     final courseData =
-                        filteredCourses[index] as Map<String, dynamic>;
+                        latestCourses[index] as Map<String, dynamic>;
 
                     return buildCourseCard(courseData);
                   },

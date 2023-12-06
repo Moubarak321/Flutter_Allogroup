@@ -82,22 +82,7 @@ class DetailsOnLivraison extends StatelessWidget {
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(8.0),
         ),
-        // child: Column(
-
-        //   mainAxisAlignment: MainAxisAlignment.center,
-
-        //   children: <Widget>[
-        //     buildTextWithBackground('Type de livraison:', courseData['type_courses']),
-        //     Text('Quoi: ${courseData['title']}'),
-        //     Text('Prix: ${courseData['prix']}'),
-        //     Text('Adresse de récupération: ${courseData['addressRecuperation']}'),
-        //     Text('Numéro à contacter au lieu de récupération: ${courseData['numeroARecuperation']}'),
-        //     Text('Adresse de livraison: ${courseData['addressLivraison']}'),
-        //     Text('Numéro à contacter au lieu de livraison: ${courseData['numeroALivraison']}'),
-        //     Text('Informations complémentaires: ${courseData['details']}'),
-        //     Text('Date de livraison: $formattedDate'),
-        //   ],
-        // ),
+        
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
