@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 
 class Wallet extends StatefulWidget {
@@ -76,15 +76,6 @@ class _WalletState extends State<Wallet> {
     return null;
   }
 
-
- _paiement() async {
-    var url = Uri.parse("https://allogroupweb.vercel.app/");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 //-------------------------------
 
   ///----------------------------
@@ -149,12 +140,8 @@ class _WalletState extends State<Wallet> {
                       labelText: "$fund FCFA",
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.text,
-                    /*inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],*/
+                    keyboardType: TextInputType.text, 
                     enabled: false,
-                    // Utilisation de initialValue pour afficher fund par défaut
                   ),
                   Text(
                     "Votre numéro:",
@@ -175,22 +162,6 @@ class _WalletState extends State<Wallet> {
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () =>
-                  _paiement(),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  side: BorderSide.none,
-                  shape: const StadiumBorder()),
-              child: const Text(
-                "Rechargez",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -198,16 +169,3 @@ class _WalletState extends State<Wallet> {
   }
 }
 
-// class BigText extends StatelessWidget {
-//   final String text;
-
-//   const BigText({required this.text});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(
-//       text,
-//       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//     );
-//   }
-// }
