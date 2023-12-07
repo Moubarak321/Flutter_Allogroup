@@ -1,4 +1,5 @@
 import 'package:allogroup/home.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -232,7 +233,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text(tEditProfile,
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: SingleChildScrollView(
         child: Container(

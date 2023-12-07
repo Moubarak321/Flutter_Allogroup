@@ -1,5 +1,6 @@
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +38,7 @@ class DetailsOnLivraison extends StatelessWidget {
               ),
             ),
             Text("Details de livraison",
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
                 // Redirect to DetailsOnLivraison() when sticky note icon is clicked

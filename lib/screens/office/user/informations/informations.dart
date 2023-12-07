@@ -1,4 +1,5 @@
 import 'package:allogroup/home.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -131,10 +132,7 @@ class _InformationsState extends State<Informations> {
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text(
           tProfile,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-          ),
+          style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)
         ),
         actions: [
           IconButton(

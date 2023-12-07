@@ -136,7 +136,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
               ),
             ),
             Text("En cours de traitement", 
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
           ],
         ),
       ),

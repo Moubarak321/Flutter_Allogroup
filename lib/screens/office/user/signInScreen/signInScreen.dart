@@ -125,12 +125,14 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         SizedBox(height: 16),
-                        Text(
-                          "Avec Allô Group, c'est le sens de l'engagement",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
+                        Center(
+                          child: Text(
+                            "Avec Allô Group, c'est le sens de l'engagement",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
                       ],
@@ -261,13 +263,16 @@ class _SignInState extends State<SignIn> {
                         minimumSize: MaterialStateProperty.all(
                           Size(double.infinity, 48),
                         ),
+                        backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(10, 80, 137, 0.8)),
+                        
                       ),
                       child: _isLoading
                           ? CircularProgressIndicator(
                               // Affiche l'indicateur de chargement
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : Text("Connexion"),
+                          : Text("Connexion",style: TextStyle(color: Colors.white)),
+                          
                     ),
                     SizedBox(height: 20),
                     // Lien "Pas encore de compte, Inscrivez-vous"

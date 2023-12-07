@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,10 +22,9 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   String? title;
   String? details;
   String? password;
-  
+
   DateTime? selectedDateTime = DateTime.now();
   int currentStep = 0; // Étape actuelle du formulaire
-  
 
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
@@ -54,15 +54,14 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
             }
           }
 
-          return -1; 
+          return -1;
         }
       }
     } catch (e) {
       print('Erreur lors de la récupération des adresses de livraison : $e');
-      
     }
 
-    return -1; 
+    return -1;
   }
 
   Future<int> getPrixForIndice(int indice) async {
@@ -82,7 +81,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
           List<dynamic> prixList = data['prix'];
 
           if (indice >= 0 && indice < prixList.length) {
-            return prixList[indice]; // Retourner le prix correspondant à l'indice
+            return prixList[
+                indice]; // Retourner le prix correspondant à l'indice
           }
         }
       }
@@ -93,49 +93,50 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return -1; // Prix non trouvé pour l'indice donné
   }
 
+  void saveFormDataToFirestore() async {
+    final user = getCurrentUser();
+    if (user != null) {
+      final courseId = DateTime.now().millisecondsSinceEpoch.toString();
 
- void saveFormDataToFirestore() async {
-  final user = getCurrentUser();
-  if (user != null) {
-    final courseId = DateTime.now().millisecondsSinceEpoch.toString();
+      final userData = {
+        'id': courseId,
+        'type_courses': 'Livraison de bien',
+        'addressRecuperation': pickupAddress,
+        'numeroARecuperation': pickupNumero,
+        'addressLivraison': deliveryAddress,
+        'numeroALivraison': deliveryNumero,
+        'dateDeLivraison': selectedDateTime,
+        'password': password,
+        'title': title,
+        'details': details,
+        'prix': await Recuperationprix(pickupAddress ?? ''),
+        'status': false,
+      };
 
-    final userData = {
-      'id': courseId,
-      'type_courses': 'Livraison de bien',
-      'addressRecuperation': pickupAddress,
-      'numeroARecuperation': pickupNumero,
-      'addressLivraison': deliveryAddress,
-      'numeroALivraison': deliveryNumero,
-      'dateDeLivraison': selectedDateTime,
-      'password': password,
-      'title': title,
-      'details': details,
-      'prix': await Recuperationprix(pickupAddress ?? ''),
-      'status': false,
-    };
+      try {
+        // Adding data to 'administrateur' collection
+        await FirebaseFirestore.instance
+            .collection('administrateur')
+            .doc("commandeCourses")
+            .update({
+          'courses': FieldValue.arrayUnion([userData])
+        });
+        // print("Data saved successfully to 'administrateur' collection");
 
-    try {
-      // Adding data to 'administrateur' collection
-      await FirebaseFirestore.instance
-          .collection('administrateur')
-          .doc("commandeCourses")
-          .update({
-        'courses': FieldValue.arrayUnion([userData])
-      });
-      // print("Data saved successfully to 'administrateur' collection");
-
-      // Adding data to 'users' collection
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'courses': FieldValue.arrayUnion([userData])
-      });
-      // print("Data saved successfully to 'users' collection");
-    } catch (error) {
-      // Handle errors if any
-      // print("Error: $error");
+        // Adding data to 'users' collection
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'courses': FieldValue.arrayUnion([userData])
+        });
+        // print("Data saved successfully to 'users' collection");
+      } catch (error) {
+        // Handle errors if any
+        // print("Error: $error");
+      }
     }
   }
-}
-
 
   void sendNotificationForPromo() async {}
 
@@ -207,7 +208,10 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Informations sur la Course'),
+        title: Text(
+          'Informations sur la Course',
+          style: TextStyle(color: Colors.white, fontSize: Dimensions.height20),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.location_on), // Icône de suivi
@@ -238,9 +242,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   });
                 } else {
                   saveFormDataToFirestore();
-                  Get.snackbar(
-                      "Succès", "Votre comande est envoyée au livreur", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+                  Get.snackbar("Succès", "Votre comande est envoyée au livreur",
+                      backgroundColor: Colors.orange, colorText: Colors.white);
 
                   Navigator.push(
                     context,
@@ -400,7 +403,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                         FutureBuilder<int>(
                           future: Recuperationprix(pickupAddress ?? ''),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               // Afficher un indicateur de chargement si nécessaire
                               return CircularProgressIndicator();
                             } else {

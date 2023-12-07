@@ -18,19 +18,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
-      
+
       try {
         // Envoyer un email de réinitialisation de mot de passe
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
         _showSuccesDialog(
             "Veuillez cliquer sur le lien envoyé à votre adresse $email pour changer votre mot de passe");
-        
 
         // Utilisez la navigation pour aller à la page de changement de mot de passe
       } catch (e) {
         _showSuccesDialog(
             "Une erreur s'est produite. Veuillez vérifier l'adresse email et réessayer.");
-        
       }
     }
   }
@@ -265,14 +263,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       minimumSize: MaterialStateProperty.all(
                         Size(double.infinity, 48),
                       ),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Color.fromRGBO(10, 80, 137, 0.8)),
                     ),
                     child: _isLoading
-                            ? CircularProgressIndicator(
-                                // Affiche l'indicateur de chargement
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              )
-                            : Text("Changez votre mot de passe"),
+                        ? CircularProgressIndicator(
+                            // Affiche l'indicateur de chargement
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : Text("Changez votre mot de passe",
+                            style: TextStyle(color: Colors.white)),
                     // child: Text("Changez votre mot de passe"),
                   ),
                 ],

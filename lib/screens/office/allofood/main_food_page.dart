@@ -151,6 +151,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
             : Color.fromRGBO(10, 80, 137, 0.8),
         child: Icon(
           Icons.fastfood,
+          color :foodButtonSelected ? Colors.white : Color.fromRGBO(10, 80, 137, 0.8),
         ),
       ),
       bottomNavigationBar: ClipRRect(

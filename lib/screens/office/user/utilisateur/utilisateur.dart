@@ -1,5 +1,6 @@
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,7 @@ class _UtilisateurState extends State<Utilisateur> {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Gestion utilisateur',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

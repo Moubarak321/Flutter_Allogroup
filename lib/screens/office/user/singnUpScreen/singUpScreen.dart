@@ -10,22 +10,23 @@ class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
 }
-  class MyFirebaseMessaging {
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-    Future<String?> getFCMToken() async {
-      String? token;
+class MyFirebaseMessaging {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-      try {
-        token = await _firebaseMessaging.getToken();
-        
-      } catch (e) {
+  Future<String?> getFCMToken() async {
+    String? token;
+
+    try {
+      token = await _firebaseMessaging.getToken();
+    } catch (e) {
       //  print('Erreur lors de la récupération du token FCM ');
-      }
-
-      return token;
     }
+
+    return token;
   }
+}
+
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -103,19 +104,18 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-
 //======================================== old handle=====================================
   void _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
       final phoneNumber = _phoneNumberController.text;
-      
+
       // Obtenez la permission de notification
-      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+      NotificationSettings settings =
+          await FirebaseMessaging.instance.requestPermission();
       //// Utilisez le contrôleur _phoneNumberController
-      
-      
+
       try {
         // Créez un utilisateur Firebase Auth
         UserCredential userCredential =
@@ -124,14 +124,13 @@ class _SignUpState extends State<SignUp> {
           password: password,
         );
         // print(
-            // "==================================user created auth==================================");
+        // "==================================user created auth==================================");
         // Si l'utilisateur Firebase Auth est créé avec succès, enregistrez les données dans Firebase Firestore
         if (userCredential.user != null) {
           String userId = userCredential.user!.uid;
           // print(
-              // "==================================ajout base et crea firestore==================================");
+          // "==================================ajout base et crea firestore==================================");
 
-          
           // Créez une référence à la collection "users" dans Firestore
           CollectionReference usersCollection =
               FirebaseFirestore.instance.collection('users');
@@ -146,7 +145,6 @@ class _SignUpState extends State<SignUp> {
               'role': "Utilisateur",
               'fcmToken': fcmToken,
             });
-            
           } else {
             // Gestion si l'autorisation est refusée ou bloquée
             await usersCollection.doc(userId).set({
@@ -154,8 +152,9 @@ class _SignUpState extends State<SignUp> {
               'wallet': 0,
               'role': "Patron",
             });
-            _showErrorDialog('Veuillez autoriser les notifications pour utiliser cette application.');
-          }    
+            _showErrorDialog(
+                'Veuillez autoriser les notifications pour utiliser cette application.');
+          }
           // print("Utilisateur enregistré dans Firebase Firestore avec succès.");
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => SignIn(),
@@ -173,7 +172,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(10, 80, 137, 0.8), 
+      backgroundColor: Color.fromRGBO(10, 80, 137, 0.8),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -195,12 +194,14 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Text(
-                        "Avec Allô Group, c'est le sens de l'engagement",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontStyle: FontStyle.italic,
+                      Center(
+                        child: Text(
+                          "Avec Allô Group, c'est le sens de l'engagement",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ),
                     ],
@@ -442,6 +443,8 @@ class _SignUpState extends State<SignUp> {
                       ),
                       minimumSize:
                           MaterialStateProperty.all(Size(double.infinity, 48)),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Color.fromRGBO(10, 80, 137, 0.8)),
                     ),
                     child: _isLoading
                         ? CircularProgressIndicator(
@@ -449,7 +452,7 @@ class _SignUpState extends State<SignUp> {
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           )
-                        : Text("Inscription"),
+                        : Text("Inscription",style: TextStyle(color: Colors.white)),
                   ),
 
                   SizedBox(height: 20),

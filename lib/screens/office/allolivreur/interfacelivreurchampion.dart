@@ -358,7 +358,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
               ),
             ),
             Text("Des Tickets de Livraison", 
-             style: TextStyle(color: Colors.white, fontSize: 24)),
+             style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
                 // Redirect to DetailsOnLivraison() when sticky note icon is clicked

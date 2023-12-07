@@ -1,5 +1,6 @@
 import 'package:allogroup/screens/office/notifications/notifications.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
+// import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'screens/office/components/header.dart';
 import 'screens/office/components/accueilservices.dart';
@@ -59,16 +60,13 @@ class _HomeState extends State<Home> {
             title: Align(
               // alignment: Alignment.centerLeft,
               child: const Text("Allô Group",
-               style: TextStyle(color: Colors.white, fontSize: 24)),
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-
-            
           ),
           // imbrication du composant header directement en dessous de la barre de navigation
           Header(),
           ButtonServices(),
           Carousel(),
-          
         ],
       ),
 
@@ -90,11 +88,16 @@ class _HomeState extends State<Home> {
             ),
           );
         },
+        // child: Icon(Icons.phone , color: Colors.white,),
         backgroundColor: homeButtonSelected
             ? Colors.orange
-            : Color.fromRGBO(10, 80, 137, 0.8),
+            // : Color.fromRGBO(10, 80, 137, 0.8),
+            : Colors.white,
         child: Icon(
           Icons.home,
+          color: homeButtonSelected
+              ? Colors.white
+              : Color.fromRGBO(10, 80, 137, 0.8),
         ),
       ),
       bottomNavigationBar: ClipRRect(

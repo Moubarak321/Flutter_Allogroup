@@ -277,7 +277,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Vos commandes", style: TextStyle(color: Colors.white, fontSize: 24)),
+            Text("Vos commandes", style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
                 Navigator.push(

@@ -115,7 +115,7 @@ class _WalletState extends State<Wallet> {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Portefeuille',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: SingleChildScrollView(
         child: Column(

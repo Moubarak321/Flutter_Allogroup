@@ -104,7 +104,7 @@ class ConfirmationLivraison extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Service de livraison'),
+        title: Text('Service de livraison',style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[

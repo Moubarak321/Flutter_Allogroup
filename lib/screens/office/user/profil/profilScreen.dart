@@ -4,6 +4,7 @@ import 'package:allogroup/screens/office/user/informations/informations.dart';
 import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
 import 'package:allogroup/screens/office/user/wallet/wallet.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,6 @@ const String tEditProfile = 'Modifiez';
 const double tDefaultSize = 16.0;
 const Color tPrimaryColor = Colors.blue; // Couleur primaire
 const Color tDarkColor = Colors.white; // Couleur sombre
-
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -57,22 +57,18 @@ class ProfileScreen extends StatelessWidget {
             onPressed: () {
               // Navigator.pop(context);
               Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return Home(); // Remplacez DetailPage par votre propre page.
-              },
-            ),
-          );
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Home(); // Remplacez DetailPage par votre propre page.
+                  },
+                ),
+              );
             },
             icon: const Icon(LineAwesomeIcons.angle_left)),
-        title: Text(
-          tProfile,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-          ),
-        ),
+        title: Text(tProfile,
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
         // titleTextStyle: TextStyle(color: Colors.white),
 
         actions: [
@@ -89,15 +85,15 @@ class ProfileScreen extends StatelessWidget {
               /// -- IMAGE
               GestureDetector(
                 onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return UpdateProfileScreen(); // Remplacez DetailPage par votre propre page.
-                          },
-                        ),
-                      );
-                    },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return UpdateProfileScreen(); // Remplacez DetailPage par votre propre page.
+                      },
+                    ),
+                  );
+                },
                 child: Stack(
                   children: [
                     SizedBox(
@@ -181,82 +177,92 @@ class ProfileScreen extends StatelessWidget {
               ProfileMenuWidget(
                   title: "Paramètres",
                   icon: LineAwesomeIcons.cog,
-                  onPress: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Parametres(); // Remplacez DetailPage par votre propre page.
-                          },
-                        ),
-                      );}),
+                  onPress: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Parametres(); // Remplacez DetailPage par votre propre page.
+                        },
+                      ),
+                    );
+                  }),
               ProfileMenuWidget(
                   title: "Portefeuille",
                   icon: LineAwesomeIcons.wallet,
-                  onPress: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Wallet(); // Remplacez DetailPage par votre propre page.
-                          },
-                        ),
-                      );}),
+                  onPress: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Wallet(); // Remplacez DetailPage par votre propre page.
+                        },
+                      ),
+                    );
+                  }),
               ProfileMenuWidget(
                   title: "Gestion utilisateur",
                   icon: LineAwesomeIcons.user_check,
-                  onPress: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Utilisateur(); // Remplacez DetailPage par votre propre page.
-                          },
-                        ),
-                      );}),
+                  onPress: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Utilisateur(); // Remplacez DetailPage par votre propre page.
+                        },
+                      ),
+                    );
+                  }),
               const Divider(),
               const SizedBox(height: 10),
               ProfileMenuWidget(
                   title: "Informations",
                   icon: LineAwesomeIcons.info,
-                  onPress: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Informations(); // Remplacez DetailPage par votre propre page.
-                          },
-                        ),
-                      );}),
+                  onPress: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Informations(); // Remplacez DetailPage par votre propre page.
+                        },
+                      ),
+                    );
+                  }),
               ProfileMenuWidget(
                   title: "Déconnecter",
                   icon: LineAwesomeIcons.alternate_sign_out,
                   textColor: Colors.red,
                   endIcon: false,
                   onPress: () {
-                   Get.defaultDialog(
-                    title: "DECONNEXION",
-                    titleStyle: const TextStyle(fontSize: 20),
-                    content: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15.0),
-                      child: Text("Etes-vous sûr de vouloir vous déconnecter ?"),
-                    ),
-                    confirm: ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          await FirebaseAuth.instance.signOut();
-                          Get.offAllNamed('/signInScreen');
-                        } catch (e) {
-                          print("Erreur lors de la déconnexion : $e");
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        side: BorderSide.none,
+                    Get.defaultDialog(
+                      title: "DECONNEXION",
+                      titleStyle: const TextStyle(fontSize: 20),
+                      content: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child:
+                            Text("Etes-vous sûr de vouloir vous déconnecter ?"),
                       ),
-                      child: const Text("Oui"),
-                    ),
-                    cancel: OutlinedButton(
-                      onPressed: () => Get.back(),
-                      child: const Text("Non"),
-                    ),
-                  );
+                      confirm: ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            await FirebaseAuth.instance.signOut();
+                            Get.offAllNamed('/signInScreen');
+                          } catch (e) {
+                            print("Erreur lors de la déconnexion : $e");
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          side: BorderSide.none,
+                        ),
+                        child: const Text("Oui",
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                      cancel: OutlinedButton(
+                        onPressed: () => Get.back(),
+                        child: const Text("Non"),
+                      ),
+                    );
                   }),
             ],
           ),
@@ -265,8 +271,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

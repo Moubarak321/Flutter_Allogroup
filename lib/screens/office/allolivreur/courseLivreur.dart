@@ -286,7 +286,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
               ),
             ),
             Text("Votre course",
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
            
           ],
         ),

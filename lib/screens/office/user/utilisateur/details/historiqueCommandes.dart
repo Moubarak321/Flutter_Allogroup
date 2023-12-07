@@ -95,7 +95,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Vos commandes',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[

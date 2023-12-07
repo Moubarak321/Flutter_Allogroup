@@ -1,4 +1,5 @@
 import 'package:allogroup/screens/office/user/profil/profilMenuWidgetText.dart';
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class _ParametresState extends State<Parametres> {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Paramètre',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
        children: [

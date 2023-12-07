@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -22,7 +23,7 @@ class Detailsnotifications extends StatelessWidget {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Que disent-ils ?',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: CustomScrollView(
         slivers: [
