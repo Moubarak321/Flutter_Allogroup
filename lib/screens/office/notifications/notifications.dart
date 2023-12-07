@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/notifications/detailsnotifications.dart';
+import 'package:get/get.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class Notifications extends StatelessWidget {
   User? getCurrentUser() {
@@ -154,7 +156,11 @@ class Notifications extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Notifications',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
       body: Column(
         children: <Widget>[

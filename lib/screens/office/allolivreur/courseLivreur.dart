@@ -212,7 +212,6 @@ class _CourseLivreurState extends State<CourseLivreur> {
                 color: Colors.white,
                 size: Dimensions.font20),
           ),
-          // Text("Solde Actuel : $fund FCFA"),
           Container(
             padding: EdgeInsets.all(16.0),
             child: Column(
@@ -286,7 +285,8 @@ class _CourseLivreurState extends State<CourseLivreur> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Votre course"),
+            Text("Votre course",
+            style: TextStyle(color: Colors.white, fontSize: 24)),
            
           ],
         ),

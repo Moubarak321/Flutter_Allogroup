@@ -1,6 +1,7 @@
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class Utilisateur extends StatefulWidget {
@@ -30,7 +31,13 @@ class _UtilisateurState extends State<Utilisateur> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Gestion Utilisateur")),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Gestion utilisateur',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -45,15 +52,8 @@ class _UtilisateurState extends State<Utilisateur> {
                   });
                 } else {
                   // Soumission du formulaire, faites ce que vous voulez ici
-
                   Get.snackbar("Infos", "Appuyez sur $cancel pour remonter ");
 
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => DeliveryMapPage(),
-                  //   ),
-                  // );
                 }
               }
             },
@@ -138,49 +138,6 @@ class _UtilisateurState extends State<Utilisateur> {
                   ),
                 ),
               ),
-              // Step(
-              //   title: Text('Vos repas favoris'),
-              //   content: Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: Padding(
-              //       padding: const EdgeInsets.all(16.0),
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: <Widget>[
-              //           // Text(
-              //           //   'Consultez vos repas favoris : ',
-              //           //   style: TextStyle(
-              //           //     fontSize: 18.0,
-              //           //     color: Colors.white, // Couleur du texte
-              //           //   ),
-              //           // ),
-              //           ElevatedButton(
-              //             onPressed: () {
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) => Favoris(),
-              //                 ),
-              //               );
-              //             },
-              //             style: ElevatedButton.styleFrom(
-              //                 backgroundColor: Colors.orange,
-              //                 side: BorderSide.none,
-              //                 shape: const StadiumBorder()),
-              //             child: const Text(
-              //               "Voir vos favoris",
-              //               style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //                 fontFamily: 'Poppins',
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),

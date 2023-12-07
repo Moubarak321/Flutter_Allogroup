@@ -20,7 +20,7 @@ class DetailsInfoWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Détails sur la course',
+          "Note pour le champion",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class DetailsInfoWidget extends StatelessWidget {
           ),
           child: TextFormField(
             decoration: InputDecoration(
-              labelText: 'Titre de la Course',
+              labelText: "Message au champion",
               prefixIcon: Icon(Icons.library_books),
             ),
             onChanged: (value) {
@@ -54,7 +54,7 @@ class DetailsInfoWidget extends StatelessWidget {
         SizedBox(height: 20.0),
 
         Text(
-          'Détails de la Course',
+          "Description sur l'échange",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class DetailsInfoWidget extends StatelessWidget {
           child: TextFormField(
             maxLines: 5,
             decoration: InputDecoration(
-              labelText: 'Détails de la Course',
+              labelText: "Ex: Du CEG Godomey chez Papa Yabo pour Toyota chez Maman Yabo",
               prefixIcon: Icon(Icons.library_books),
             ),
             onChanged: (value) {

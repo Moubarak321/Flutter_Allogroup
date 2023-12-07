@@ -58,43 +58,17 @@ class _HomeState extends State<Home> {
             // title: const Text("Allô Group"), //nom de l'app
             title: Align(
               // alignment: Alignment.centerLeft,
-              child: const Text("Allô Group"),
+              child: const Text("Allô Group",
+               style: TextStyle(color: Colors.white, fontSize: 24)),
             ),
 
-            // leading: IconButton(
-            //   //button menu
-            //   icon: const Icon(Icons.menu),
-            //   onPressed: () {},
-            // ),
-
-            /*
-            actions: [
-              IconButton(
-                  //button shopping
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return Cart();
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart))
-            ],*/
+            
           ),
           // imbrication du composant header directement en dessous de la barre de navigation
           Header(),
           ButtonServices(),
           Carousel(),
-          // BestSeller()
-          // SliverPadding(
-          //   // ajout d'espace en dessous du compoant
-          //   padding:
-          //       EdgeInsets.only(bottom: 100.0, top: 10), // Marge inférieure
-          //   sliver: BestSeller(),
-          // ),
+          
         ],
       ),
 

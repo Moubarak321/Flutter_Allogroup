@@ -186,14 +186,14 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
 
       var userData = {
         'id': courseId,
-        'type_courses': 'Livraison de repas',
+        'type_courses': 'Livraison de repas de chez $adresseRestaurant',
         'addressRecuperation': marchandData['adresse'],
         'numeroARecuperation': marchandData['phoneNumber'],
         'addressLivraison': commandes[0]['lieuLivraison'],
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
-        'title': "Spéciale commande restaurant $adresseRestaurant",
-        'details': "Cette livraison sera en deux tours.",
+        'title': commandes[0]['titreLivraison'],
+        'details': commandes[0]['detailsLivraison'],
         'prix': commandes[0]['prix'],
         'status': false,
         "password": marchandData["password"]
@@ -226,14 +226,14 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
       var adresseRestaurant = marchandData['adresse'];
       var userData = {
         'id': courseId,
-        'type_courses': 'Livraison de repas',
+        'type_courses': 'Livraison de repas de chez $adresseRestaurant',
         'addressRecuperation': marchandData['adresse'],
         'numeroARecuperation': marchandData['phoneNumber'],
         'addressLivraison': commandes[0]['lieuLivraison'],
         'numeroALivraison': commandes[0]['numeroLivraison'],
         'dateDeLivraison': courseId,
-        'title': "Spéciale commande restaurant $adresseRestaurant",
-        'details': "Cette livraison sera en deux tours maximun.",
+        'title': commandes[0]['titreLivraison'],
+        'details': commandes[0]['detailsLivraison'],
         'prix': commandes[0]['prix'],
         'status': false,
         "password": marchandData["password"]
@@ -277,7 +277,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Vos commandes"),
+            Text("Vos commandes", style: TextStyle(color: Colors.white, fontSize: 24)),
             GestureDetector(
               onTap: () {
                 Navigator.push(

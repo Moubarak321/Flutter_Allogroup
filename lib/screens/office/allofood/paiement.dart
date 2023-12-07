@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/components/recuperation.dart';
 import 'package:get/get.dart';
 import '../allolivreur/attente_livreur.dart';
+import '../components/details.dart';
 
 class Utilisateur extends StatefulWidget {
   const Utilisateur({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class Utilisateur extends StatefulWidget {
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 String? pickupAddress;
 int? pickupNumero;
+String? title;
+String? details;
 String? error;
 List<Map<String, dynamic>> tousLesProduits = [];
 List<Map<String, dynamic>> commandes = [];
@@ -92,7 +95,6 @@ Future<int> Recuperationprix(String pickupAddress) async {
     }
   } catch (e) {
     print('Erreur lors de la récupération des adresses de livraison : $e');
-
   }
 
   return -1;
@@ -170,8 +172,12 @@ Future<void> envoi() async {
                 'commandaire': user.uid,
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
+                'detailsLivraison':details,
+                'titreLivraison':title,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
-                'paye': (int.parse(order['prix']) * int.parse(order['quantite'])).toString(),
+                'paye':
+                    (int.parse(order['prix']) * int.parse(order['quantite']))
+                        .toString(),
               }
             ]),
           });
@@ -179,13 +185,13 @@ Future<void> envoi() async {
           final nom = order['boutique'];
 
           Get.snackbar("Succès",
-              "Commande envoyée au marchand $nom et vous payerai $prix F", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+              "Commande envoyée au marchand $nom et vous payerai $prix F",
+              backgroundColor: Colors.orange, colorText: Colors.white);
         }
       }
     } else {
-      Get.snackbar("Erreur", "Impossible d'envoyer les produits", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+      Get.snackbar("Erreur", "Impossible d'envoyer les produits",
+          backgroundColor: Colors.orange, colorText: Colors.white);
     }
   } catch (e) {
     Get.snackbar("Erreur", "Une erreur est survenue ");
@@ -223,12 +229,12 @@ Future<void> commande() async {
       // Supprimer le produit du panier
       await clearCart();
     } else {
-      Get.snackbar("Erreur", "Impossible de mettre à jour le statut", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+      Get.snackbar("Erreur", "Impossible de mettre à jour le statut",
+          backgroundColor: Colors.orange, colorText: Colors.white);
     }
   } catch (e) {
-    Get.snackbar("Erreur", "Une erreur est survenue ", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+    Get.snackbar("Erreur", "Une erreur est survenue ",
+        backgroundColor: Colors.orange, colorText: Colors.white);
   }
 }
 
@@ -401,25 +407,18 @@ class _UtilisateurState extends State<Utilisateur> {
                   },
                 ),
               ),
-              Step(
-                title: Text('Pour le livreur'),
-                content: Card(
-                  color: Colors.orange, // Couleur de l'arrière-plan
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Une fois le livreur sur place, vous pourrez lui payer le service de livraison et le prix des produits. Dans le cas où la commande est effectuée dans divers boutique, vous aurez autant de livraison',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white, // Couleur du texte
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+               Step(
+                title: Text('Détails sur la Course'),
+                content: DetailsInfoWidget(
+                  formKey: _formKey,
+                  title: title,
+                  details: details,
+                  updateDetailsInfo: (courseTitle, courseDetails) {
+                    setState(() {
+                      title = courseTitle;
+                      details = courseDetails;
+                    });
+                  },
                 ),
               ),
               Step(

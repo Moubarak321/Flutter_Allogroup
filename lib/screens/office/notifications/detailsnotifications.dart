@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 class Detailsnotifications extends StatelessWidget {
   final Map<String, dynamic> courseData;
@@ -16,8 +18,11 @@ class Detailsnotifications extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Que disent-ils ?'),
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Que disent-ils ?',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
       body: CustomScrollView(
         slivers: [

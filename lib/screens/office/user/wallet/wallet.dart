@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/services.dart';
-
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 
 class Wallet extends StatefulWidget {
@@ -109,7 +110,13 @@ class _WalletState extends State<Wallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Portefeuille")),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Portefeuille',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -122,7 +129,7 @@ class _WalletState extends State<Wallet> {
               padding: EdgeInsets.all(16.0),
               // child: BigText(text: "Rechargez votre portefeuille",size: Dimensions.font20),
               child: BigText(
-                  text: "Rechargez votre portefeuille",
+                  text: "Bilan de votre portefeuille",
                   size: Dimensions.font20),
             ),
             Container(

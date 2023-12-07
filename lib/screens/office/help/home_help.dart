@@ -73,7 +73,7 @@ class PresentationScreen extends StatelessWidget {
             )),
         titleTextStyle: TextStyle(
             color: Colors.orange, fontSize: 24, fontWeight: FontWeight.bold),
-        // backgroundColor: Color.fromRGBO(10, 80, 137, 0.8),
+        
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -158,7 +158,7 @@ class PresentationScreen extends StatelessWidget {
           // launchPhoneCall(0022960559894 as String);
         },
         backgroundColor: Colors.green,
-        child: Icon(Icons.phone), // Couleur du bouton
+        child: Icon(Icons.phone , color: Colors.white,), // Couleur du bouton
       ),
     );
   }

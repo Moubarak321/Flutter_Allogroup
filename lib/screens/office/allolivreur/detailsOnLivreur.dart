@@ -36,7 +36,8 @@ class DetailsOnLivraison extends StatelessWidget {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Details de livraison"),
+            Text("Details de livraison",
+            style: TextStyle(color: Colors.white, fontSize: 24)),
             GestureDetector(
               onTap: () {
                 // Redirect to DetailsOnLivraison() when sticky note icon is clicked

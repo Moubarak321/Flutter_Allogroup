@@ -416,7 +416,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                               } else {
                                 // Afficher le prix récupéré
                                 return Text(
-                                  'Prix du service : ${snapshot.data ?? ''}',
+                                  'Prix du service : ${snapshot.data ?? ''} F',
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     color: Colors.white, // Couleur du texte

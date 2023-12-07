@@ -88,11 +88,11 @@ class ConfirmationLivraison extends StatelessWidget {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Prix: $depense',
+            'Prix: $depense F',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Code de course à communiquer à la partie prenante: $codeMessage',
+            'Code de course à communiquer au destinatire: $codeMessage',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],

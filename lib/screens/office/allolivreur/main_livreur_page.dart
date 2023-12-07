@@ -5,6 +5,8 @@ import './description_livreur.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class Delivery extends StatelessWidget {
   User? getCurrentUser() {
@@ -88,11 +90,11 @@ class Delivery extends StatelessWidget {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Prix: $depense',
+            'Prix: $depense F',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Code de course à communiquer à la partie prenante: $codeMessage',
+            'Code de course à communiquer au destinatire: $codeMessage',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],
@@ -104,7 +106,11 @@ class Delivery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Allô Livreur'),
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Allô Livreur',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
       body: Column(
         children: <Widget>[

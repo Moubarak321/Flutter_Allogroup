@@ -1,6 +1,7 @@
 import 'package:allogroup/screens/office/user/profil/profilMenuWidgetText.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 
 
@@ -16,7 +17,13 @@ class _ParametresState extends State<Parametres> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text("Paramètres")),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Paramètre',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
+      ),
       body: Column(
        children: [
         ProfileMenuWidgetText(

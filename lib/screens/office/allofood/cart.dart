@@ -144,7 +144,8 @@ class _CartState extends State<Cart> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Votre panier"),
+            Text("Votre panier", 
+            style: TextStyle(color: Colors.white, fontSize: 24)),
             GestureDetector(
               onTap: () {
                 Navigator.push(

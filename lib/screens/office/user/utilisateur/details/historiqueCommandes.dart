@@ -4,7 +4,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
-// import 'package:intl/date_symbol_data_local.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class HistoriqueCommandesRepas extends StatelessWidget {
   User? getCurrentUser() {
@@ -90,7 +91,11 @@ class HistoriqueCommandesRepas extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vos commandes'),
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left)),
+        title: Text('Vos commandes',
+            style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
       body: Column(
         children: <Widget>[

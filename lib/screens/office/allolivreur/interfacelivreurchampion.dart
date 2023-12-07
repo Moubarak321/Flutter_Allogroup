@@ -269,7 +269,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Demande de livraison",
+            "Ticket de livraison",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
@@ -357,7 +357,8 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Vos Demandes"),
+            Text("Des Tickets de Livraison", 
+             style: TextStyle(color: Colors.white, fontSize: 24)),
             GestureDetector(
               onTap: () {
                 // Redirect to DetailsOnLivraison() when sticky note icon is clicked
