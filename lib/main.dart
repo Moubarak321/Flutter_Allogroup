@@ -29,6 +29,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
+import 'package:flutter/services.dart';
 
 
 
@@ -49,6 +50,12 @@ void main() async {
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  //mode portrait
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(MyApp());
 }
