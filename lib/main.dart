@@ -30,7 +30,7 @@ import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 
-//51518759
+
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +43,9 @@ void main() async {
  
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // Gérez les notifications lorsque l'application est en premier plan
-    print('Message data: ${message.data}');
+    'Title: ${message.notification?.title}';
+    'Body: ${message.notification?.body}';
+    'Payload: ${message.data}';
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -53,7 +55,9 @@ void main() async {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Gérez les notifications lorsque l'application est en arrière-plan
-  print('Handling a background message: ${message.data}');
+  'Title: ${message.notification?.title}';
+  'Body: ${message.notification?.body}';
+  'Payload: ${message.data}';
 }
 class MyApp extends StatefulWidget {
   @override
