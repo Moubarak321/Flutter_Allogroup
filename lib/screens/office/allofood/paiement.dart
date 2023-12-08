@@ -372,7 +372,6 @@ class _UtilisateurState extends State<Utilisateur> {
                 } else {
                   envoi();
                   commande();
-                  //sendNotificationForPromo();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
