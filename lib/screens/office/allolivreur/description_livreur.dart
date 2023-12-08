@@ -318,7 +318,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                     currentStep++;
                   });
                 } else {
-                  //saveFormDataToFirestore();
+                  saveFormDataToFirestore();
                   sendNotificationLivraison();
                   Get.snackbar("Succès", "Votre comande est envoyée au livreur",
                       backgroundColor: Colors.orange, colorText: Colors.white);
