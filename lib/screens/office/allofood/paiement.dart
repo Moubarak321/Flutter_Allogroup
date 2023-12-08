@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +33,35 @@ User? getCurrentUser() {
 
 int currentStep = 0; // Étape actuelle du formulaire
 String cancel = "Cancel";
+
+void sendNotificationToMerchant(String token, String body, String title) async {
+  try {
+    await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
+        headers: <String, String>{
+          "Content-Type": 'application/json',
+          "Authorization": "key=AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV",
+        },
+        body: jsonEncode(<String, dynamic>{
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'status': 'done',
+            'body': body,
+            'title': title,
+          },
+          "notification": <String, dynamic>{
+            'title': title,
+            'body': body,
+            'android_channel_id': 'bdfood',
+          },
+          "to": token,
+        }));
+  } catch (e) {
+    if (kDebugMode) {
+      print("Echec pour l'envoie de notification");
+    }
+  }
+}
 
 Future<dynamic> GetProductFromCart() async {
   try {
@@ -165,6 +197,10 @@ Future<void> envoi() async {
               .collection('marchands')
               .doc(merchantId);
 
+          final DocumentSnapshot merchantDocSnapshot = await merchantDocRef.get();
+          final Map<String, dynamic>? merchantData = merchantDocSnapshot.data() as Map<String, dynamic>?;
+          String token = merchantData?['fcmToken'];
+
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
             'commandes': FieldValue.arrayUnion([
@@ -173,8 +209,8 @@ Future<void> envoi() async {
                 'commandaire': user.uid,
                 'lieuLivraison': pickupAddress,
                 'numeroLivraison': pickupNumero,
-                'detailsLivraison':details,
-                'titreLivraison':title,
+                'detailsLivraison': details,
+                'titreLivraison': title,
                 'prix': await Recuperationprix(pickupAddress ?? ''),
                 'paye':
                     (int.parse(order['prix']) * int.parse(order['quantite']))
@@ -184,7 +220,9 @@ Future<void> envoi() async {
           });
           final prix = int.parse(order['prix']) * int.parse(order['quantite']);
           final nom = order['boutique'];
-
+          String body = "Vous avez recu une commande de $order['quantite'] $order['titre'] du $order['numeroLivraison'] pour la zone $order['lieuLivraison']";
+          String titre = "Commande de $order['titre']";
+          sendNotificationToMerchant(token, titre, body);
           Get.snackbar("Succès",
               "Commande envoyée au marchand $nom et vous payerai $prix F",
               backgroundColor: Colors.orange, colorText: Colors.white);
@@ -292,7 +330,9 @@ class _UtilisateurState extends State<Utilisateur> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Livraison de la commande', style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        title: Text('Livraison de la commande',
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
         actions: [
           IconButton(
             icon: Icon(Icons.location_on),
@@ -408,7 +448,7 @@ class _UtilisateurState extends State<Utilisateur> {
                   },
                 ),
               ),
-               Step(
+              Step(
                 title: Text('Détails sur la Course'),
                 content: DetailsInfoWidget(
                   formKey: _formKey,

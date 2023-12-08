@@ -78,7 +78,7 @@ class HistoriqueCourses extends StatelessWidget {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Prix: $depense',
+            'Prix: $depense F',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],

@@ -2,6 +2,9 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../components/recuperation.dart';
 import '../components/livraison.dart';
 import '../components/details.dart';
@@ -28,6 +31,64 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
 
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
+  }
+
+  Future<List<String>> recuperationToken() async {
+    try {
+      final QuerySnapshot championsSnapshot =
+          await FirebaseFirestore.instance.collection('champions').get();
+
+      List<String> tokens = [];
+
+      championsSnapshot.docs.forEach((DocumentSnapshot document) {
+        final Map<String, dynamic>? championData =
+            document.data() as Map<String, dynamic>?;
+
+        if (championData != null && championData.containsKey('fmcToken')) {
+          final String? fmcToken = championData['fmcToken'] as String?;
+          if (fmcToken != null) {
+            tokens.add(fmcToken);
+          }
+        }
+      });
+
+      return tokens;
+    } catch (e) {
+      // Gérer les erreurs ici
+      print('Erreur lors de la récupération des tokens : $e');
+      return []; // Retourner une liste vide en cas d'erreur
+    }
+  }
+
+  void sendNotificationToChampion(
+      String token, String body, String title) async {
+    try {
+      await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
+          headers: <String, String>{
+            "Content-Type": 'application/json',
+            "Authorization":
+                "key=AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV",
+          },
+          body: jsonEncode(<String, dynamic>{
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'body': body,
+              'title': title,
+            },
+            "notification": <String, dynamic>{
+              'title': title,
+              'body': body,
+              'android_channel_id': 'bdfood',
+            },
+            "to": token,
+          }));
+    } catch (e) {
+      if (kDebugMode) {
+        print("Echec pour l'envoie de notification");
+      }
+    }
   }
 
   Future<int> Recuperationprix(String pickupAddress) async {
@@ -138,7 +199,16 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     }
   }
 
-  void sendNotificationForPromo() async {}
+  void sendNotificationLivraison() async {
+    List<String> tokens = await recuperationToken();
+    String titre = "Livraison";
+    String body = "Une nouvelle livraison est disponible";
+
+    for (String token in tokens) {
+      sendNotificationToChampion(token, titre, body);
+    }
+  }
+
 
   Future<DateTime?> setDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
@@ -242,6 +312,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   });
                 } else {
                   saveFormDataToFirestore();
+                  sendNotificationLivraison();
                   Get.snackbar("Succès", "Votre comande est envoyée au livreur",
                       backgroundColor: Colors.orange, colorText: Colors.white);
 

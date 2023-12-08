@@ -113,7 +113,14 @@ class _SignUpState extends State<SignUp> {
 
       // Obtenez la permission de notification
       NotificationSettings settings =
-          await FirebaseMessaging.instance.requestPermission();
+          await FirebaseMessaging.instance.requestPermission(
+            alert: true,
+            announcement: false,
+            badge: true,
+            criticalAlert: true,
+            provisional: false,
+            sound: true,
+          );
       //// Utilisez le contrôleur _phoneNumberController
 
       try {
@@ -191,17 +198,6 @@ class _SignUpState extends State<SignUp> {
                           "assets/images/Home.png", // Remplacez par le chemin de votre logo
                           height: 150,
                           width: 200,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Center(
-                        child: Text(
-                          "Avec Allô Group, c'est le sens de l'engagement",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
-                          ),
                         ),
                       ),
                     ],

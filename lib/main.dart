@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:allogroup/home.dart';
 import 'package:allogroup/routes.dart';
 import 'package:allogroup/screens/office/allofood/main_food_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,8 +32,6 @@ import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:flutter/services.dart';
 
-
-
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -42,13 +41,6 @@ void main() async {
   );
   FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
  
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    // Gérez les notifications lorsque l'application est en premier plan
-    'Title: ${message.notification?.title}';
-    'Body: ${message.notification?.body}';
-    'Payload: ${message.data}';
-  });
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   //mode portrait
@@ -66,6 +58,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   'Body: ${message.notification?.body}';
   'Payload: ${message.data}';
 }
+
 class MyApp extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
@@ -74,10 +67,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
     super.initState();
+    initInfo();
 
     /// whenever your initialization is completed, remove the splash screen:
     // Future.delayed(Duration(seconds: 5)).then((value) => {
@@ -85,6 +80,48 @@ class _MyAppState extends State<MyApp> {
       FlutterNativeSplash.remove();
       navigatorKey.currentState
           ?.pushReplacementNamed(initializeAppAndNavigate() as String);
+    });
+  }
+
+    void initInfo() async {
+    // Initialisation des notifications locales
+    var androidInitialize = AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
+    var initializationSettings = InitializationSettings(android: androidInitialize);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse : (payload) async {
+        try {
+          
+        } catch (e) {
+          print('Erreur lors de la gestion de la notification : $e');
+        }
+      },
+    );
+
+    // Écouter les notifications Firebase Cloud Messaging
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('onMessage: ${message.notification?.title}/${message.notification?.body}');
+      
+      // Paramètres pour la notification locale
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'bdfood',
+        'bdfood',
+        importance: Importance.high,
+        priority: Priority.high,
+        playSound: true,
+      );
+
+      var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+
+      // Afficher la notification locale
+      await flutterLocalNotificationsPlugin.show(
+        0,
+        message.notification?.title ?? '',
+        message.notification?.body ?? '',
+        platformChannelSpecifics,
+        payload: message.data['body'] ?? '',
+      );
     });
   }
 
@@ -165,10 +202,14 @@ class _MyAppState extends State<MyApp> {
         '/historiqueCommandes': (context) => HistoriqueCommandesRepas(),
         '/historiqueCourses': (context) => HistoriqueCourses(),
         '/traitementEnCours.dart': (context) => EnCoursDeTraitement(),
-        '/detailsnotifications': (context) => Detailsnotifications(courseData: {}, index: 0,),
+        '/detailsnotifications': (context) => Detailsnotifications(
+              courseData: {},
+              index: 0,
+            ),
         Routes.interfaceMarchand: (context) => InterfaceFoodMarchand(),
         Routes.interfaceLivreur: (context) => InterFaceLivreurChampion(),
-        'recommended_food_detail': (context) => RecommendedFoodDetail(marchand: {}),
+        'recommended_food_detail': (context) =>
+            RecommendedFoodDetail(marchand: {}),
         'courseLivreur': (context) => CourseLivreur(),
       },
       home: Scaffold(

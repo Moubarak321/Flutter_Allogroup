@@ -6,6 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../widgets/big_text.dart';
 import '../widgets/icon_and_text_widget.dart';
@@ -20,77 +23,73 @@ class InterfaceFoodMarchand extends StatefulWidget {
 class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
   final User? user = FirebaseAuth.instance.currentUser;
 
-  /** 
+  Future<List<String>> recuperationToken() async {
+    try {
+      final QuerySnapshot championsSnapshot =
+          await FirebaseFirestore.instance.collection('champions').get();
 
-  void sendNotificationForPromo() async {
-    
-  }*/
+      List<String> tokens = [];
 
-  // Future<void> removeFromCommandList(
-  //     List<Map<String, dynamic>> commandesASupprimer,
-  //     Map<String, dynamic> marchandData) async {
-  //   final User? user = FirebaseAuth.instance.currentUser;
+      championsSnapshot.docs.forEach((DocumentSnapshot document) {
+        final Map<String, dynamic>? championData =
+            document.data() as Map<String, dynamic>?;
 
-  //   if (user != null) {
-  //     final currentTime = DateTime.now();
-  //     final List<Map<String, dynamic>> commandes =
-  //         List.from(marchandData['commandes']);
+        if (championData != null && championData.containsKey('fmcToken')) {
+          final String? fmcToken = championData['fmcToken'] as String?;
+          if (fmcToken != null) {
+            tokens.add(fmcToken);
+          }
+        }
+      });
 
-  //     for (var commandeASupprimer in commandesASupprimer) {
-  //       // Recherchez l'index de chaque commande à supprimer dans la liste
-  //       print("---------------Commande Select");
-  //       int index = commandes
-  //           .indexWhere((cmd) => cmd['id'] == commandeASupprimer['id']);
-  //       print("---------------Fin Commande Select");
+      return tokens;
+    } catch (e) {
+      // Gérer les erreurs ici
+      print('Erreur lors de la récupération des tokens : $e');
+      return []; // Retourner une liste vide en cas d'erreur
+    }
+  }
 
-  //       if (index != -1) {
-  //         // final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
-  //         //     commandes[index]['dateLivraison'].seconds * 1000);
-  //         // print("*******************$deliveryTime");
-  //         // final difference = deliveryTime.difference(currentTime);
-  //         // print("*******************$difference");
+  void sendNotificationToChampion(
+      String token, String body, String title) async {
+    try {
+      await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
+          headers: <String, String>{
+            "Content-Type": 'application/json',
+            "Authorization":
+                "key=AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV",
+          },
+          body: jsonEncode(<String, dynamic>{
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'body': body,
+              'title': title,
+            },
+            "notification": <String, dynamic>{
+              'title': title,
+              'body': body,
+              'android_channel_id': 'bdfood',
+            },
+            "to": token,
+          }));
+    } catch (e) {
+      if (kDebugMode) {
+        print("Echec pour l'envoie de notification");
+      }
+    }
+  }
 
-  //         final deliveryTime = DateTime.fromMillisecondsSinceEpoch(
-  //         commandes[index]['dateLivraison'].millisecondsSinceEpoch);
+  void sendNotificationLivraison() async {
+    List<String> tokens = await recuperationToken();
+    String titre = "Livraison";
+    String body = "Une nouvelle livraison est disponible";
 
-  //       final currentTimeInSeconds = currentTime.millisecondsSinceEpoch ~/ 1000;
-  //       final deliveryTimeInSeconds = deliveryTime.millisecondsSinceEpoch ~/ 1000;
-
-  //       final differenceInSeconds = deliveryTimeInSeconds - currentTimeInSeconds;
-
-  //         if (difference.inHours > 1) {
-  //           // Enregistrez les données de la commande sous la clé 'traitement'
-  //           Map<String, dynamic> commandeTraitement = commandes[index];
-
-  //           try {
-  //             await FirebaseFirestore.instance
-  //                 .collection('marchands')
-  //                 .doc(user.uid)
-  //                 .update({'traitement': commandeTraitement});
-
-  //             // Supprimez le produit spécifique de la liste
-  //             commandes.removeAt(index);
-
-  //             // Mettez à jour les données du marchand avec la liste de commandes modifiée
-  //             await FirebaseFirestore.instance
-  //                 .collection('marchands')
-  //                 .doc(user.uid)
-  //                 .update({'commandes': commandes});
-
-  //             print("Commande supprimée de la liste avec succès");
-  //           } catch (error) {
-  //             print("Erreur lors de la suppression de la commande : $error");
-  //           }
-  //         } else {
-  //           print(
-  //               "La commande à l'index $index ne doit pas être supprimée car sa date de livraison est inférieure à 1 heure après la date actuelle.");
-  //         }
-  //       } else {
-  //         print("La commande n'a pas été trouvée dans la liste");
-  //       }
-  //     }
-  //   }
-  // }
+    for (String token in tokens) {
+      sendNotificationToChampion(token, titre, body);
+    }
+  }
 
   Future<void> removeFromCommandList(
     List<Map<String, dynamic>> commandesASupprimer,
@@ -277,7 +276,9 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Vos commandes", style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            Text("Vos commandes",
+                style: TextStyle(
+                    color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -426,6 +427,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
                                           commandesParAdresse, marchandData);
                                       envoicommandaire(
                                           commandesParAdresse, marchandData);
+                                      sendNotificationLivraison();
                                       removeFromCommandList(
                                           commandesParAdresse, marchandData);
                                       Get.snackbar("Infos",
