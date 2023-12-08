@@ -55,7 +55,7 @@ class DeliveryInfoWidget extends StatelessWidget {
         SizedBox(height: 20.0),
 
         Text(
-          'Numéro à contacter une fois sur place',
+          'Rendre à',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,

@@ -106,7 +106,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Numéro à contacter une fois sur place',
+          'Prendre chez',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,

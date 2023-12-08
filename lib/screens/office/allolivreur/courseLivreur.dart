@@ -302,7 +302,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
             ),
             child: Center(
               child: Text(
-                'Votre actuelle course',
+                'Votre course actuelle ',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
