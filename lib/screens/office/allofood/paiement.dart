@@ -34,34 +34,46 @@ User? getCurrentUser() {
 int currentStep = 0; // Étape actuelle du formulaire
 String cancel = "Cancel";
 
-void sendNotificationToMerchant(String token, String body, String title) async {
-  try {
-    await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
-        headers: <String, String>{
-          "Content-Type": 'application/json',
-          "Authorization": "key=AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV",
+Future<void> sendNotificationToMerchant(
+      String token, String body, String title) async {
+    try {
+      final String serverKey =
+          "AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV";
+
+      final Map<String, dynamic> data = {
+        'priority': 'high',
+        'notification': {
+          'title': title,
+          'body': body,
         },
-        body: jsonEncode(<String, dynamic>{
-          'priority': 'high',
-          'data': <String, dynamic>{
-            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'status': 'done',
-            'body': body,
-            'title': title,
-          },
-          "notification": <String, dynamic>{
-            'title': title,
-            'body': body,
-            'android_channel_id': 'bdfood',
-          },
-          "to": token,
-        }));
-  } catch (e) {
-    if (kDebugMode) {
-      print("Echec pour l'envoie de notification");
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'status': 'done',
+        },
+        'to': token,
+      };
+
+      final String jsonBody = jsonEncode(data);
+
+      final http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverKey',
+        },
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification envoyée avec succès à $token');
+      } else {
+        print(
+            'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
-}
 
 Future<dynamic> GetProductFromCart() async {
   try {

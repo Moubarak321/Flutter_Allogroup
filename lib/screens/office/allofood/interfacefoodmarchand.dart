@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../widgets/big_text.dart';
 import '../widgets/icon_and_text_widget.dart';
@@ -50,34 +49,44 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     }
   }
 
-  void sendNotificationToChampion(
+  Future<void> sendNotificationToChampion(
       String token, String body, String title) async {
     try {
-      await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
-          headers: <String, String>{
-            "Content-Type": 'application/json',
-            "Authorization":
-                "key=AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV",
-          },
-          body: jsonEncode(<String, dynamic>{
-            'priority': 'high',
-            'data': <String, dynamic>{
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-              'status': 'done',
-              'body': body,
-              'title': title,
-            },
-            "notification": <String, dynamic>{
-              'title': title,
-              'body': body,
-              'android_channel_id': 'bdfood',
-            },
-            "to": token,
-          }));
-    } catch (e) {
-      if (kDebugMode) {
-        print("Echec pour l'envoie de notification");
+      final String serverKey =
+          "AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV";
+
+      final Map<String, dynamic> data = {
+        'priority': 'high',
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'status': 'done',
+        },
+        'to': token,
+      };
+
+      final String jsonBody = jsonEncode(data);
+
+      final http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverKey',
+        },
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification envoyée avec succès à $token');
+      } else {
+        print(
+            'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
       }
+    } catch (e) {
+      print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
 
@@ -85,7 +94,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     List<String> tokens = await recuperationToken();
     String titre = "Livraison";
     String body = "Une nouvelle livraison est disponible";
-
     for (String token in tokens) {
       sendNotificationToChampion(token, titre, body);
     }
