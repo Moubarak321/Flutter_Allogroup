@@ -107,10 +107,6 @@ Future<dynamic> GetProductFromCart() async {
   }
 }
 
-/** 
-void sendNotificationForPromo() async {
-  
-} */
 
 Future<int> Recuperationprix(String pickupAddress) async {
   try {

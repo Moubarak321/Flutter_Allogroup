@@ -31,10 +31,10 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
 
       championsSnapshot.docs.forEach((DocumentSnapshot document) {
         final Map<String, dynamic>? championData =
-            document.data() as Map<String, dynamic>?;
+            document.data() as Map<String, dynamic>?; 
 
-        if (championData != null && championData.containsKey('fmcToken')) {
-          final String? fmcToken = championData['fmcToken'] as String?;
+        if (championData != null && championData.containsKey('fcmToken')) {
+          final String? fmcToken = championData['fcmToken'] as String?;
           if (fmcToken != null) {
             tokens.add(fmcToken);
           }

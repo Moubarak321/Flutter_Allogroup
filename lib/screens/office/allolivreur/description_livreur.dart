@@ -43,14 +43,13 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         final Map<String, dynamic>? championData =
             document.data() as Map<String, dynamic>?;
 
-        if (championData != null && championData.containsKey('fmcToken')) {
-          final String? fmcToken = championData['fmcToken'] as String?;
+        if (championData != null && championData.containsKey('fcmToken')) {
+          final String? fmcToken = championData['fcmToken'] as String?;
           if (fmcToken != null) {
             tokens.add(fmcToken);
           }
         }
       });
-
       return tokens;
     } catch (e) {
       // Gérer les erreurs ici
@@ -210,12 +209,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
 
   void sendNotificationLivraison() async {
     List<String> tokens = await recuperationToken();
-    print(tokens);
     String titre = "Livraison";
     String body = "Une nouvelle livraison est disponible";
-    print('Voici le send');
-    String token = 'bvblnn';
-    sendNotificationToChampion(token, titre, body);
     for (String token in tokens) {
       print('token');
       sendNotificationToChampion(token, titre, body);
