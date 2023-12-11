@@ -83,16 +83,62 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-    void initInfo() async {
+  //   void initInfo() async {
+  //   // Initialisation des notifications locales
+  //   var androidInitialize = AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
+  //   var initializationSettings = InitializationSettings(android: androidInitialize);
+  //   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //   await flutterLocalNotificationsPlugin.initialize(
+  //     initializationSettings,
+  //     onDidReceiveNotificationResponse : (payload) async {
+  //       try {
+          
+  //       } catch (e) {
+  //         print('Erreur lors de la gestion de la notification : $e');
+  //       }
+  //     },
+  //   );
+
+  //   // Écouter les notifications Firebase Cloud Messaging
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+  //     print('onMessage: ${message.notification?.title}/${message.notification?.body}');
+      
+  //     // Paramètres pour la notification locale
+  //     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //       'bdfood',
+  //       'bdfood',
+  //       importance: Importance.high,
+  //       priority: Priority.high,
+  //       playSound: true,
+  //     );
+
+  //     var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  //     // Afficher la notification locale
+  //     await flutterLocalNotificationsPlugin.show(
+  //       0,
+  //       message.notification?.title ?? '',
+  //       message.notification?.body ?? '',
+  //       platformChannelSpecifics,
+  //       payload: message.data['body'] ?? '',
+  //     );
+  //   });
+  // }
+
+
+
+//========================== nouveau initinfo chatgpt ===========================
+void initInfo() async {
+  try {
     // Initialisation des notifications locales
     var androidInitialize = AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
     var initializationSettings = InitializationSettings(android: androidInitialize);
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse : (payload) async {
+      onDidReceiveNotificationResponse: (payload) async {
         try {
-          
+          // Gérer la réponse à la notification locale si nécessaire
         } catch (e) {
           print('Erreur lors de la gestion de la notification : $e');
         }
@@ -102,10 +148,10 @@ class _MyAppState extends State<MyApp> {
     // Écouter les notifications Firebase Cloud Messaging
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('onMessage: ${message.notification?.title}/${message.notification?.body}');
-      
+
       // Paramètres pour la notification locale
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'bdfood',
+        'bdfood', // Assurez-vous que le nom du canal correspond
         'bdfood',
         importance: Importance.high,
         priority: Priority.high,
@@ -120,10 +166,38 @@ class _MyAppState extends State<MyApp> {
         message.notification?.title ?? '',
         message.notification?.body ?? '',
         platformChannelSpecifics,
-        payload: message.data['body'] ?? '',
+        payload: message.data['body'] ?? '', // Assurez-vous d'utiliser le bon champ pour le payload
       );
     });
+  } catch (e) {
+    print("Erreur lors de l'/initialisation des notifications : $e");
   }
+}
+
+//========================== fin initinfo chatgpt ===========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<void> initializeAppAndNavigate() async {
     try {

@@ -25,20 +25,20 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
   final QuantityController quantityController =
       Get.put(QuantityController()); // Initialize the controller
   final box = GetStorage();
-  int get quantity => box.read('quantity') ?? 0;
+  int get quantity => box.read('quantity') ?? 1;
   late final Map<String, dynamic> produit;
-  int _quantity = 0;
+  int _quantity = 1;
   // int get quantity => _quantity;
-  int _inCartItems = 0;
-  int get inCartItems => _inCartItems + _quantity;
+  // int _inCartItems = 0;
+  // int get inCartItems => _inCartItems + _quantity;
   void setQuantity(bool isIncrement) {
     setState(
       () {
         int checkQuantity(int quantity) {
-          if (quantity < 0) {
-            Get.snackbar("Attention", "Vous ne pouvez pas réduire moins",
+          if (quantity <= 1) {
+            Get.snackbar("Attention", "Vous devez acheter au moins 1 produit",
                 backgroundColor: Colors.orange, colorText: Colors.white);
-            return 0;
+            return 1;
           } else if (quantity > 20) {
             Get.snackbar("Attention",
                 "Vous ne pouvez pas commander au delà de 20 articles",
@@ -52,7 +52,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
         if (isIncrement) {
           _quantity = checkQuantity(_quantity + 1);
         } else {
-          if (_quantity > 0) {
+          if (_quantity > 1) {
             _quantity = checkQuantity(_quantity - 1);
           }
         }
