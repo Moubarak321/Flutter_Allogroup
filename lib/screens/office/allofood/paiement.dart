@@ -35,45 +35,45 @@ int currentStep = 0; // Étape actuelle du formulaire
 String cancel = "Cancel";
 
 Future<void> sendNotificationToMerchant(
-      String token, String body, String title) async {
-    try {
-      final String serverKey =
-          "AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV";
+    String token, String body, String title) async {
+  try {
+    final String serverKey =
+        "AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV";
 
-      final Map<String, dynamic> data = {
-        'priority': 'high',
-        'notification': {
-          'title': title,
-          'body': body,
-        },
-        'data': {
-          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-          'status': 'done',
-        },
-        'to': token,
-      };
+    final Map<String, dynamic> data = {
+      'priority': 'high',
+      'notification': {
+        'title': title,
+        'body': body,
+      },
+      'data': {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'status': 'done',
+      },
+      'to': token,
+    };
 
-      final String jsonBody = jsonEncode(data);
+    final String jsonBody = jsonEncode(data);
 
-      final http.Response response = await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'key=$serverKey',
-        },
-        body: jsonBody,
-      );
+    final http.Response response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: jsonBody,
+    );
 
-      if (response.statusCode == 200) {
-        print('Notification envoyée avec succès à $token');
-      } else {
-        print(
-            'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Erreur lors de l\'envoi de la notification : $e');
+    if (response.statusCode == 200) {
+      print('Notification envoyée avec succès à $token');
+    } else {
+      print(
+          'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
     }
+  } catch (e) {
+    print('Erreur lors de l\'envoi de la notification : $e');
   }
+}
 
 Future<dynamic> GetProductFromCart() async {
   try {
@@ -106,7 +106,6 @@ Future<dynamic> GetProductFromCart() async {
     return null;
   }
 }
-
 
 Future<int> Recuperationprix(String pickupAddress) async {
   try {
@@ -205,10 +204,12 @@ Future<void> envoi() async {
               .collection('marchands')
               .doc(merchantId);
 
-          final DocumentSnapshot merchantDocSnapshot = await merchantDocRef.get();
-          final Map<String, dynamic>? merchantData = merchantDocSnapshot.data() as Map<String, dynamic>?;
+          final DocumentSnapshot merchantDocSnapshot =
+              await merchantDocRef.get();
+          final Map<String, dynamic>? merchantData =
+              merchantDocSnapshot.data() as Map<String, dynamic>?;
           String token = merchantData?['fcmToken'];
-
+          print(token);
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
             'commandes': FieldValue.arrayUnion([
@@ -228,8 +229,9 @@ Future<void> envoi() async {
           });
           final prix = int.parse(order['prix']) * int.parse(order['quantite']);
           final nom = order['boutique'];
-          String body = "Vous avez recu une commande de $order['quantite'] $order['titre'] du $order['numeroLivraison'] pour la zone $order['lieuLivraison']";
-          String titre = "Commande de $order['titre']";
+          String body =
+              "Vous avez recu une commande de ${order['quantite']} ${order['titre']} du ${order['numeroLivraison']} pour la zone ${order['lieuLivraison']}";
+          String titre = "Commande de ${order['titre']}";
           sendNotificationToMerchant(token, titre, body);
           Get.snackbar("Succès",
               "Commande envoyée au marchand $nom et vous payerai $prix F",
