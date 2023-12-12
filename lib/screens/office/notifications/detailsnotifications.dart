@@ -4,18 +4,21 @@ import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 class Detailsnotifications extends StatelessWidget {
   final Map<String, dynamic> courseData;
   final int index;
 
   Detailsnotifications({required this.courseData, required this.index});
-  
+
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('fr_FR', null);
 
-    final date = courseData['date'] != null ? DateTime.fromMillisecondsSinceEpoch(courseData['date']) : null;
-    
+    final date = courseData['date'] != null
+        ? DateTime.fromMillisecondsSinceEpoch(courseData['date'])
+        : null;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -23,7 +26,8 @@ class Detailsnotifications extends StatelessWidget {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Que disent-ils ?',
-            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: CustomScrollView(
         slivers: [
@@ -32,35 +36,35 @@ class Detailsnotifications extends StatelessWidget {
             toolbarHeight: 75,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Revenir à la page précédente
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xCC0A5089),
-                    ),
-                    child: Icon(
-                      Icons.clear,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xCC0A5089),
-                  ),
-                  child: Icon(
-                    Icons.add_shopping_cart_outlined,
-                    color: Colors.white,
-                  ), 
-                ),
-              ],
+              // children: [
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.pop(context); // Revenir à la page précédente
+              //   },
+              //   child: Container(
+              //     padding: EdgeInsets.all(10),
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Color(0xCC0A5089),
+              //     ),
+              //     child: Icon(
+              //       Icons.clear,
+              //       color: Colors.white,
+              //     ),
+              //   ),
+              // ),
+              //   Container(
+              //     padding: EdgeInsets.all(10),
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Color(0xCC0A5089),
+              //     ),
+              //     child: Icon(
+              //       Icons.add_shopping_cart_outlined,
+              //       color: Colors.white,
+              //     ),
+              //   ),
+              // ],
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(20),
@@ -76,13 +80,12 @@ class Detailsnotifications extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                DateFormat.yMMMMEEEEd('fr_FR').format(date!),
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.grey,
-                ),
-              ),
-                  
+                    DateFormat.yMMMMEEEEd('fr_FR').format(date!),
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
               ),
             ),
