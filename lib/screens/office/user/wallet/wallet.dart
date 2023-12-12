@@ -138,7 +138,7 @@ class _WalletState extends State<Wallet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Votre solde:$fund ",
+                    "Votre solde ",
                     style: TextStyle(fontSize: Dimensions.font16),
                   ),
                   SizedBox(height: 8.0),
