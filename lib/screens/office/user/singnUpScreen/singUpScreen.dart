@@ -114,13 +114,13 @@ class _SignUpState extends State<SignUp> {
       // Obtenez la permission de notification
       NotificationSettings settings =
           await FirebaseMessaging.instance.requestPermission(
-            alert: true,
-            announcement: false,
-            badge: true,
-            criticalAlert: true,
-            provisional: false,
-            sound: true,
-          );
+        alert: true,
+        announcement: false,
+        badge: true,
+        criticalAlert: true,
+        provisional: false,
+        sound: true,
+      );
       //// Utilisez le contrôleur _phoneNumberController
 
       try {
@@ -430,6 +430,23 @@ class _SignUpState extends State<SignUp> {
                             true; // Démarrez l'indicateur de chargement
                       });
                       _handleSubmit();
+                      Get.defaultDialog(
+                        title: "Bienvenue Chez Allô-Group",
+                        middleText:
+                            "Connectez-vous avec vos identifiants pour faire vos courses",
+                        backgroundColor: Colors.white,
+                        titleStyle: TextStyle(color: Colors.green.shade400),
+                        middleTextStyle: TextStyle(color: Colors.white),
+                        cancel: OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      );
                     }, // Affiche le texte du bouton
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -448,7 +465,8 @@ class _SignUpState extends State<SignUp> {
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           )
-                        : Text("Inscription",style: TextStyle(color: Colors.white)),
+                        : Text("Inscription",
+                            style: TextStyle(color: Colors.white)),
                   ),
 
                   SizedBox(height: 20),

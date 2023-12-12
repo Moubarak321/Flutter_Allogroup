@@ -35,7 +35,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
     setState(
       () {
         int checkQuantity(int quantity) {
-          if (quantity <= 1) {
+          if (quantity < 1) {
             Get.snackbar("Attention", "Vous devez acheter au moins 1 produit",
                 backgroundColor: Colors.orange, colorText: Colors.white);
             return 1;

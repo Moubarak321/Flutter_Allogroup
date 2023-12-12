@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-
 class Wallet extends StatefulWidget {
   const Wallet({Key? key}) : super(key: key);
 
@@ -64,7 +63,8 @@ class _WalletState extends State<Wallet> {
         // Vérifier si le document de l'utilisateur existe et contient la clé 'wallet'
         if (userDoc.exists &&
             userDoc.data() is Map<String, dynamic> &&
-            (userDoc.data() as Map<String, dynamic>).containsKey('phoneNumber')) {
+            (userDoc.data() as Map<String, dynamic>)
+                .containsKey('phoneNumber')) {
           // Récupérer et retourner la valeur de la clé 'wallet'
           return (userDoc.data() as Map<String, dynamic>)['phoneNumber'];
         }
@@ -113,9 +113,10 @@ class _WalletState extends State<Wallet> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left,color: Colors.white)),
+            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
         title: Text('Portefeuille',
-           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -129,8 +130,7 @@ class _WalletState extends State<Wallet> {
               padding: EdgeInsets.all(16.0),
               // child: BigText(text: "Rechargez votre portefeuille",size: Dimensions.font20),
               child: BigText(
-                  text: "Bilan de votre portefeuille",
-                  size: Dimensions.font20),
+                  text: "Bilan de votre portefeuille", size: Dimensions.font20),
             ),
             Container(
               padding: EdgeInsets.all(16.0),
@@ -147,7 +147,7 @@ class _WalletState extends State<Wallet> {
                       labelText: "$fund FCFA",
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.text, 
+                    keyboardType: TextInputType.text,
                     enabled: false,
                   ),
                   Text(
@@ -175,4 +175,3 @@ class _WalletState extends State<Wallet> {
     );
   }
 }
-

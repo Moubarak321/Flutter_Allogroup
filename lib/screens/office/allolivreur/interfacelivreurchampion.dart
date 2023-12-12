@@ -120,6 +120,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
 
   Future<void> validerCourse(Map<String, dynamic> courseData) async {
     final User? user = getCurrentUser();
+
     if (user != null) {
       try {
         // Récupérer le document de l'utilisateur dans la collection "champions"
@@ -173,6 +174,8 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
           );
           String titre = 'Livraison';
           String body = 'Votre livreur est en route';
+          // print('courseData--------------------------- ${courseData["fcmToken"]}');
+
           sendNotificationToClient(courseData['fcmToken'], titre, body);
         } else {
           // print('Document utilisateur non trouvé');
@@ -216,7 +219,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
       );
 
       if (response.statusCode == 200) {
-         showLocalNotification(
+        showLocalNotification(
             FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
             title,
             body);
