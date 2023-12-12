@@ -222,7 +222,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         //theme globaux du projet
         // cardColor: Color.fromRGBO(10, 80, 137, 0.8), //couleur des cards
-        cardColor: Color(0xCC0A5089), //couleur des cards
+        cardColor: Color.fromRGBO(10, 80, 137, 0.8), //couleur des cards
         appBarTheme: const AppBarTheme(
             color: Color.fromRGBO(10, 80, 137, 0.8), centerTitle: true),
         // appBarTheme: const AppBarTheme(color: Colors.teal, centerTitle: true),

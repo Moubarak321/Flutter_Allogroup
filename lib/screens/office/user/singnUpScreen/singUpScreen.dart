@@ -435,8 +435,9 @@ class _SignUpState extends State<SignUp> {
                         middleText:
                             "Connectez-vous avec vos identifiants pour faire vos courses",
                         backgroundColor: Colors.white,
-                        titleStyle: TextStyle(color: Colors.green.shade400),
-                        middleTextStyle: TextStyle(color: Colors.white),
+                        titleStyle: TextStyle(color: Colors.orange),
+                        middleTextStyle:
+                            TextStyle(color: Color.fromRGBO(10, 80, 137, 0.8)),
                         cancel: OutlinedButton(
                           onPressed: () {
                             Get.back();
