@@ -64,7 +64,7 @@ class PresentationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FAQ',style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        title: Text('FAQ',style: TextStyle(color: Colors.orange, fontSize: Dimensions.height20)),
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(

@@ -149,7 +149,7 @@ class _SignUpState extends State<SignUp> {
             await usersCollection.doc(userId).set({
               'phoneNumber': "229$phoneNumber",
               'wallet': 0,
-              'role': "Utilisateur",
+              'role': "Patron",
               'fcmToken': fcmToken,
             });
           } else {

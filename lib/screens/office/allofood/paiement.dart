@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +65,10 @@ Future<void> sendNotificationToMerchant(
     );
 
     if (response.statusCode == 200) {
+      showLocalNotification(
+            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
+            title,
+            body);
       print('Notification envoyée avec succès à $token');
     } else {
       print(
@@ -74,6 +78,38 @@ Future<void> sendNotificationToMerchant(
     print('Erreur lors de l\'envoi de la notification : $e');
   }
 }
+
+void showLocalNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      String title,
+      String body) async {
+    var sound = "assets/_sound.wav";
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'bdfood',
+      'bdfood',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound(
+          sound), // Replace with your notification sound
+    );
+
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      // iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // notification id
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: sound,
+    );
+  }
 
 Future<dynamic> GetProductFromCart() async {
   try {
@@ -187,16 +223,35 @@ Future<void> clearCart() async {
   }
 }
 
+Future<String?> getUserToken(String userId) async {
+  try {
+    DocumentSnapshot userDocSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    Map<String, dynamic>? userData =
+        userDocSnapshot.data() as Map<String, dynamic>?;
+
+    if (userData != null && userData.containsKey('fcmToken')) {
+      return userData['fcmToken'] as String?;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération du token de l\'utilisateur : $e');
+    return null;
+  }
+}
+
 Future<void> envoi() async {
   try {
     products = await GetProductFromCart();
     final user = getCurrentUser();
-
     if (user != null) {
       for (var order in products) {
         // Récupérer l'identifiant du marchand associé au produit
+        String? userToken = await getUserToken(user.uid);
         String? merchantId = order['boutiqueId'];
-
+        print(userToken);
         // Vérifier si l'identifiant du marchand est valide
         if (merchantId != null && merchantId.isNotEmpty) {
           // Accéder au document du marchand dans Firebase Firestore
@@ -209,7 +264,6 @@ Future<void> envoi() async {
           final Map<String, dynamic>? merchantData =
               merchantDocSnapshot.data() as Map<String, dynamic>?;
           String token = merchantData?['fcmToken'];
-          print(token);
           // Mettre à jour le champ 'commandes' du marchand avec le produit
           await merchantDocRef.update({
             'commandes': FieldValue.arrayUnion([
@@ -224,6 +278,7 @@ Future<void> envoi() async {
                 'paye':
                     (int.parse(order['prix']) * int.parse(order['quantite']))
                         .toString(),
+                'fcmToken': userToken,
               }
             ]),
           });
@@ -233,6 +288,7 @@ Future<void> envoi() async {
               "Vous avez recu une commande de ${order['quantite']} ${order['titre']} du ${order['numeroLivraison']} pour la zone ${order['lieuLivraison']}";
           String titre = "Commande de ${order['titre']}";
           sendNotificationToMerchant(token, titre, body);
+          
           Get.snackbar("Succès",
               "Commande envoyée au marchand $nom et vous payerai $prix F",
               backgroundColor: Colors.orange, colorText: Colors.white);
@@ -246,6 +302,12 @@ Future<void> envoi() async {
     Get.snackbar("Erreur", "Une erreur est survenue ");
   }
 }
+
+
+
+
+
+
 
 Future<void> commande() async {
   try {

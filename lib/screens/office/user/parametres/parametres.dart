@@ -21,8 +21,8 @@ class _ParametresState extends State<Parametres> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left)),
-        title: Text('Paramètre',
+            icon: const Icon(LineAwesomeIcons.angle_left,color: Colors.white)),
+        title: Text('Paramètres',
            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
@@ -36,18 +36,26 @@ class _ParametresState extends State<Parametres> {
                   }), 
         ProfileMenuWidgetText(
                   title: "Alerte champion",
-                  text: "Vous alerte lorsqu'un champion reçois votre commande",
+                  text: "Vous alerter lorsqu'un champion reçoit votre commande",
                   icon: LineAwesomeIcons.bell_1,
                   onPress: () {
                     // _launchURL(_webController);
                   }), 
         ProfileMenuWidgetText(
                   title: "Alerte livraison",
-                  text: "Vous alerte lorsque le livreur est à votre portée",
+                  text: "Vous alerter lorsque le livreur est à votre portée",
                   icon: LineAwesomeIcons.bell_1,
                   onPress: () {
                     // _launchURL(_webController);
                   }),
+        ProfileMenuWidgetText(
+                  title: "Alerte Commande",
+                  text: "Vous alerter lorsqu'un marchand reçoit votre commande",
+                  icon: LineAwesomeIcons.bell_1,
+                  onPress: () {
+                    // _launchURL(_webController);
+                  })
+
        ],
 
       ),

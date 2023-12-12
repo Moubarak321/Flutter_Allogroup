@@ -4,6 +4,7 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
 
       championsSnapshot.docs.forEach((DocumentSnapshot document) {
         final Map<String, dynamic>? championData =
-            document.data() as Map<String, dynamic>?; 
+            document.data() as Map<String, dynamic>?;
 
         if (championData != null && championData.containsKey('fcmToken')) {
           final String? fmcToken = championData['fcmToken'] as String?;
@@ -80,6 +81,11 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
       );
 
       if (response.statusCode == 200) {
+        showLocalNotification(
+            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
+            title,
+            body);
+
         print('Notification envoyée avec succès à $token');
       } else {
         print(
@@ -88,6 +94,38 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     } catch (e) {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
+  }
+
+  void showLocalNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      String title,
+      String body) async {
+    var sound = "assets/_sound.wav";
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'bdfood',
+      'bdfood',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound(
+          sound), // Replace with your notification sound
+    );
+
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      // iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // notification id
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: sound,
+    );
   }
 
   void sendNotificationLivraison() async {
@@ -213,9 +251,10 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
           .set({
         'courses': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
-        // Succès : les données ont été enregistrées avec succès.
-        // print("Données enregistrées avec succès");
-        //sendNotificationForPromo();
+        String titre = "Commande";
+        String body =
+            "Votre commande est en cours de traitement par ${marchandData['fullName']}";
+        sendNotificationToChampion(commandes[0]['token'], titre, body);
       }).catchError((error) {
         // Erreur : une erreur est survenue lors de l'enregistrement des données.
         print("Erreur lors de l'enregistrement des données : $error");

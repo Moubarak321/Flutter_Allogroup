@@ -37,13 +37,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String _pickedImagePath = '';
   // ignore: unused_field
   bool _isDataModified = false;
- 
+
   bool _isLoading = false;
   @override
   void initState() {
     super.initState();
     _loadUserData();
-   
   }
 
   Future<void> _loadUserData() async {
@@ -78,16 +77,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (user != null) {
       try {
         await user.updateProfile(displayName: _fullNameController.text);
-        
-        await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .update({
-              'phoneNumber': _phoneController.text,
-              'fullName': _fullNameController.text,
-            });
 
-            _showSuccesDialog("Vos données ont été mises à jour");
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'phoneNumber': _phoneController.text,
+          'fullName': _fullNameController.text,
+        });
+
+        _showSuccesDialog("Vos données ont été mises à jour");
 
         if (_pickedImagePath.isNotEmpty) {
           final String imageFileName = 'profile_images/${user.uid}.jpg';
@@ -132,7 +131,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-
   Future<void> _pickImageFromGallery() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
@@ -150,32 +148,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void _showSuccesDialog(String succesMessage) {
     Get.defaultDialog(
       title: "Super !!!",
-      titleStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromARGB(255, 65, 238, 137)),
+      titleStyle:
+          TextStyle(fontSize: 20, color: Color.fromARGB(255, 65, 238, 137)),
       content: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.0),
         child: Text(
           succesMessage,
           style: TextStyle(
-            fontSize: 16, 
-            color: Colors.black, 
+            fontSize: 16,
+            color: Colors.black,
           ),
         ),
       ),
       confirm: ElevatedButton(
         onPressed: () {
-         
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    Home()), 
+            MaterialPageRoute(builder: (context) => Home()),
           );
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              Color.fromARGB(255, 38, 152, 245), 
+          backgroundColor: Color.fromARGB(255, 38, 152, 245),
           side: BorderSide.none,
         ),
         child: Text(
@@ -192,33 +185,31 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void _showErrorDialog(String succesMessage) {
     Get.defaultDialog(
       title: "Echec !!!",
-      titleStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromARGB(255, 238, 65, 65)),
+      titleStyle:
+          TextStyle(fontSize: 20, color: Color.fromARGB(255, 238, 65, 65)),
       content: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.0),
         child: Text(
           succesMessage,
           style: TextStyle(
-            fontSize: 16, 
-            color: Colors.black, 
+            fontSize: 16,
+            color: Colors.black,
           ),
         ),
       ),
       confirm: ElevatedButton(
         onPressed: () {
-          Get.back(); 
+          Get.back();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              Color.fromARGB(255, 38, 152, 245), 
+          backgroundColor: Color.fromARGB(255, 38, 152, 245),
           side: BorderSide.none,
         ),
         child: Text(
           "OK",
           style: TextStyle(
-            fontSize: 16, 
-            color: Colors.white, 
+            fontSize: 16,
+            color: Colors.white,
           ),
         ),
       ),
@@ -231,9 +222,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left)),
+            icon: const Icon(
+              LineAwesomeIcons.angle_left,
+              color: Colors.white,
+            )),
         title: Text(tEditProfile,
-            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -249,9 +244,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       backgroundColor: Colors.orange,
                       radius: 45,
                       child: CircleAvatar(
-                        
                         backgroundImage: NetworkImage(_pickedImagePath),
-
                         radius: 55,
                       ),
                     ),
@@ -309,15 +302,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: tFormHeight - 20),
-
                     const SizedBox(height: tFormHeight),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
                           setState(() {
-                            _isLoading =
-                                true; 
+                            _isLoading = true;
                           });
                           _updateProfile();
                         },
@@ -326,18 +317,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           side: BorderSide.none,
                           shape: const StadiumBorder(),
                         ),
-                        
                         child: _isLoading
                             ? CircularProgressIndicator(
-                               
                                 valueColor:
                                     AlwaysStoppedAnimation<Color>(Colors.white),
                               )
-                            : Text(tEditProfile),
+                            : Text(tEditProfile,
+                                style: TextStyle(color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: tFormHeight),
-                    
                   ],
                 ),
               ),

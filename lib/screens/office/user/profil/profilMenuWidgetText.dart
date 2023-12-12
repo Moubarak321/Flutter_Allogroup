@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 // Couleur primaire de votre application
 const Color tPrimaryColor = Colors.blue;
 
@@ -30,7 +29,7 @@ class ProfileMenuWidgetText extends StatefulWidget {
 }
 
 class _ProfileMenuWidgetTextState extends State<ProfileMenuWidgetText> {
-  bool switchValue = false;
+  bool switchValue = true;
 
   @override
   Widget build(BuildContext context) {
@@ -51,18 +50,23 @@ class _ProfileMenuWidgetTextState extends State<ProfileMenuWidgetText> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.title, style: Theme.of(context).textTheme.bodyLarge?.apply(color: widget.textColor)),
-          if (widget.text.isNotEmpty) Text(widget.text, style: Theme.of(context).textTheme.caption?.apply(color: widget.textColor)),
+          Text(widget.title,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.apply(color: widget.textColor)),
+          if (widget.text.isNotEmpty)
+            Text(widget.text,
+                style: Theme.of(context)
+                    .textTheme
+                    .caption
+                    ?.apply(color: widget.textColor)),
         ],
       ),
       trailing: widget.endIcon
           ? Switch(
               value: switchValue,
-              onChanged: (value) {
-                setState(() {
-                  switchValue = value;
-                });
-              },
+              onChanged: null, // Set onChanged to null to disable interaction
               activeColor: Colors.blue, // Customize switch color
             )
           : null,

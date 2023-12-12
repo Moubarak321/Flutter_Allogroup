@@ -40,7 +40,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
- 
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   //mode portrait
@@ -92,7 +92,7 @@ class _MyAppState extends State<MyApp> {
   //     initializationSettings,
   //     onDidReceiveNotificationResponse : (payload) async {
   //       try {
-          
+
   //       } catch (e) {
   //         print('Erreur lors de la gestion de la notification : $e');
   //       }
@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
   //   // Écouter les notifications Firebase Cloud Messaging
   //   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
   //     print('onMessage: ${message.notification?.title}/${message.notification?.body}');
-      
+
   //     // Paramètres pour la notification locale
   //     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
   //       'bdfood',
@@ -125,79 +125,63 @@ class _MyAppState extends State<MyApp> {
   //   });
   // }
 
-
+  var _sound = "assets/_sound.wav";
 
 //========================== nouveau initinfo chatgpt ===========================
-void initInfo() async {
-  try {
-    // Initialisation des notifications locales
-    var androidInitialize = AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
-    var initializationSettings = InitializationSettings(android: androidInitialize);
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (payload) async {
-        try {
-          // Gérer la réponse à la notification locale si nécessaire
-        } catch (e) {
-          print('Erreur lors de la gestion de la notification : $e');
-        }
-      },
-    );
-
-    // Écouter les notifications Firebase Cloud Messaging
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('onMessage: ${message.notification?.title}/${message.notification?.body}');
-
-      // Paramètres pour la notification locale
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'bdfood', // Assurez-vous que le nom du canal correspond
-        'bdfood',
-        importance: Importance.high,
-        priority: Priority.high,
-        playSound: true,
+  void initInfo() async {
+    try {
+      // Initialisation des notifications locales
+      var androidInitialize =
+          AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
+      var initializationSettings =
+          InitializationSettings(android: androidInitialize);
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      await flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse: (payload) async {
+          try {
+            // Gérer la réponse à la notification locale si nécessaire
+          } catch (e) {
+            print('Erreur lors de la gestion de la notification : $e');
+          }
+        },
       );
 
-      var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+      // Écouter les notifications Firebase Cloud Messaging
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        print(
+            'onMessage: ${message.notification?.title}/${message.notification?.body}');
 
-      // Afficher la notification locale
-      await flutterLocalNotificationsPlugin.show(
-        0,
-        message.notification?.title ?? '',
-        message.notification?.body ?? '',
-        platformChannelSpecifics,
-        payload: message.data['body'] ?? '', // Assurez-vous d'utiliser le bon champ pour le payload
-      );
-    });
-  } catch (e) {
-    print("Erreur lors de l'/initialisation des notifications : $e");
+        // Paramètres pour la notification locale
+        var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          'bdfood', // Assurez-vous que le nom du canal correspond
+          'bdfood',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+          sound: RawResourceAndroidNotificationSound(_sound),
+        );
+
+        var platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+
+        // Afficher la notification locale
+        await flutterLocalNotificationsPlugin.show(
+          0,
+          message.notification?.title ?? '',
+          message.notification?.body ?? '',
+          platformChannelSpecifics,
+          payload: message.data['body'] ??
+              '', // Assurez-vous d'utiliser le bon champ pour le payload
+        );
+      });
+    } catch (e) {
+      print("Erreur lors de l'/initialisation des notifications : $e");
+    }
   }
-}
 
 //========================== fin initinfo chatgpt ===========================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   Future<void> initializeAppAndNavigate() async {
     try {

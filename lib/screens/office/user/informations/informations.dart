@@ -56,7 +56,6 @@ class _InformationsState extends State<Informations> {
 
       setState(() {
         _roleController.text = userDoc.get("role").toString();
-       
       });
     }
   }
@@ -111,7 +110,7 @@ class _InformationsState extends State<Informations> {
 
   @override
   Widget build(BuildContext context) {
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    // var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     var role = _roleController.text;
 
     return Scaffold(
@@ -129,16 +128,15 @@ class _InformationsState extends State<Informations> {
                 ),
               );
             },
-            icon: const Icon(LineAwesomeIcons.angle_left)),
-        title: Text(
-          tProfile,
-          style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))
-        ],
+            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
+        title: Text(tProfile,
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {},
+        //       icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))
+        // ],
       ),
       body: SingleChildScrollView(
         child: Container(

@@ -15,10 +15,10 @@ class Delivery extends StatelessWidget {
 
   String gestioncode(typeLivraison, codesecret) {
     if (typeLivraison == 'Livraison de bien') {
-      return codesecret.toString();  
+      return codesecret.toString();
     } else {
       var message = "gestion du code par le restaurant";
-      return message; 
+      return message;
     }
   }
 
@@ -37,27 +37,27 @@ class Delivery extends StatelessWidget {
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
     final codeMessage = gestioncode(typeLivraison, codesecret);
-    
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(8.0),
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFe8e8e8),
-                        blurRadius: 5.0,
-                        offset: Offset(0, 5),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-5, 0),
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(5, 0),
-                      ),
-                    ],
+          BoxShadow(
+            color: Color(0xFFe8e8e8),
+            blurRadius: 5.0,
+            offset: Offset(0, 5),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(-5, 0),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(5, 0),
+          ),
+        ],
         color: Colors.orange,
         // border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8.0),
@@ -108,9 +108,10 @@ class Delivery extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left)),
+            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
         title: Text('Allô Livreur',
-            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[
@@ -142,8 +143,6 @@ class Delivery extends StatelessWidget {
             child: Icon(Icons.add),
           ),
           SizedBox(height: 20.0),
-          
-
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -154,9 +153,9 @@ class Delivery extends StatelessWidget {
                 // Utilisez DocumentSnapshot au lieu de QuerySnapshot
                 if (!snapshot.hasData) {
                   return SizedBox(
-        height: Dimensions.height30,
-        child: CircularProgressIndicator(),
-      ); 
+                    height: Dimensions.height30,
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;

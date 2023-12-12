@@ -2,12 +2,15 @@ import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:allogroup/screens/office/allolivreur/detailsOnLivreur.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class InterFaceLivreurChampion extends StatefulWidget {
   @override
@@ -19,53 +22,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
-
-  // List<dynamic> findNewPromotions(
-  //     List<dynamic> previousPromotions, List<dynamic> currentPromotions) {
-  //   List<dynamic> newPromotions = [];
-  //   for (var promotion in currentPromotions) {
-  //     if (!previousPromotions.contains(promotion)) {
-  //       newPromotions.add(promotion);
-  //     }
-  //   }
-
-  //   return newPromotions;
-  // }
-
-  // void listenForPromotionsChanges() {
-  //   FirebaseAuth auth = FirebaseAuth.instance;
-  //   List<dynamic> previousPromotions = [];
-  //   if (auth.currentUser != null) {
-  //     FirebaseFirestore.instance
-  //         .collection('administrateur')
-  //         .doc('commandeCourses')
-  //         .snapshots()
-  //         .listen((DocumentSnapshot snapshot) {
-  //       if (snapshot.exists && snapshot.data() != null) {
-  //         final adminData = snapshot.data() as Map<String, dynamic>;
-
-  //         if (adminData.containsKey('courses')) {
-  //           List<dynamic> promotions = adminData['courses'] ?? [];
-
-  //           List<dynamic> newPromotions =
-  //               findNewPromotions(previousPromotions, promotions);
-
-  //           newPromotions.forEach((newPromotion) {
-  //             sendNotificationForPromotion(newPromotion);
-  //           });
-
-  //           previousPromotions = promotions;
-  //         }
-  //       }
-  //     });
-  //   } else {
-  //   // Redirection de l'utilisateur vers l'écran de connexion, par exemple :
-  //   // Navigator.pushNamed(context, '/login');
-  //   print("L'utilisateur n'est pas authentifié.");
-  // }
-  // }
-
-  void sendNotificationForPromotion(dynamic promotion) async {}
 
   Future<bool> checkIfUserIsChampion() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -153,7 +109,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
         }
       } catch (error) {
         // print(
-            // 'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
+        // 'Erreur lors de la vérification de l\'éligibilité de l\'utilisateur : $error');
         return false; // Erreur lors de la récupération des données de l'utilisateur
       }
     } else {
@@ -215,6 +171,9 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             DetailsOnLivraison(),
             arguments: courseData,
           );
+          String titre = 'Livraison';
+          String body = 'Votre livreur est en route';
+          sendNotificationToClient(courseData['fcmToken'], titre, body);
         } else {
           // print('Document utilisateur non trouvé');
         }
@@ -224,6 +183,83 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     } else {
       // print('Utilisateur non authentifié');
     }
+  }
+
+  Future<void> sendNotificationToClient(
+      String token, String body, String title) async {
+    try {
+      final String serverKey =
+          "AAAAhN35nhQ:APA91bEABl_ccVcCigFgN6QOrpgFvdEbyzxtTsDSGhy2BN8IUGd_Pfkeeaj5CkDeygLZBB2Bn5PRYqQesDsRVwab9EcgYtFklvKVSTX0d9xOH44g3VqHXxQv1IBmxHsw6nGg_WGG9EUV";
+
+      final Map<String, dynamic> data = {
+        'priority': 'high',
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'status': 'done',
+        },
+        'to': token,
+      };
+
+      final String jsonBody = jsonEncode(data);
+
+      final http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverKey',
+        },
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+         showLocalNotification(
+            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
+            title,
+            body);
+        print('Notification envoyée avec succès à $token');
+      } else {
+        print(
+            'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erreur lors de l\'envoi de la notification : $e');
+    }
+  }
+
+  void showLocalNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      String title,
+      String body) async {
+    var sound = "assets/_sound.wav";
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'bdfood',
+      'bdfood',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound(
+          sound), // Replace with your notification sound
+    );
+
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      // iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // notification id
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: sound,
+    );
   }
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
@@ -308,12 +344,11 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
               if (isEligible) {
                 validerCourse(courseData);
                 Get.snackbar(
-                    "Infos", "Vous pouvez passer à la livraison, bonne chance", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+                    "Infos", "Vous pouvez passer à la livraison, bonne chance",
+                    backgroundColor: Colors.orange, colorText: Colors.white);
               } else {
-                Get.snackbar(
-                    "Infos", "Vous n'êtes pas éligible pour la course", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+                Get.snackbar("Infos", "Vous n'êtes pas éligible pour la course",
+                    backgroundColor: Colors.orange, colorText: Colors.white);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -357,12 +392,11 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Des Tickets de Livraison", 
-             style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            Text("Des Tickets de Livraison",
+                style: TextStyle(
+                    color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
-                // Redirect to DetailsOnLivraison() when sticky note icon is clicked
-                // Get.showSnackbar(GetSnackBar(message:"ddddddd",));
                 Navigator.push(
                   context,
                   MaterialPageRoute(

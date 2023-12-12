@@ -1,9 +1,11 @@
+import 'package:allogroup/screens/office/allofood/main_food_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class ConfirmationLivraison extends StatelessWidget {
   User? getCurrentUser() {
@@ -12,13 +14,12 @@ class ConfirmationLivraison extends StatelessWidget {
 
   String gestioncode(typeLivraison, codesecret) {
     if (typeLivraison == 'Livraison de bien') {
-      return codesecret.toString();  
+      return codesecret.toString();
     } else {
       var message = "gestion du code par le restaurant";
-      return message; 
+      return message;
     }
   }
-
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
@@ -104,7 +105,21 @@ class ConfirmationLivraison extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Service de livraison',style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MainFoodPage();
+                  },
+                ),
+              );
+            },
+            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
+        title: Text('Service de livraison',
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[

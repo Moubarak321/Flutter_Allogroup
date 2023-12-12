@@ -113,7 +113,7 @@ class _WalletState extends State<Wallet> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left)),
+            icon: const Icon(LineAwesomeIcons.angle_left,color: Colors.white)),
         title: Text('Portefeuille',
            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),

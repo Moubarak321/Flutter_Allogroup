@@ -2,7 +2,9 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'dart:convert';
 import '../components/recuperation.dart';
 import '../components/livraison.dart';
@@ -89,6 +91,10 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       );
 
       if (response.statusCode == 200) {
+        showLocalNotification(
+            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
+            title,
+            body);
         print('Notification envoyée avec succès à $token');
       } else {
         print(
@@ -97,6 +103,38 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     } catch (e) {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
+  }
+
+  void showLocalNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      String title,
+      String body) async {
+    var sound = "assets/_sound.wav";
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'bdfood',
+      'bdfood',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound(
+          sound), // Replace with your notification sound
+    );
+
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      // iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // notification id
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: sound,
+    );
   }
 
   Future<int> Recuperationprix(String pickupAddress) async {
@@ -162,48 +200,72 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return -1; // Prix non trouvé pour l'indice donné
   }
 
-  void saveFormDataToFirestore() async {
-    final user = getCurrentUser();
-    if (user != null) {
-      final courseId = DateTime.now().millisecondsSinceEpoch.toString();
+  Future<void> saveFormDataToFirestore() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
 
-      final userData = {
-        'id': courseId,
-        'type_courses': 'Livraison de bien',
-        'addressRecuperation': pickupAddress,
-        'numeroARecuperation': pickupNumero,
-        'addressLivraison': deliveryAddress,
-        'numeroALivraison': deliveryNumero,
-        'dateDeLivraison': selectedDateTime,
-        'password': password,
-        'title': title,
-        'details': details,
-        'prix': await Recuperationprix(pickupAddress ?? ''),
-        'status': false,
-      };
+      if (user != null) {
+        final courseId = DateTime.now().millisecondsSinceEpoch.toString();
 
-      try {
-        // Adding data to 'administrateur' collection
+        // Récupérer le token de l'utilisateur
+        String? fcmToken = await getUserFCMToken(user.uid);
+
+        final userData = {
+          'id': courseId,
+          'type_courses': 'Livraison de bien',
+          'addressRecuperation': pickupAddress,
+          'numeroARecuperation': pickupNumero,
+          'addressLivraison': deliveryAddress,
+          'numeroALivraison': deliveryNumero,
+          'dateDeLivraison': selectedDateTime,
+          'password': password,
+          'title': title,
+          'details': details,
+          'prix': await Recuperationprix(pickupAddress ?? ''),
+          'status': false,
+          'fcmToken': fcmToken,
+        };
+
+        // Ajouter les données à la collection 'administrateur'
         await FirebaseFirestore.instance
             .collection('administrateur')
             .doc("commandeCourses")
             .update({
           'courses': FieldValue.arrayUnion([userData])
         });
-        // print("Data saved successfully to 'administrateur' collection");
 
-        // Adding data to 'users' collection
+        // Ajouter les données à la collection 'users'
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
           'courses': FieldValue.arrayUnion([userData])
         });
-        // print("Data saved successfully to 'users' collection");
-      } catch (error) {
-        // Handle errors if any
-        // print("Error: $error");
       }
+    } catch (error) {
+      // Gérer les erreurs
+      print("Erreur lors de l'enregistrement des données : $error");
+    }
+  }
+
+  Future<String?> getUserFCMToken(String userId) async {
+    try {
+      DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      Map<String, dynamic>? userData =
+          userDocSnapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null && userData.containsKey('fcmToken')) {
+        return userData['fcmToken'] as String?;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération du token de l\'utilisateur : $e');
+      return null;
     }
   }
 
@@ -285,13 +347,17 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
         title: Text(
           'Informations sur la Course',
           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.location_on), // Icône de suivi
+            icon:
+                Icon(Icons.location_on, color: Colors.white), // Icône de suivi
             onPressed: () {
               Navigator.push(
                 context,

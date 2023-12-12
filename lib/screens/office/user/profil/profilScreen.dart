@@ -48,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    // var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -65,17 +65,17 @@ class ProfileScreen extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(LineAwesomeIcons.angle_left)),
+            icon: const Icon(LineAwesomeIcons.angle_left,color: Colors.white,)),
         title: Text(tProfile,
             style:
                 TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
         // titleTextStyle: TextStyle(color: Colors.white),
 
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {},
+        //       icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))
+        // ],
       ),
       body: SingleChildScrollView(
         child: Container(
