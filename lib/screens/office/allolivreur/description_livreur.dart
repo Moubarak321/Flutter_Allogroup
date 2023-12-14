@@ -2,7 +2,6 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'dart:convert';
@@ -90,12 +89,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         body: jsonBody,
       );
 
-      if (response.statusCode == 200) {
-        showLocalNotification(
-            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
-            title,
-            body);
-        print('Notification envoyée avec succès à $token');
+      if (response.statusCode == 200) {   
+       // print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -105,37 +100,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     }
   }
 
-  void showLocalNotification(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-      String title,
-      String body) async {
-    var sound = "assets/_sound.wav";
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'bdfood',
-      'bdfood',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound(
-          sound), // Replace with your notification sound
-    );
-
-    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      // iOS: iOSPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0, // notification id
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: sound,
-    );
-  }
 
   Future<int> Recuperationprix(String pickupAddress) async {
     try {

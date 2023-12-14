@@ -2,7 +2,6 @@ import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:allogroup/screens/office/allolivreur/detailsOnLivreur.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -219,11 +218,8 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
       );
 
       if (response.statusCode == 200) {
-        showLocalNotification(
-            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
-            title,
-            body);
-        print('Notification envoyée avec succès à $token');
+       
+       // print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -233,37 +229,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     }
   }
 
-  void showLocalNotification(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-      String title,
-      String body) async {
-    var sound = "assets/_sound.wav";
-
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'bdfood',
-      'bdfood',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound(
-          sound), // Replace with your notification sound
-    );
-
-    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      // iOS: iOSPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0, // notification id
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: sound,
-    );
-  }
+  
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française

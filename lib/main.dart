@@ -83,50 +83,6 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  //   void initInfo() async {
-  //   // Initialisation des notifications locales
-  //   var androidInitialize = AndroidInitializationSettings('@mipmap-mdpi/launcher_icon');
-  //   var initializationSettings = InitializationSettings(android: androidInitialize);
-  //   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //   await flutterLocalNotificationsPlugin.initialize(
-  //     initializationSettings,
-  //     onDidReceiveNotificationResponse : (payload) async {
-  //       try {
-
-  //       } catch (e) {
-  //         print('Erreur lors de la gestion de la notification : $e');
-  //       }
-  //     },
-  //   );
-
-  //   // Écouter les notifications Firebase Cloud Messaging
-  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  //     print('onMessage: ${message.notification?.title}/${message.notification?.body}');
-
-  //     // Paramètres pour la notification locale
-  //     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //       'bdfood',
-  //       'bdfood',
-  //       importance: Importance.high,
-  //       priority: Priority.high,
-  //       playSound: true,
-  //     );
-
-  //     var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
-
-  //     // Afficher la notification locale
-  //     await flutterLocalNotificationsPlugin.show(
-  //       0,
-  //       message.notification?.title ?? '',
-  //       message.notification?.body ?? '',
-  //       platformChannelSpecifics,
-  //       payload: message.data['body'] ?? '',
-  //     );
-  //   });
-  // }
-
-  var _sound = "assets/_sound.wav";
-
 //========================== nouveau initinfo chatgpt ===========================
   void initInfo() async {
     try {
@@ -160,7 +116,7 @@ class _MyAppState extends State<MyApp> {
           priority: Priority.high,
           playSound: true,
           enableVibration: true,
-          sound: RawResourceAndroidNotificationSound(_sound),
+          //sound: RawResourceAndroidNotificationSound(_sound),
         );
 
         var platformChannelSpecifics =

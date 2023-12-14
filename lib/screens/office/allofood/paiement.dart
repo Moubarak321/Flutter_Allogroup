@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -65,11 +64,7 @@ Future<void> sendNotificationToMerchant(
     );
 
     if (response.statusCode == 200) {
-      showLocalNotification(
-            FlutterLocalNotificationsPlugin as FlutterLocalNotificationsPlugin,
-            title,
-            body);
-      print('Notification envoyée avec succès à $token');
+      //print('Notification envoyée avec succès à $token');
     } else {
       print(
           'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -79,37 +74,6 @@ Future<void> sendNotificationToMerchant(
   }
 }
 
-void showLocalNotification(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-      String title,
-      String body) async {
-    var sound = "assets/_sound.wav";
-
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'bdfood',
-      'bdfood',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound(
-          sound), // Replace with your notification sound
-    );
-
-    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      // iOS: iOSPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0, // notification id
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: sound,
-    );
-  }
 
 Future<dynamic> GetProductFromCart() async {
   try {
