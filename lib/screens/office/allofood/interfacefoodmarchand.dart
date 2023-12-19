@@ -235,6 +235,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
       var adresseRestaurant = marchandData['adresse'];
       var userData = {
         'id': courseId,
+        'commandaire': commandes[0]['commandaire'],
         'type_courses': 'Livraison de repas de chez $adresseRestaurant',
         'addressRecuperation': marchandData['adresse'],
         'numeroARecuperation': marchandData['phoneNumber'],

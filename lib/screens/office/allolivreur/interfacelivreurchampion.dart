@@ -22,6 +22,54 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     return FirebaseAuth.instance.currentUser;
   }
 
+ Future<void> envoiProfilcourse(Map<String, dynamic> courseData) async {
+  try {
+    final User? user = getCurrentUser();
+    if (user != null) {
+      // Récupérer le document de l'utilisateur dans la collection "champions"
+      final DocumentSnapshot userData = await FirebaseFirestore.instance
+          .collection('champions')
+          .doc(user.uid)
+          .get();
+
+      // Vérifier si le document de l'utilisateur existe
+      if (userData.exists) {
+        final Map<String, dynamic>? championData =
+            userData.data() as Map<String, dynamic>?;
+
+        if (championData != null) {
+          final Map<String, dynamic> champion = {
+            "photo": championData['profileImageUrl'] ?? '',
+            "numero": championData['phoneNumber'] ?? '',
+            "fullName": championData['fullName'] ?? '',
+          };
+
+          final Map<String, dynamic> combinedData = {
+            ...champion,
+            ...courseData,
+          };
+
+          List<Map<String, dynamic>> userCourses = [];
+          userCourses.add(combinedData);
+          print(userCourses);
+          // Ajouter les données de la course terminée à la collection 'users'
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(courseData['commandaire'])
+              .update({
+            'coursesTermine': FieldValue.arrayUnion(userCourses),
+          });
+        }
+      }
+    }
+  } catch (error) {
+    print(
+        'Erreur lors de l\'envoi des données du profil de l\'utilisateur : $error');
+    // Gérer l'erreur ici
+  }
+}
+
+
   Future<bool> checkIfUserIsChampion() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
@@ -218,8 +266,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
       );
 
       if (response.statusCode == 200) {
-       
-       // print('Notification envoyée avec succès à $token');
+        // print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -228,8 +275,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
-
-  
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
@@ -312,6 +357,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                   await isUserEligibleForCourse(courseData['prix']);
               if (isEligible) {
                 validerCourse(courseData);
+                envoiProfilcourse(courseData);
                 Get.snackbar(
                     "Infos", "Vous pouvez passer à la livraison, bonne chance",
                     backgroundColor: Colors.orange, colorText: Colors.white);

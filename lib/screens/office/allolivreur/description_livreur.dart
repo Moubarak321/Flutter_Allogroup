@@ -177,6 +177,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
 
         final userData = {
           'id': courseId,
+          'commandaire': user.uid,
           'type_courses': 'Livraison de bien',
           'addressRecuperation': pickupAddress,
           'numeroARecuperation': pickupNumero,
@@ -200,6 +201,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         });
 
         // Ajouter les données à la collection 'users'
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -393,7 +395,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 ),
               ),
               Step(
-                title: Text('Adresse de Récupération'),
+                title: Text("Information sur la zone d'échange "),
                 content: PickupInfoWidget(
                   formKey: _formKey,
                   pickupAddress: pickupAddress,
@@ -407,7 +409,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 ),
               ),
               Step(
-                title: Text('Adresse de Livraison'),
+                title: Text('Information sur le receveur'),
                 content: DeliveryInfoWidget(
                   formKey: _formKey,
                   deliveryAddress: deliveryAddress,
@@ -466,7 +468,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 ),
               ),
               Step(
-                title: Text('Détails sur la Course'),
+                title: Text("Plus d'orientation"),
                 content: DetailsInfoWidget(
                   formKey: _formKey,
                   title: title,
