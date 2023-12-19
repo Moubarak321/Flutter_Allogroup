@@ -118,17 +118,23 @@ class Delivery extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(
                 right: Dimensions.width20, left: Dimensions.width20),
-            color: Colors.blue,
+            // color: Colors.white,
             height: 200,
             child: Center(
-              child: Text(
-                'Un Livreur a votre disposition pour vos courses 24h/24 et 7/7',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
+              child: Image.asset(
+                'assets/images/livreur.png', // Replace 'your_image.png' with the actual path to your image asset
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
+            //          child: Text(
+            //   'Un Livreur a votre disposition pour vos courses 24h/24 et 7/7',
+            //   style: TextStyle(
+            //     fontSize: 20.0,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ),
           SizedBox(height: 20.0),
           ElevatedButton(
