@@ -21,7 +21,7 @@ class HistoriqueCourses extends StatelessWidget {
     final typeLivraison = courseData['type_courses'];
     final title = courseData['title'];
     final depense = courseData['prix'];
-    final timestamp = courseData['id'];
+    final timestamp = courseData['dateDeLivraison'];
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
@@ -89,12 +89,13 @@ class HistoriqueCourses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text('Vos courses',
-            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[

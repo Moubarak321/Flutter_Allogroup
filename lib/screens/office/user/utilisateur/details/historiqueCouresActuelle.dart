@@ -70,14 +70,7 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
               radius: 75,
             ),
           ),
-          // Text(
-          //   'Photo du livreur : $photo',
-          //   style: TextStyle(fontSize: 18.0, color: Colors.white),
-          // ),
-          // Text(
-          //   'Identité: $livreurName $numeroLivreur',
-          //   style: TextStyle(fontSize: 18.0, color: Colors.white),
-          // ),
+          
           Text(
             'Livrable : $produit',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
@@ -184,14 +177,10 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
                     final courseData =
                         latestCourses[index] as Map<String, dynamic>;
 
-                    // if (index == latestCourses.length - 1) {
-                    //   print("index---------------------$index");
+                  
 
                     return buildCourseCard(courseData);
-                    // } else {
-                    //   // Pour les éléments autres que le dernier, vous pouvez retourner un widget vide
-                    //   return SizedBox.shrink();
-                    // }
+                    
                   },
                 );
               },

@@ -36,43 +36,30 @@ class _UtilisateurState extends State<Utilisateur> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left,color: Colors.white)),
-        title: Text('Gestion utilisateur',
-           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+          onPressed: () => Get.back(),
+          icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white),
+        ),
+        title: Text(
+          'Gestion utilisateur',
+          style: TextStyle(color: Colors.white, fontSize: Dimensions.height20),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Stepper(
-            currentStep: currentStep,
-            onStepContinue: () {
-              if (isStepValid()) {
-                if (currentStep < 2) {
-                  setState(() {
-                    currentStep++;
-                  });
-                } else {
-                  // Soumission du formulaire, faites ce que vous voulez ici
-                  Get.snackbar("Infos", "Appuyez sur $cancel pour remonter ");
-
-                }
-              }
-            },
-            onStepCancel: () {
-              if (currentStep > 0) {
-                setState(() {
-                  currentStep--;
-                });
-              }
-            },
-            steps: [
-              Step(
+          child: ListView(
+            children: [
+              ExpansionTile(
                 title: Text('Historique des courses'),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
+                initiallyExpanded: currentStep == 0,
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    currentStep = expanded ? 0 : -1;
+                  });
+                },
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,9 +74,10 @@ class _UtilisateurState extends State<Utilisateur> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
+                            backgroundColor: Colors.orange,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder(),
+                          ),
                           child: const Text(
                             "Voir l'historique",
                             style: TextStyle(
@@ -102,14 +90,18 @@ class _UtilisateurState extends State<Utilisateur> {
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-              
-              Step(
-                title: Text('Historique des commandes '),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
+              ExpansionTile(
+                title: Text('Historique des commandes'),
+                initiallyExpanded: currentStep == 1,
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    currentStep = expanded ? 1 : -1;
+                  });
+                },
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,14 +111,16 @@ class _UtilisateurState extends State<Utilisateur> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HistoriqueCommandesRepas(),
+                                builder: (context) =>
+                                    HistoriqueCommandesRepas(),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
+                            backgroundColor: Colors.orange,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder(),
+                          ),
                           child: const Text(
                             "Voir livraison",
                             style: TextStyle(
@@ -139,14 +133,18 @@ class _UtilisateurState extends State<Utilisateur> {
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-
-              Step(
+              ExpansionTile(
                 title: Text('Votre plus récente livraison'),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
+                initiallyExpanded: currentStep == 2,
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    currentStep = expanded ? 2 : -1;
+                  });
+                },
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,14 +154,16 @@ class _UtilisateurState extends State<Utilisateur> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HistoriqueCoursesActuelle(),
+                                builder: (context) =>
+                                    HistoriqueCoursesActuelle(),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
+                            backgroundColor: Colors.orange,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder(),
+                          ),
                           child: const Text(
                             "Voir l'historique",
                             style: TextStyle(
@@ -176,7 +176,7 @@ class _UtilisateurState extends State<Utilisateur> {
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
@@ -185,18 +185,3 @@ class _UtilisateurState extends State<Utilisateur> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
