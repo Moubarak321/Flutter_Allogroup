@@ -16,13 +16,15 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
 
-    final boutique = courseData['boutique'];
-    final categorie = courseData['categorie'];
+    final photo = courseData['photo'];
+    final livreurName = courseData['fullName'];
+    final numeroLivreur = courseData['numero'];
+    final produit = courseData['title'];
     final prix = courseData['prix'];
-    final quantite = courseData['quantite'];
-    final titre = courseData['titre'];
-    // final livraison = courseData['dateLivraison'];
-    final livraison = courseData['dateLivraison'];
+    final type = courseData['type_courses'];
+    final adresselivraison = courseData['addressLivraison'];
+    final contactALivraison = courseData['numeroALivraison'];
+    final livraison = courseData['dateDeLivraison'];
     final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
@@ -55,31 +57,50 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Bilan d'un achat",
+            "Bilan de votre course actuelle",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Boutique : $boutique',
+            "Votre livreur : $livreurName $numeroLivreur",
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
+          Center(
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(photo),
+              radius: 75,
+            ),
+          ),
+          // Text(
+          //   'Photo du livreur : $photo',
+          //   style: TextStyle(fontSize: 18.0, color: Colors.white),
+          // ),
+          // Text(
+          //   'Identité: $livreurName $numeroLivreur',
+          //   style: TextStyle(fontSize: 18.0, color: Colors.white),
+          // ),
+          Text(
+            'Livrable : $produit',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Article: $titre',
+            'Type de course : $type',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Catégorie: $categorie',
+            'Prix unitaire : $prix FCFA',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
+
+          Text(
+            'Date de livraison : $formattedDate',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Prix unitaire: $prix FCFA',
+            'Destinataire : $adresselivraison',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Quantité: $quantite',
-            style: TextStyle(fontSize: 18.0, color: Colors.white),
-          ),
-          Text(
-            'Date de livraison: $formattedDate',
+            'Numero du destinataire : $contactALivraison',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],
@@ -94,19 +115,20 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left)),
-        title: Text('Vos commandes',
-           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        title: Text('Course actuelle',
+            style:
+                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
                 right: Dimensions.width20, left: Dimensions.width20),
-                color: Colors.blue,
+            color: Colors.blue,
             height: 100,
             child: Center(
               child: Text(
-                'Vos récentes courses',
+                'Votre course',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -126,7 +148,7 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('paiementBoutique')) {
+                if (!userData.containsKey('coursesTermine')) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -137,19 +159,10 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['paiementBoutique'] as List<dynamic>;
+                final courses = userData['coursesTermine'] as List<dynamic>;
 
-                courses.sort((a, b) =>
-                    b['dateLivraison'].seconds.compareTo(a['dateLivraison'].seconds));
-
-                // Take only the first 5 courses
-                final latestCourses = courses.take(5).toList();
-
-               
-                // Filter the courses list to include only those with status set to true
-                // final filteredCourses = courses
-                //     .where((courseData) => courseData['status'] == false)
-                //     .toList();
+            
+                final latestCourses = [courses.last];
 
                 if (latestCourses.isEmpty) {
                   return Center(
@@ -161,15 +174,24 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
                     ),
                   );
                 }
-                
+
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: latestCourses.length,
                   itemBuilder: (context, index) {
+                    print(
+                        "latestCourses---------------------------------${latestCourses[0]}");
                     final courseData =
                         latestCourses[index] as Map<String, dynamic>;
 
+                    // if (index == latestCourses.length - 1) {
+                    //   print("index---------------------$index");
+
                     return buildCourseCard(courseData);
+                    // } else {
+                    //   // Pour les éléments autres que le dernier, vous pouvez retourner un widget vide
+                    //   return SizedBox.shrink();
+                    // }
                   },
                 );
               },
