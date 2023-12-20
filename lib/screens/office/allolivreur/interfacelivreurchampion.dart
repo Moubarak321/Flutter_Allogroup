@@ -331,11 +331,11 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de récupération: $adresseRecuperation',
+            'Zone de récupération: $adresseRecuperation',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Adresse de Livraison: $adresseLivraison',
+            'Destinataire: $adresseLivraison',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(

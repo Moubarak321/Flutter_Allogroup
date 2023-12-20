@@ -107,7 +107,7 @@ class DetailsOnLivraison extends StatelessWidget {
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
-              'Numéro à contacter au lieu de récupération: ${courseData['numeroARecuperation']}',
+              "Numéro à contacter à la zone d'échange: ${courseData['numeroARecuperation']}",
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
