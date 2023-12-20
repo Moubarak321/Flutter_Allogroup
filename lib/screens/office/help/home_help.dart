@@ -1,6 +1,5 @@
 // import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
-import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,10 +42,11 @@ class PresentationScreen extends StatelessWidget {
         title: Text(title),
         children: <Widget>[
           ListTile(
-            title: SmallText(
-              color: Colors.black54,
-              text: content,
-            ),
+            // title: SmallText(
+            //   color: Colors.black54,
+            //   text: content,
+            // ),
+            title: Text(content, textAlign: TextAlign.justify),
           ),
         ],
       ),
@@ -64,7 +64,9 @@ class PresentationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FAQ',style: TextStyle(color: Colors.orange, fontSize: Dimensions.height20)),
+        title: Text('FAQ',
+            style:
+                TextStyle(color: Colors.orange, fontSize: Dimensions.height20)),
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(
@@ -73,7 +75,6 @@ class PresentationScreen extends StatelessWidget {
             )),
         titleTextStyle: TextStyle(
             color: Colors.orange, fontSize: 24, fontWeight: FontWeight.bold),
-        
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -107,7 +108,8 @@ class PresentationScreen extends StatelessWidget {
             buildExpansionTile('Comment parrainer un nouvel utilisateur ?',
                 "Pour parrainer un nouvel utilisateur, prière entrer dans l’application et suivre les différentes étapes suivantes: Entrez dans le Menu de l’application situé au niveau des paramètres.  Appuyez sur le boutton de parrainage pour générer un code . Partagez votre code de parrainage à votre ami qui vient juste de créer son compte Allô Group. Mais attention !!! La limite du parrainage est fixée à 15 personnes, passé ce nombre, votre code devient obsolète. Bénéficier un code promo généré en parrainant un(e) ami(e) qui effectue une course avec l’application Allô Group dans un délai de 30 jours."),
 
-            buildExpansionTile('Comment fonctionne le systeme de portefeuille ?',
+            buildExpansionTile(
+                'Comment fonctionne le systeme de portefeuille ?',
                 "Le système de portefeuille vise à payer un service à l'avance en envoyant de l'argent par un canal électronique"),
 
             buildExpansionTile(
@@ -158,7 +160,10 @@ class PresentationScreen extends StatelessWidget {
           // launchPhoneCall(0022960559894 as String);
         },
         backgroundColor: Colors.green,
-        child: Icon(Icons.phone , color: Colors.white,), // Couleur du bouton
+        child: Icon(
+          Icons.phone,
+          color: Colors.white,
+        ), // Couleur du bouton
       ),
     );
   }

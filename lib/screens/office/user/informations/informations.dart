@@ -14,7 +14,8 @@ const String tProfile = "Plus proche de vous";
 const String tProfileImage = 'assets/images/Icone.png';
 const String tProfileHeading = "Statut du compte";
 const double tDefaultSize = 16.0;
-const Color tPrimaryColor = Colors.blue; // Couleur primaire
+const Color tPrimaryColor =
+    Color.fromRGBO(10, 80, 137, 0.8); // Couleur primaire
 const Color tDarkColor = Colors.white; // Couleur sombre
 
 List<Map<String, dynamic>> links = [];

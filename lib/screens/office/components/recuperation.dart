@@ -31,31 +31,30 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   }
 
   void fetchDeliveryAddresses() async {
-  try {
-    // Récupérer les données depuis Firestore
-    DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
-        .collection('administrateur')
-        .doc('zone')
-        .get();
+    try {
+      // Récupérer les données depuis Firestore
+      DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
+          .collection('administrateur')
+          .doc('zone')
+          .get();
 
-    // Vérifier si le document existe et s'il contient la clé 'livraison'
-    if (zoneSnapshot.exists) {
-      Map<String, dynamic>? data = zoneSnapshot.data() as Map<String, dynamic>?;
-      if (data != null && data.containsKey('livraison')) {
-        List<dynamic> livraisonList = data['livraison'];
-        setState(() {
-          addressList =
-              List<String>.from(livraisonList); 
-          selectedAddress = addressList.isNotEmpty ? addressList.first : null;
-        });
+      // Vérifier si le document existe et s'il contient la clé 'livraison'
+      if (zoneSnapshot.exists) {
+        Map<String, dynamic>? data =
+            zoneSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('livraison')) {
+          List<dynamic> livraisonList = data['livraison'];
+          setState(() {
+            addressList = List<String>.from(livraisonList);
+            selectedAddress = addressList.isNotEmpty ? addressList.first : null;
+          });
+        }
       }
+    } catch (e) {
+      print('Erreur lors de la récupération des adresses de livraison : $e');
+      // Gérer l'erreur selon vos besoins
     }
-  } catch (e) {
-    print('Erreur lors de la récupération des adresses de livraison : $e');
-    // Gérer l'erreur selon vos besoins
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,39 +70,70 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
           ),
         ),
         Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.lightBlue,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.lightBlue,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              labelText: 'Zone',
-              prefixIcon: Icon(Icons.location_on),
-            ),
-            value: selectedAddress ?? addressList.first,
-            items: addressList.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              // Mettre à jour la valeur sélectionnée
-              setState(() {
-                selectedAddress = newValue;
-              });
-              widget.updatePickupInfo(newValue ?? '', widget.pickupNumero ?? 0);
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Il est important de préciser une adresse de récupération';
-              }
-              return null;
-            },
-          ),
-        ),
+            child: Autocomplete<String>(
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                // Filtrer les suggestions en fonction de la saisie de l'utilisateur
+                return addressList
+                    .where((String option) => option
+                        .toLowerCase()
+                        .contains(textEditingValue.text.toLowerCase()))
+                    .toList();
+              },
+              onSelected: (String selectedAddress) {
+                // Mettre à jour la valeur sélectionnée
+                setState(() {
+                  this.selectedAddress = selectedAddress;
+                });
+                widget.updatePickupInfo(
+                    selectedAddress, widget.pickupNumero ?? 0);
+              },
+              fieldViewBuilder: (BuildContext context,
+                  TextEditingController textEditingController,
+                  FocusNode focusNode,
+                  VoidCallback onFieldSubmitted) {
+                return TextFormField(
+                  controller: textEditingController,
+                  focusNode: focusNode,
+                  onFieldSubmitted: (value) => onFieldSubmitted(),
+                  decoration: InputDecoration(
+                    labelText: 'Zone',
+                    prefixIcon: Icon(Icons.location_on),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Il est important de préciser une adresse de récupération';
+                    }
+                    return null;
+                  },
+                );
+              },
+              optionsViewBuilder: (BuildContext context,
+                  AutocompleteOnSelected<String> onSelected,
+                  Iterable<String> options) {
+                return Material(
+                  elevation: 4.0,
+                  child: Container(
+                    height: 200.0,
+                    child: ListView(
+                      children: options
+                          .map((String option) => ListTile(
+                                title: Text(option),
+                                onTap: () {
+                                  onSelected(option);
+                                },
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                );
+              },
+            )),
         SizedBox(height: 20.0),
         Text(
           'Prendre chez',

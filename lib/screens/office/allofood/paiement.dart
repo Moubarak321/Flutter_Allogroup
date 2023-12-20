@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
+import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:http/http.dart' as http;
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -357,30 +358,46 @@ class _UtilisateurState extends State<Utilisateur> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Livraison de la commande',
-            style:
-                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.location_on),
-            color: Colors.white,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    // return HistoriqueCoursesActuelle();
-                    return ConfirmationLivraison();
+        automaticallyImplyLeading: false,
+        
 
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context); // Revenir à la page précédente
+              },
+              child: AppIcon(
+                icon: Icons.arrow_back,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
+            Text("Livraison de la commande",
+                style: TextStyle(
+                    color: Colors.white, fontSize: Dimensions.height20)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ConfirmationLivraison(),
+                  ),
+                );
+              },
+              child: AppIcon(
+                icon: Icons.location_on,
+                iconColor: Colors.white,
+                backgroundColor: Color(0xCC0A5089),
+              ),
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
