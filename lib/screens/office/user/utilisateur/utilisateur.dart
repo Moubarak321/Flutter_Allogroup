@@ -1,6 +1,7 @@
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCourses.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueLivraisonsUtilisateur.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -156,6 +157,49 @@ class _UtilisateurState extends State<Utilisateur> {
                               MaterialPageRoute(
                                 builder: (context) =>
                                     HistoriqueCoursesActuelle(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder(),
+                          ),
+                          child: const Text(
+                            "Voir l'historique",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              ExpansionTile(
+                title: Text('Vos Livraisons'),
+                initiallyExpanded: currentStep == 2,
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    currentStep = expanded ? 2 : -1;
+                  });
+                },
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    HistoriqueLivraisonsUtilisateur(),
                               ),
                             );
                           },

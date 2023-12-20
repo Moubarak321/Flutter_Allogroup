@@ -11,6 +11,7 @@ import 'package:allogroup/screens/office/user/informations/informations.dart';
 import 'package:allogroup/screens/office/user/parametres/parametres.dart';
 import 'package:allogroup/screens/office/user/profil/profilScreen.dart';
 import 'package:allogroup/screens/office/user/profil/updateProfil.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
 import 'package:allogroup/screens/office/user/utilisateur/utilisateur.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCommandes.dart';
@@ -31,6 +32,8 @@ import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
 import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:flutter/services.dart';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueLivraisonsUtilisateur.dart';
+
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -225,6 +228,8 @@ class _MyAppState extends State<MyApp> {
         'recommended_food_detail': (context) =>
             RecommendedFoodDetail(marchand: {}),
         'courseLivreur': (context) => CourseLivreur(),
+        'historiqueLivraisonsUtilisateur': (context) =>HistoriqueLivraisonsUtilisateur(),
+        'historiqueCouresActuelle': (context) =>HistoriqueCoursesActuelle(),
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

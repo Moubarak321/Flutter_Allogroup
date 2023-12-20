@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,8 +90,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         body: jsonBody,
       );
 
-      if (response.statusCode == 200) {   
-       // print('Notification envoyée avec succès à $token');
+      if (response.statusCode == 200) {
+        // print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -99,8 +100,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
-
-
 
   Future<int> Recuperationprix(String pickupAddress) async {
     try {
@@ -330,6 +329,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
+                    // return HistoriqueCoursesActuelle();
                     return ConfirmationLivraison();
                   },
                 ),
@@ -359,7 +359,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ConfirmationLivraison(),
+                      builder: (context) => HistoriqueCoursesActuelle(),
                     ),
                   );
                 }

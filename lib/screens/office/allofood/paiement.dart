@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
 import 'package:http/http.dart' as http;
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,6 @@ Future<void> sendNotificationToMerchant(
     print('Erreur lors de l\'envoi de la notification : $e');
   }
 }
-
 
 Future<dynamic> GetProductFromCart() async {
   try {
@@ -252,7 +252,7 @@ Future<void> envoi() async {
               "Vous avez recu une commande de ${order['quantite']} ${order['titre']} du ${order['numeroLivraison']} pour la zone ${order['lieuLivraison']}";
           String titre = "Commande de ${order['titre']}";
           sendNotificationToMerchant(token, titre, body);
-          
+
           Get.snackbar("Succès",
               "Commande envoyée au marchand $nom et vous payerai $prix F",
               backgroundColor: Colors.orange, colorText: Colors.white);
@@ -266,12 +266,6 @@ Future<void> envoi() async {
     Get.snackbar("Erreur", "Une erreur est survenue ");
   }
 }
-
-
-
-
-
-
 
 Future<void> commande() async {
   try {
@@ -372,12 +366,15 @@ class _UtilisateurState extends State<Utilisateur> {
         actions: [
           IconButton(
             icon: Icon(Icons.location_on),
+            color: Colors.white,
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
+                    // return HistoriqueCoursesActuelle();
                     return ConfirmationLivraison();
+
                   },
                 ),
               );
@@ -404,7 +401,7 @@ class _UtilisateurState extends State<Utilisateur> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return ConfirmationLivraison();
+                        return HistoriqueCoursesActuelle();
                       },
                     ),
                   );

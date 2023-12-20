@@ -82,7 +82,7 @@ class PresentationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.asset('assets/images/Icone.png'),
+            Image.asset('assets/images/faq.png'),
             Padding(
               padding: EdgeInsets.all(Dimensions.height15),
               child: Text(

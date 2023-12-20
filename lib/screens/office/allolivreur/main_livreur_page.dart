@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/user/utilisateur/details/historiqueCouresActuelle.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -5,8 +6,8 @@ import './description_livreur.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:get/get.dart';
+
+import 'package:allogroup/screens/office/widgets/app_icon.dart';
 
 class Delivery extends StatelessWidget {
   User? getCurrentUser() {
@@ -106,12 +107,48 @@ class Delivery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
-        title: Text('Allô Livreur',
-            style:
-                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        automaticallyImplyLeading: false,
+        // leading: IconButton(
+        //   onPressed: () => Get.back(),
+        //   icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white),
+        // ),
+        // title: Text(
+        //   'Allô Livreur',
+        //   style: TextStyle(color: Colors.white, fontSize: Dimensions.height20),
+        // ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context); // Revenir à la page précédente
+              },
+              child: AppIcon(
+                icon: Icons.arrow_back,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
+            Text("Allô Livreur",
+                style: TextStyle(
+                    color: Colors.white, fontSize: Dimensions.height20)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HistoriqueCoursesActuelle(),
+                  ),
+                );
+              },
+              child: AppIcon(
+                icon: Icons.delivery_dining_outlined,
+                backgroundColor: Color(0xCC0A5089),
+                iconColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: <Widget>[

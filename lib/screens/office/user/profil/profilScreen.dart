@@ -20,7 +20,7 @@ const String tProfileHeading = "Mon Profil";
 const String tProfileSubHeading = "Description de mon profil";
 const String tEditProfile = 'Modifiez';
 const double tDefaultSize = 16.0;
-const Color tPrimaryColor = Colors.blue; // Couleur primaire
+const Color tPrimaryColor = Color.fromRGBO(10, 80, 137, 0.8); // Couleur primaire
 const Color tDarkColor = Colors.white; // Couleur sombre
 
 class ProfileScreen extends StatelessWidget {

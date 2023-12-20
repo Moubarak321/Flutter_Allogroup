@@ -7,7 +7,7 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class HistoriqueCoursesActuelle extends StatelessWidget {
+class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
@@ -111,7 +111,7 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left),color: Colors.white),
-        title: Text('Course actuelle',
+        title: Text('Livraisons',
             style:
                 TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
@@ -124,7 +124,7 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'Votre course',
+                'Vos récentes livraisons',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -157,9 +157,9 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
 
                 final courses = userData['coursesTermine'] as List<dynamic>;
 
-                final latestCourses = [courses.last];
+                // final latestCourses = [courses.last];
 
-                if (latestCourses.isEmpty) {
+                if (courses.isEmpty) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -172,12 +172,11 @@ class HistoriqueCoursesActuelle extends StatelessWidget {
 
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: latestCourses.length,
+                  itemCount: courses.length,
                   itemBuilder: (context, index) {
                     print(
-                        "latestCourses---------------------------------${latestCourses[0]}");
-                    final courseData =
-                        latestCourses[index] as Map<String, dynamic>;
+                        "latestCourses---------------------------------${courses[0]}");
+                    final courseData = courses[index] as Map<String, dynamic>;
 
                     return buildCourseCard(courseData);
                   },

@@ -24,7 +24,7 @@ class Detailsnotifications extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left)),
+            icon: const Icon(LineAwesomeIcons.angle_left),color: Colors.white,),
         title: Text('Que disent-ils ?',
             style:
                 TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
