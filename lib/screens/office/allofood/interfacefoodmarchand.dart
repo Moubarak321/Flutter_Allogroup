@@ -90,7 +90,6 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
     }
   }
 
-  
   void sendNotificationLivraison() async {
     List<String> tokens = await recuperationToken();
     String titre = "Livraison";
@@ -214,8 +213,8 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
           .set({
         'courses': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
-        String titre = "Commande";
-        String body =
+        var titre = "Commande";
+        var body =
             "Votre commande est en cours de traitement par ${marchandData['fullName']}";
         sendNotificationToChampion(commandes[0]['token'], titre, body);
       }).catchError((error) {

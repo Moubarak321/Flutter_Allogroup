@@ -255,7 +255,7 @@ Future<void> envoi() async {
           sendNotificationToMerchant(token, titre, body);
 
           Get.snackbar("Succès",
-              "Commande envoyée au marchand $nom et vous payerai $prix F",
+              "Commande envoyée au marchand $nom et vous payerai $prix F et les frais de livraison habituel",
               backgroundColor: Colors.orange, colorText: Colors.white);
         }
       }
