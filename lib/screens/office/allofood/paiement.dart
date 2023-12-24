@@ -255,7 +255,7 @@ Future<void> envoi() async {
           sendNotificationToMerchant(token, titre, body);
 
           Get.snackbar("Succès",
-              "Commande envoyée au marchand $nom et vous payerai $prix F et les frais de livraison habituel",
+              "Commande envoyée au marchand $nom et vous payerai $prix F en plus du service livraison habituel.",
               backgroundColor: Colors.orange, colorText: Colors.white);
         }
       }
@@ -329,6 +329,7 @@ class _UtilisateurState extends State<Utilisateur> {
   int totalPrice = 0;
   int deliveryCost = 0;
   bool isLoading = true;
+  
 
   @override
   void initState() {
@@ -521,7 +522,7 @@ class _UtilisateurState extends State<Utilisateur> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Le code de sécurité est confié à la charge du marchand",
+                          "Le code de sécurité est confié à la charge du marchand et votre livraison vaut $deliveryCost F ",
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white,
