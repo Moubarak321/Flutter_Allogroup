@@ -91,7 +91,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       );
 
       if (response.statusCode == 200) {
-        // print('Notification envoyée avec succès à $token');
+        //print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');

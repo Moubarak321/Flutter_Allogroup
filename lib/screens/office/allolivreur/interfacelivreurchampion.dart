@@ -22,53 +22,52 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
     return FirebaseAuth.instance.currentUser;
   }
 
- Future<void> envoiProfilcourse(Map<String, dynamic> courseData) async {
-  try {
-    final User? user = getCurrentUser();
-    if (user != null) {
-      // Récupérer le document de l'utilisateur dans la collection "champions"
-      final DocumentSnapshot userData = await FirebaseFirestore.instance
-          .collection('champions')
-          .doc(user.uid)
-          .get();
+  Future<void> envoiProfilcourse(Map<String, dynamic> courseData) async {
+    try {
+      final User? user = getCurrentUser();
+      if (user != null) {
+        // Récupérer le document de l'utilisateur dans la collection "champions"
+        final DocumentSnapshot userData = await FirebaseFirestore.instance
+            .collection('champions')
+            .doc(user.uid)
+            .get();
 
-      // Vérifier si le document de l'utilisateur existe
-      if (userData.exists) {
-        final Map<String, dynamic>? championData =
-            userData.data() as Map<String, dynamic>?;
+        // Vérifier si le document de l'utilisateur existe
+        if (userData.exists) {
+          final Map<String, dynamic>? championData =
+              userData.data() as Map<String, dynamic>?;
 
-        if (championData != null) {
-          final Map<String, dynamic> champion = {
-            "photo": championData['profileImageUrl'] ?? '',
-            "numero": championData['phoneNumber'] ?? '',
-            "fullName": championData['fullName'] ?? '',
-          };
+          if (championData != null) {
+            final Map<String, dynamic> champion = {
+              "photo": championData['profileImageUrl'] ?? '',
+              "numero": championData['phoneNumber'] ?? '',
+              "fullName": championData['fullName'] ?? '',
+            };
 
-          final Map<String, dynamic> combinedData = {
-            ...champion,
-            ...courseData,
-          };
+            final Map<String, dynamic> combinedData = {
+              ...champion,
+              ...courseData,
+            };
 
-          List<Map<String, dynamic>> userCourses = [];
-          userCourses.add(combinedData);
-          print(userCourses);
-          // Ajouter les données de la course terminée à la collection 'users'
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(courseData['commandaire'])
-              .update({
-            'coursesTermine': FieldValue.arrayUnion(userCourses),
-          });
+            List<Map<String, dynamic>> userCourses = [];
+            userCourses.add(combinedData);
+            //print(userCourses);
+            // Ajouter les données de la course terminée à la collection 'users'
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(courseData['commandaire'])
+                .update({
+              'coursesTermine': FieldValue.arrayUnion(userCourses),
+            });
+          }
         }
       }
+    } catch (error) {
+      print(
+          'Erreur lors de l\'envoi des données du profil de l\'utilisateur : $error');
+      // Gérer l'erreur ici
     }
-  } catch (error) {
-    print(
-        'Erreur lors de l\'envoi des données du profil de l\'utilisateur : $error');
-    // Gérer l'erreur ici
   }
-}
-
 
   Future<bool> checkIfUserIsChampion() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -184,6 +183,14 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
 
           // Vérifier si la liste des commandes existe
           userCourses ??= [];
+           
+          print("les courses en  données");
+          print(courseData);
+          String titre = 'Livraison';
+          String body = 'Votre livreur est en route';
+          print(
+              'courseData--------------------------- ${courseData["fcmToken"]}');
+          sendNotificationToClient(courseData['fcmToken'], titre, body); 
 
           // Ajouter les données de la course à la liste des commandes de l'utilisateur
           userCourses.add(courseData);
@@ -206,10 +213,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
           // Supprimer la course spécifique de la liste en fonction de l'ID
           updateCourses.removeWhere((course) =>
               course['id'] == courseId || course['status'] != false);
-          var titre = 'Livraison';
-          var body = 'Votre livreur est en route';
-          print('courseData--------------------------- ${courseData["fcmToken"]}');
-          sendNotificationToClient(courseData['fcmToken'], titre, body);
+
           // Mettre à jour la liste des cours dans la collection 'administrateur'
           await FirebaseFirestore.instance
               .collection('administrateur')
@@ -222,7 +226,6 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             DetailsOnLivraison(),
             arguments: courseData,
           );
-          
         } else {
           // print('Document utilisateur non trouvé');
         }
@@ -356,7 +359,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                   await isUserEligibleForCourse(courseData['prix']);
               if (isEligible) {
                 validerCourse(courseData);
-               
+
                 envoiProfilcourse(courseData);
                 Get.snackbar(
                     "Infos", "Vous pouvez passer à la livraison, bonne chance",

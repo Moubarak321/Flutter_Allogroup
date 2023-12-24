@@ -80,7 +80,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
       );
 
       if (response.statusCode == 200) {
-        //print('Notification envoyée avec succès à $token');
+        print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -198,6 +198,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
         'numeroARecuperation': marchandData['phoneNumber'],
         'addressLivraison': commandes[0]['lieuLivraison'],
         'numeroALivraison': commandes[0]['numeroLivraison'],
+        'commandaire': commandes[0]['commandaire'],
         'dateDeLivraison': courseId,
         'title': commandes[0]['titreLivraison'],
         'details': commandes[0]['detailsLivraison'],
@@ -213,10 +214,10 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
           .set({
         'courses': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
-        var titre = "Commande";
-        var body =
+        String titre = "Commande";
+        String body =
             "Votre commande est en cours de traitement par ${marchandData['fullName']}";
-        sendNotificationToChampion(commandes[0]['token'], titre, body);
+        sendNotificationToChampion(commandes[0]['fcmToken'], titre, body);
       }).catchError((error) {
         // Erreur : une erreur est survenue lors de l'enregistrement des données.
         print("Erreur lors de l'enregistrement des données : $error");
