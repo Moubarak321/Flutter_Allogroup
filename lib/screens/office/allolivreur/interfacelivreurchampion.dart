@@ -206,7 +206,10 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
           // Supprimer la course spécifique de la liste en fonction de l'ID
           updateCourses.removeWhere((course) =>
               course['id'] == courseId || course['status'] != false);
-
+          var titre = 'Livraison';
+          var body = 'Votre livreur est en route';
+          print('courseData--------------------------- ${courseData["fcmToken"]}');
+          sendNotificationToClient(courseData['fcmToken'], titre, body);
           // Mettre à jour la liste des cours dans la collection 'administrateur'
           await FirebaseFirestore.instance
               .collection('administrateur')
@@ -219,11 +222,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
             DetailsOnLivraison(),
             arguments: courseData,
           );
-          String titre = 'Livraison';
-          String body = 'Votre livreur est en route';
-          // print('courseData--------------------------- ${courseData["fcmToken"]}');
-
-          sendNotificationToClient(courseData['fcmToken'], titre, body);
+          
         } else {
           // print('Document utilisateur non trouvé');
         }
@@ -266,7 +265,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
       );
 
       if (response.statusCode == 200) {
-        // print('Notification envoyée avec succès à $token');
+        print('Notification envoyée avec succès à $token');
       } else {
         print(
             'Échec de l\'envoi de la notification à $token. Statut : ${response.statusCode}');
@@ -357,6 +356,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                   await isUserEligibleForCourse(courseData['prix']);
               if (isEligible) {
                 validerCourse(courseData);
+               
                 envoiProfilcourse(courseData);
                 Get.snackbar(
                     "Infos", "Vous pouvez passer à la livraison, bonne chance",
