@@ -329,7 +329,6 @@ class _UtilisateurState extends State<Utilisateur> {
   int totalPrice = 0;
   int deliveryCost = 0;
   bool isLoading = true;
-  
 
   @override
   void initState() {
@@ -364,8 +363,6 @@ class _UtilisateurState extends State<Utilisateur> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        
-
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -513,7 +510,7 @@ class _UtilisateurState extends State<Utilisateur> {
                 ),
               ),
               Step(
-                title: Text("Sécurisation"),
+                title: Text("Service de livraison"),
                 content: Card(
                   color: Colors.orange,
                   child: Padding(
@@ -521,12 +518,35 @@ class _UtilisateurState extends State<Utilisateur> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          "Le code de sécurité est confié à la charge du marchand et votre livraison vaut $deliveryCost F ",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                          ),
+                        FutureBuilder<int>(
+                          future: Recuperationprix(pickupAddress ?? ''),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Afficher un indicateur de chargement si nécessaire
+                              return CircularProgressIndicator();
+                            } else {
+                              if (snapshot.hasError) {
+                                // Gérer les erreurs si elles se produisent pendant le chargement des données
+                                return Text(
+                                  'Erreur lors de la récupération du prix',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white, // Couleur du texte
+                                  ),
+                                );
+                              } else {
+                                // Afficher le prix récupéré
+                                return Text(
+                                  'Prix du service : ${snapshot.data ?? ''} F',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white, // Couleur du texte
+                                  ),
+                                );
+                              }
+                            }
+                          },
                         ),
                       ],
                     ),
