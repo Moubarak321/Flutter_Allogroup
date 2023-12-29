@@ -27,9 +27,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   double _height = Dimensions.pageViewContainer;
   // bool isFavorite = false;
   // bool isFavorite = false;
+  TextEditingController searchController = TextEditingController();
 
   List<Map<String, dynamic>> tousLesProduits = [];
   List<Map<String, dynamic>> tousLesMarchants = [];
+  List<Map<String, dynamic>> produitsNonFiltres = [];
 
   Future<List<Map<String, dynamic>>?> getAllProducts() async {
     try {
@@ -53,6 +55,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           // print("Voilà le nom de la boutique " + produit["fullName"]);
         }
       }
+      produitsNonFiltres =
+          List.from(products); // initialise la liste des produits non filtrés
       return products;
     } catch (e) {
       print("Erreur lors de la récupération des produits : $e");
@@ -67,7 +71,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       // Accédez à la collection "Marchands" dans Firestore
       QuerySnapshot merchantsSnapshot =
           await FirebaseFirestore.instance.collection('marchands').get();
-// print("*****************************************DONE*************************************");
+      // print("*****************************************DONE*************************************");
       // Parcourez les documents de la collection "Marchands"
       for (QueryDocumentSnapshot merchantDocument in merchantsSnapshot.docs) {
         // Accédez aux données de chaque marchand
@@ -104,6 +108,27 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       print("Erreur lors de la récupération des marchands : $e");
       return null;
     }
+  }
+
+  void filterProducts(String query) {
+    // Utilisez la méthode where pour filtrer les produits en fonction de la saisie de l'utilisateur
+    List<Map<String, dynamic>> filteredProducts = produitsNonFiltres
+        .where((product) =>
+            product['title'].toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    // Mettez à jour l'état avec la liste filtrée
+    setState(() {
+      tousLesProduits = filteredProducts;
+    });
+  }
+
+  void clearSearch() {
+    setState(() {
+      searchController.clear();
+      tousLesProduits =
+          List.from(produitsNonFiltres); // réinitialise à la liste initiale
+    });
   }
 
 // =========================================================================
@@ -314,6 +339,17 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               ),
             ],
           ),
+        ),
+        TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            // labelText: 'Rechercher des produits',
+
+            prefixIcon: Icon(Icons.search),
+          ),
+          onChanged: (value) {
+            filterProducts(value);
+          },
         ),
         buildProductList(),
       ],
