@@ -311,46 +311,68 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           height: Dimensions.height30,
         ),
 
-        Container(
-          margin: EdgeInsets.only(left: Dimensions.width30),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              BigText(
-                text: "Populaires",
-                size: Dimensions.height20,
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(
+                left: Dimensions.width30, right: Dimensions.width30),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                labelText: "Que voulez-vous acheter aujourd'hui ?",
+                prefixIcon: Icon(Icons.search),
+                // border: UnderlineInputBorder(borderSide: BorderSide.none),
               ),
-              SizedBox(
-                width: Dimensions.width10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 4),
-                child: BigText(
-                  text: ".",
-                  color: Colors.black26,
-                ),
-              ),
-              SizedBox(
-                width: Dimensions.width10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 2),
-                child: SmallText(text: "Parcourez les offres"),
-              ),
-            ],
-          ),
-        ),
-        TextField(
-          controller: searchController,
-          decoration: InputDecoration(
-            // labelText: 'Rechercher des produits',
+              enableSuggestions: true,
+              enableIMEPersonalizedLearning: true,
+              enableInteractiveSelection: true,
+              onChanged: (value) {
+                filterProducts(value);
+              },
+            ),
 
-            prefixIcon: Icon(Icons.search),
+            // child: Row(
+            //   crossAxisAlignment: CrossAxisAlignment.end,
+            //   children: [
+            //     BigText(
+            //       text: "Populaires",
+            //       size: Dimensions.height20,
+            //     ),
+            //     SizedBox(
+            //       width: Dimensions.width10,
+            //     ),
+            //     Container(
+            //       margin: const EdgeInsets.only(bottom: 4),
+            //       child: BigText(
+            //         text: ".",
+            //         color: Colors.black26,
+            //       ),
+            //     ),
+            //     SizedBox(
+            //       width: Dimensions.width10,
+            //     ),
+            //     Container(
+            //       margin: const EdgeInsets.only(bottom: 2),
+            //       child: SmallText(text: "Parcourez les offres"),
+            //     ),
+            //   ],
+            // ),
           ),
-          onChanged: (value) {
-            filterProducts(value);
-          },
         ),
+
+        // TextField(
+        //   controller: searchController,
+        //   decoration: InputDecoration(
+        //       labelText: 'Rechercher des produits',
+        //       prefixIcon: Icon(Icons.search),
+        //       border: UnderlineInputBorder(borderSide: BorderSide.none)),
+        //   enableSuggestions: true,
+        //   enableIMEPersonalizedLearning: true,
+        //   enableInteractiveSelection: true,
+        //   onChanged: (value) {
+        //     filterProducts(value);
+        //   },
+        // ),
+
         buildProductList(),
       ],
     );

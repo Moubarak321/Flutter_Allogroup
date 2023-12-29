@@ -29,9 +29,9 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
 
   Widget buildProductList() {
     List tousLesProduitsMarchant = marchand['products'];
-   
+
     String boutique = marchand["name"];
-    
+
     if (tousLesProduitsMarchant.isNotEmpty) {
       return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -127,7 +127,8 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 GestureDetector(
                                   onTap: () {
                                     Get.snackbar("Infos",
-                                        "Ce produit vous sera livré dans environ $duree min", backgroundColor: Colors.orange,
+                                        "Le temps de cuisson est d'environ $duree min",
+                                        backgroundColor: Colors.orange,
                                         colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
@@ -138,7 +139,8 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.snackbar("Promo", "$promo", backgroundColor: Colors.orange,
+                                    Get.snackbar("Promo", "$promo",
+                                        backgroundColor: Colors.orange,
                                         colorText: Colors.white);
                                   },
                                   child: IconAndTextWidget(
