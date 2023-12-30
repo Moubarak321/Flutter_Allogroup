@@ -149,7 +149,7 @@ class _SignUpState extends State<SignUp> {
             await usersCollection.doc(userId).set({
               'phoneNumber': "229$phoneNumber",
               'wallet': 0,
-              'role': "Patron",
+              'role': "Utilisateur",
               'fcmToken': fcmToken,
             });
           } else {
@@ -157,7 +157,7 @@ class _SignUpState extends State<SignUp> {
             await usersCollection.doc(userId).set({
               'phoneNumber': "229$phoneNumber",
               'wallet': 0,
-              'role': "Patron",
+              'role': "Utilisateur",
             });
             _showErrorDialog(
                 'Veuillez autoriser les notifications pour utiliser cette application.');
