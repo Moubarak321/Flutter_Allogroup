@@ -44,10 +44,10 @@ class _ButtonServicesState extends State<ButtonServices> {
         // Vérifier si le champ "role" existe dans le document
         if (userDoc.exists && userDoc.data() is Map<String, dynamic>) {
           // print(
-              // "****************************role******************************");
+          // "****************************role******************************");
           // Récupérer et retourner la valeur du champ "role"
           // print("33333333333333333333333333333333333" +
-              // (userDoc.data() as Map<String, dynamic>)['role']);
+          // (userDoc.data() as Map<String, dynamic>)['role']);
           return (userDoc.data() as Map<String, dynamic>)['role'];
         }
       }
@@ -102,7 +102,7 @@ class _ButtonServicesState extends State<ButtonServices> {
                               await getUserRole(); // À implémenter
 
                           // Vérifier le rôle et rediriger en conséquence
-                          if (userRole == "Champion" && index == 1) {
+                          if (userRole == "Livreur" && index == 1) {
                             // Utilisateur avec le rôle "livreur" - rediriger vers la page livreur
                             Navigator.pushNamed(context, serviceRoutes1[1]);
                           } else if (userRole == "Marchand" && index == 0) {

@@ -320,7 +320,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               decoration: InputDecoration(
                 labelText: "Que voulez-vous acheter aujourd'hui ?",
                 prefixIcon: Icon(Icons.search),
-                // border: UnderlineInputBorder(borderSide: BorderSide.none),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
               ),
               enableSuggestions: true,
               enableIMEPersonalizedLearning: true,
