@@ -35,6 +35,7 @@ class _InformationsState extends State<Informations> {
   late TextEditingController _webController;
   late TextEditingController _roleController;
   late TextEditingController _youtubeController;
+  late TextEditingController _dashboardController;
 
   void _launchURL(TextEditingController controller) async {
     String url = controller.text;
@@ -77,6 +78,7 @@ class _InformationsState extends State<Informations> {
         _webController.text = userDoc.get('web').toString();
         _linkedinController.text = userDoc.get('linked').toString();
         _youtubeController.text = userDoc.get("youtube").toString();
+        _dashboardController.text = userDoc.get("dashboard").toString();
       });
     }
   }
@@ -90,6 +92,7 @@ class _InformationsState extends State<Informations> {
     _instagramController = TextEditingController();
     _webController = TextEditingController();
     _youtubeController = TextEditingController();
+    _dashboardController = TextEditingController();
     _loadUserData();
     _roleController = TextEditingController();
     _loadUserRole();
@@ -104,6 +107,7 @@ class _InformationsState extends State<Informations> {
     _webController.dispose();
     _roleController.dispose();
     _youtubeController.dispose();
+    _dashboardController.dispose();
     super.dispose();
   }
 
@@ -198,14 +202,22 @@ class _InformationsState extends State<Informations> {
               const SizedBox(height: 10),
 
               /// -- MENU
+
               ProfileMenuWidget(
-                  title: "Mon statut",
+                  title: "Changer mon statut",
                   icon: LineAwesomeIcons.user_circle,
                   onPress: () {
                     _launchURL(_webController);
                   }),
               const Divider(),
-
+              if (role == "Livreur" || role == "Marchand")
+                ProfileMenuWidget(
+                  title: "Dashboard",
+                  icon: LineAwesomeIcons.bar_chart,
+                  onPress: () {
+                    _launchURL(_dashboardController);
+                  },
+                ),
               ProfileMenuWidget(
                   title: "Linkedin",
                   icon: LineAwesomeIcons.linkedin,
