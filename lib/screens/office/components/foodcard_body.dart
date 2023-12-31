@@ -10,6 +10,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 
 class FoodPageBody extends StatefulWidget {
   const FoodPageBody({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   var _currPageValue = 0.0; // pour le zoom in et out
   double _scaleFactor = 0.8;
   double _height = Dimensions.pageViewContainer;
+  bool showSpinner = true;
   // bool isFavorite = false;
   // bool isFavorite = false;
   TextEditingController searchController = TextEditingController();
@@ -266,6 +268,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         // print("Current value is $_currPageValue");
       });
     });
+
+    Timer(Duration(seconds: 3), () {
+      // Après 5 secondes, masquez le spinner
+      setState(() {
+        showSpinner = false;
+      });
+    });
   }
 
   @override
@@ -330,33 +339,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 filterProducts(value);
               },
             ),
-
-            // child: Row(
-            //   crossAxisAlignment: CrossAxisAlignment.end,
-            //   children: [
-            //     BigText(
-            //       text: "Populaires",
-            //       size: Dimensions.height20,
-            //     ),
-            //     SizedBox(
-            //       width: Dimensions.width10,
-            //     ),
-            //     Container(
-            //       margin: const EdgeInsets.only(bottom: 4),
-            //       child: BigText(
-            //         text: ".",
-            //         color: Colors.black26,
-            //       ),
-            //     ),
-            //     SizedBox(
-            //       width: Dimensions.width10,
-            //     ),
-            //     Container(
-            //       margin: const EdgeInsets.only(bottom: 2),
-            //       child: SmallText(text: "Parcourez les offres"),
-            //     ),
-            //   ],
-            // ),
           ),
         ),
 
@@ -505,7 +487,12 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 // }
 
   Widget buildProductList() {
-    if (tousLesProduits.isNotEmpty) {
+    if (showSpinner) {
+      // Afficher le spinner pendant 5 secondes
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (tousLesProduits.isNotEmpty) {
       return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -525,7 +512,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    print("--------------$produit");
+                    // print("--------------$produit");
                     return PopularFoodDetail(produit: tousLesProduits[index]);
                   },
                 ),
@@ -666,10 +653,12 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         },
       );
     } else {
-      return SizedBox(
-        height: Dimensions.height30,
-        child: CircularProgressIndicator(),
-      ); // Ou un widget indiquant qu'aucun produit n'est disponible
+      return Center(
+        child: Text(
+          "Aucun produit trouvé",
+          style: TextStyle(fontSize: 16),
+        ),
+      );
     }
   }
 }
