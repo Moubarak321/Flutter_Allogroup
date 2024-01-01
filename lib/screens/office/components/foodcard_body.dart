@@ -113,19 +113,19 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   }
 
   void filterProducts(String query) {
-  // Utilisez la méthode where pour filtrer les produits en fonction de la saisie de l'utilisateur et de la catégorie
-  List<Map<String, dynamic>> filteredProducts = produitsNonFiltres
-      .where((product) =>
-          product['title'].toLowerCase().contains(query.toLowerCase()) ||
-          product['categorie'].toLowerCase().contains(query.toLowerCase()))
-      .toList();
+    // Utilisez la méthode where pour filtrer les produits en fonction de la saisie de l'utilisateur et de la catégorie
+    List<Map<String, dynamic>> filteredProducts = produitsNonFiltres
+        .where((product) =>
+            product['title'].toLowerCase().contains(query.toLowerCase()) ||
+            product['categorie'].toLowerCase().contains(query.toLowerCase()) ||
+            product['price'].toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
-  // Mettez à jour l'état avec la liste filtrée
-  setState(() {
-    tousLesProduits = filteredProducts;
-  });
-}
-
+    // Mettez à jour l'état avec la liste filtrée
+    setState(() {
+      tousLesProduits = filteredProducts;
+    });
+  }
 
   void clearSearch() {
     setState(() {
