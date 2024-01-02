@@ -12,5 +12,9 @@ class Routes {
   static const String interfaceZem = '/main_zem_page';
   static const String evenement = '/evenement';
 
+  static const String interfaceShopKeeper = '/interfaceboutique';
+  static const String interfaceKekenon = '/interfaceZem';
+
+
 }
 
