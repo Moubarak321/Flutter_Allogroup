@@ -1,6 +1,6 @@
 import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
-import 'package:allogroup/screens/office/components/foodcard_body.dart';
+import 'package:allogroup/screens/office/components/articlecard_body.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
@@ -41,7 +41,6 @@ class _MainArticlePageState extends State<MainArticlePage> {
       deliveryButtonSelected = true;
       homeButtonSelected = false;
       foodButtonSelected = false;
-
     });
     // Vous pouvez ajouter ici le code pour gérer la page de livraison
   }
@@ -66,12 +65,12 @@ class _MainArticlePageState extends State<MainArticlePage> {
                 Column(
                   children: [
                     BigText(
-                      text: "Allô Food",
+                      text: "Allô Market",
                       color: Color.fromRGBO(10, 80, 137, 0.8),
                     ),
                     Row(
                       children: [
-                        SmallText(text: "Restaurants", color: Colors.orange),
+                        SmallText(text: "Boutiques", color: Colors.orange),
                         // Icon(Icons.arrow_drop_down_circle_rounded)
                       ],
                     ),
@@ -87,15 +86,15 @@ class _MainArticlePageState extends State<MainArticlePage> {
                       color: Color.fromRGBO(10, 80, 137, 0.8),
                     ),
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Cart();
-                    },
-                  ),
-                );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Cart();
+                            },
+                          ),
+                        );
                       },
                       child: Icon(
                         Icons.shopping_cart_rounded,
@@ -120,7 +119,7 @@ class _MainArticlePageState extends State<MainArticlePage> {
 
           Expanded(
             child: SingleChildScrollView(
-              child: FoodPageBody(),
+              child: ArticlePageBody(),
             ),
           ),
           SizedBox(
@@ -151,7 +150,9 @@ class _MainArticlePageState extends State<MainArticlePage> {
             : Color.fromRGBO(10, 80, 137, 0.8),
         child: Icon(
           Icons.fastfood,
-          color :foodButtonSelected ? Colors.white : Color.fromRGBO(10, 80, 137, 0.8),
+          color: foodButtonSelected
+              ? Colors.white
+              : Color.fromRGBO(10, 80, 137, 0.8),
         ),
       ),
       bottomNavigationBar: ClipRRect(
@@ -201,6 +202,3 @@ class _MainArticlePageState extends State<MainArticlePage> {
     );
   }
 }
-
-
-

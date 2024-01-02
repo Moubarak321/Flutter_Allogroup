@@ -1,6 +1,6 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/alloBoutique/main_article_page.dart';
-import 'package:allogroup/screens/office/alloZem/interfaceZem.dart';
+import 'package:allogroup/screens/office/alloZem/main_zem_page.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/allofood/interfacefoodmarchand.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
@@ -233,7 +233,7 @@ class _MyAppState extends State<MyApp> {
             HistoriqueLivraisonsUtilisateur(),
         'historiqueCouresActuelle': (context) => HistoriqueCoursesActuelle(),
         Routes.interfaceBoutique: (context) => MainArticlePage(),
-        Routes.interfaceZem: (context) => InterfaceZem(),
+        Routes.interfaceZem: (context) => Zem(),
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

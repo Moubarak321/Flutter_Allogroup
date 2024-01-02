@@ -9,7 +9,7 @@ class Routes {
 
 
   static const String interfaceBoutique = '/main_article_page';
-  static const String interfaceZem = '/interfaceZem';
+  static const String interfaceZem = '/main_zem_page';
   static const String evenement = '/evenement';
 
 }

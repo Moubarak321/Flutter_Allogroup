@@ -29,7 +29,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
 
       // Accédez au document de l'utilisateur
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('champions')
+          .collection('zems')
           .doc(user?.uid)
           .get();
 
@@ -74,7 +74,7 @@ class _CourseLivreurState extends State<CourseLivreur> {
   if (user != null) {
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('champions')
+          .collection('zems')
           .doc(user.uid)
           .get();
 
@@ -91,14 +91,14 @@ class _CourseLivreurState extends State<CourseLivreur> {
           if (password == pass0) {
             try {
                 await FirebaseFirestore.instance
-                .collection('champions')
+                .collection('zems')
                 .doc(user.uid)
                 .update({
                 'livraisons': FieldValue.arrayUnion([commandes?[0]])
                 });
 
                 await FirebaseFirestore.instance
-                    .collection('champions')
+                    .collection('zems')
                     .doc(user.uid)
                     .update({'commandes': []});
 

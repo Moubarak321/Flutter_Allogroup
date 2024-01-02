@@ -29,7 +29,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
       List<Map<String, dynamic>> products = [];
 
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('marchands')
+          .collection('boutiques')
           .doc(user?.uid)
           .get();
 
@@ -76,7 +76,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
       if (user != null) {
         // Remove the product from "traitement"
         await FirebaseFirestore.instance
-            .collection('marchands')
+            .collection('boutiques')
             .doc(user.uid)
             .update({
           'traitement': FieldValue.arrayRemove([article])
@@ -84,7 +84,7 @@ class _EnCoursDeTraitementState extends State<EnCoursDeTraitement> {
 
         // Add the product to "livraison"
         await FirebaseFirestore.instance
-            .collection('marchands')
+            .collection('boutiques')
             .doc(user.uid)
             .update({
           'livraison': FieldValue.arrayUnion([article])

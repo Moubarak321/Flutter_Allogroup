@@ -86,7 +86,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
 
           if (userData != null && userData.containsKey('role')) {
             var role = userData['role'];
-            if (role == 'Champion') {
+            if (role == 'Livreur') {
               // L'utilisateur a le rôle de champion
               return true;
             }

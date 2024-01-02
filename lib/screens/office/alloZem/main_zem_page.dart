@@ -9,7 +9,7 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 
-class Delivery extends StatelessWidget {
+class Zem extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }

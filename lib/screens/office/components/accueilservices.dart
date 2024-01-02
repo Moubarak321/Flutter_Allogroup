@@ -16,7 +16,7 @@ class _ButtonServicesState extends State<ButtonServices> {
   List<String> serviceNames = [
     "AlloFood",
     "AlloLivreur",
-    "AlloBoutique",
+    "AlloMarket",
     "AlloZem",
     "AlloEvent",
     "Aide"

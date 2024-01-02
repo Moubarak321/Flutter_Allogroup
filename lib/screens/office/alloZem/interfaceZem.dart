@@ -26,9 +26,9 @@ class _InterfaceZemState extends State<InterfaceZem> {
     try {
       final User? user = getCurrentUser();
       if (user != null) {
-        // Récupérer le document de l'utilisateur dans la collection "champions"
+        // Récupérer le document de l'utilisateur dans la collection "zems"
         final DocumentSnapshot userData = await FirebaseFirestore.instance
-            .collection('champions')
+            .collection('zems')
             .doc(user.uid)
             .get();
 
@@ -86,7 +86,7 @@ class _InterfaceZemState extends State<InterfaceZem> {
 
           if (userData != null && userData.containsKey('role')) {
             var role = userData['role'];
-            if (role == 'Champion') {
+            if (role == 'Chauffeur') {
               // L'utilisateur a le rôle de champion
               return true;
             }
@@ -116,9 +116,9 @@ class _InterfaceZemState extends State<InterfaceZem> {
 
           // Vérifier si le montant dans le wallet est suffisant pour la course
           if (walletAmount >= coursePrice) {
-            // Vérifier s'il n'y a pas de cours en instance dans le champ 'courses' du document 'champions'
+            // Vérifier s'il n'y a pas de cours en instance dans le champ 'courses' du document 'zems'
             final champDoc = await FirebaseFirestore.instance
-                .collection('champions')
+                .collection('zems')
                 .doc(user.uid)
                 .get();
             final champData = champDoc.data();
@@ -169,9 +169,9 @@ class _InterfaceZemState extends State<InterfaceZem> {
 
     if (user != null) {
       try {
-        // Récupérer le document de l'utilisateur dans la collection "champions"
+        // Récupérer le document de l'utilisateur dans la collection "zems"
         final userDoc =
-            FirebaseFirestore.instance.collection('champions').doc(user.uid);
+            FirebaseFirestore.instance.collection('zems').doc(user.uid);
 
         // Obtenir les données du document utilisateur
         final userData = await userDoc.get();

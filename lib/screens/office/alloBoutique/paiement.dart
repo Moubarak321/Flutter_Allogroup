@@ -221,7 +221,7 @@ Future<void> envoi() async {
         if (merchantId != null && merchantId.isNotEmpty) {
           // Accéder au document du marchand dans Firebase Firestore
           DocumentReference merchantDocRef = FirebaseFirestore.instance
-              .collection('marchands')
+              .collection('boutiques')
               .doc(merchantId);
 
           final DocumentSnapshot merchantDocSnapshot =

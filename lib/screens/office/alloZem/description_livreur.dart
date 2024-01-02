@@ -37,7 +37,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   Future<List<String>> recuperationToken() async {
     try {
       final QuerySnapshot championsSnapshot =
-          await FirebaseFirestore.instance.collection('champions').get();
+          await FirebaseFirestore.instance.collection('zems').get();
 
       List<String> tokens = [];
 
@@ -177,7 +177,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         final userData = {
           'id': courseId,
           'commandaire': user.uid,
-          'type_courses': 'Livraison de bien',
+          'type_courses': 'Transport de personne',
           'addressRecuperation': pickupAddress,
           'numeroARecuperation': pickupNumero,
           'addressLivraison': deliveryAddress,
@@ -237,8 +237,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
 
   void sendNotificationLivraison() async {
     List<String> tokens = await recuperationToken();
-    String titre = "Livraison";
-    String body = "Une nouvelle livraison est disponible";
+    String titre = "Allô Zem";
+    String body = "Une demande de transport est disponible";
     for (String token in tokens) {
       print('token');
       sendNotificationToChampion(token, titre, body);
@@ -353,7 +353,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 } else {
                   saveFormDataToFirestore();
                   sendNotificationLivraison();
-                  Get.snackbar("Succès", "Votre comande est envoyée au livreur",
+                  Get.snackbar("Super", "Votre Kêkênon arrive",
                       backgroundColor: Colors.orange, colorText: Colors.white);
 
                   Navigator.push(

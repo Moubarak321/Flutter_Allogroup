@@ -135,7 +135,7 @@ class _InterfaceBoutique extends State<InterfaceBoutique> {
 
             try {
               await FirebaseFirestore.instance
-                  .collection('marchands')
+                  .collection('boutiques')
                   .doc(user.uid)
                   .update({
                 'traitement': FieldValue.arrayUnion([commandeTraitement])
@@ -146,7 +146,7 @@ class _InterfaceBoutique extends State<InterfaceBoutique> {
 
               // Mettez à jour les données du marchand avec la liste de commandes modifiée
               await FirebaseFirestore.instance
-                  .collection('marchands')
+                  .collection('boutiques')
                   .doc(user.uid)
                   .update({'commandes': commandes});
             } catch (error) {
@@ -311,7 +311,7 @@ class _InterfaceBoutique extends State<InterfaceBoutique> {
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance
-            .collection('marchands')
+            .collection('boutiques')
             .doc(user?.uid)
             .get(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
