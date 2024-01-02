@@ -6,14 +6,14 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 
-class MainFoodPage extends StatefulWidget {
-  const MainFoodPage({super.key});
+class MainArticlePage extends StatefulWidget {
+  const MainArticlePage({super.key});
 
   @override
-  State<MainFoodPage> createState() => _MainFoodPageState();
+  State<MainArticlePage> createState() => _MainArticlePageState();
 }
 
-class _MainFoodPageState extends State<MainFoodPage> {
+class _MainArticlePageState extends State<MainArticlePage> {
   bool foodButtonSelected = true; // Par défaut, "food" est actif
   bool homeButtonSelected = false; // Par défaut, "Home" est inactif
   bool deliveryButtonSelected = false; // "Delivery" est inactif
@@ -141,7 +141,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return MainFoodPage(); // Remplacez DetailPage par votre propre page.
+                return MainArticlePage(); // Remplacez DetailPage par votre propre page.
               },
             ),
           );

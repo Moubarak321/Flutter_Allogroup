@@ -1,4 +1,6 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/alloBoutique/main_article_page.dart';
+import 'package:allogroup/screens/office/alloZem/interfaceZem.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
 import 'package:allogroup/screens/office/allofood/interfacefoodmarchand.dart';
 import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
@@ -33,7 +35,6 @@ import 'package:allogroup/screens/office/allofood/traitementEnCours.dart';
 import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:flutter/services.dart';
 import 'package:allogroup/screens/office/user/utilisateur/details/historiqueLivraisonsUtilisateur.dart';
-
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -228,8 +229,11 @@ class _MyAppState extends State<MyApp> {
         'recommended_food_detail': (context) =>
             RecommendedFoodDetail(marchand: {}),
         'courseLivreur': (context) => CourseLivreur(),
-        'historiqueLivraisonsUtilisateur': (context) =>HistoriqueLivraisonsUtilisateur(),
-        'historiqueCouresActuelle': (context) =>HistoriqueCoursesActuelle(),
+        'historiqueLivraisonsUtilisateur': (context) =>
+            HistoriqueLivraisonsUtilisateur(),
+        'historiqueCouresActuelle': (context) => HistoriqueCoursesActuelle(),
+        Routes.interfaceBoutique: (context) => MainArticlePage(),
+        Routes.interfaceZem: (context) => InterfaceZem(),
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

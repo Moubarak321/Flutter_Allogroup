@@ -14,12 +14,12 @@ import '../widgets/icon_and_text_widget.dart';
 import '../widgets/small_text.dart';
 import 'dart:async';
 
-class InterfaceFoodMarchand extends StatefulWidget {
+class InterfaceBoutique extends StatefulWidget {
   @override
-  _InterfaceFoodMarchand createState() => _InterfaceFoodMarchand();
+  _InterfaceBoutique createState() => _InterfaceBoutique();
 }
 
-class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
+class _InterfaceBoutique extends State<InterfaceBoutique> {
   final User? user = FirebaseAuth.instance.currentUser;
 
   Future<List<String>> recuperationToken() async {

@@ -8,7 +8,7 @@ class Routes {
   static const String interfaceMarchand = '/interfacefoodmarchand';
 
 
-  static const String interfaceBoutique = '/interfaceBoutique';
+  static const String interfaceBoutique = '/main_article_page';
   static const String interfaceZem = '/interfaceZem';
   static const String evenement = '/evenement';
 
