@@ -7,5 +7,10 @@ class Routes {
   static const String interfaceLivreur = '/interfacelivreurchampion';
   static const String interfaceMarchand = '/interfacefoodmarchand';
 
+
+  static const String interfaceBoutique = '/interfaceBoutique';
+  static const String interfaceZem = '/interfaceZem';
+  static const String evenement = '/evenement';
+
 }
 

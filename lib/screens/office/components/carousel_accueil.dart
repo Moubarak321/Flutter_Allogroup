@@ -22,24 +22,24 @@ class _CarouselState extends State<Carousel> {
           FirebaseStorage.instance.ref("statique/promotion");
       final ListResult result = await storageReference.list();
       // print(
-          // "============================== final2========================================");
+      // "============================== final2========================================");
 
       for (var item in result.items) {
         final String imageUrl = await item.getDownloadURL();
         images.add(imageUrl);
       }
       // print(
-          // "===================================images added===================================");
+      // "===================================images added===================================");
     } catch (error) {
       print("Erreur lors de la récupération des images : $error");
     }
     // print(images);
     // print(
-        // "======================================================================");
+    // "======================================================================");
     // print(
-        // "======================================================================");
+    // "======================================================================");
     // print(
-        // "======================================================================");
+    // "======================================================================");
     return images;
   }
 
@@ -51,7 +51,7 @@ class _CarouselState extends State<Carousel> {
       setState(() {
         caroussImages = images;
         // print(
-            // "===================================ooooooook===================================");
+        // "===================================ooooooook===================================");
       });
 
       Timer.periodic(Duration(seconds: 5), (timer) {
@@ -76,7 +76,7 @@ class _CarouselState extends State<Carousel> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.only(top: 30),
+        padding: const EdgeInsets.only(top: 60, bottom: 120),
         child: Column(
           children: <Widget>[
             Text(
@@ -138,7 +138,9 @@ class _CarouselState extends State<Carousel> {
                 return Container(
                   width: 8.0,
                   height: 8.0,
-                  margin: EdgeInsets.symmetric(horizontal: 2.0),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 2.0,
+                  ),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentIndex == index ? Colors.orange : Colors.grey,
