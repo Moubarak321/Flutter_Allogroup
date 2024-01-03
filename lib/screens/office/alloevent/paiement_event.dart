@@ -279,7 +279,7 @@ Future<void> commande() async {
 
       // Mettre à jour la base de données avec le lieu et le numéro de livraison
       await userDocRef.update({
-        'paiementFood': FieldValue.arrayUnion(
+        'paiementEvent': FieldValue.arrayUnion(
           products
               .map((order) => {
                     ...order,
