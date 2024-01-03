@@ -57,7 +57,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
                 .collection('users')
                 .doc(courseData['commandaire'])
                 .update({
-              'coursesTermine': FieldValue.arrayUnion(userCourses),
+              'coursesTermineLivraison': FieldValue.arrayUnion(userCourses),
             });
           }
         }

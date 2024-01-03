@@ -212,7 +212,7 @@ class _InterfaceEvent extends State<InterfaceEvent> {
           .collection('users')
           .doc(commandes[0]['commandaire'])
           .set({
-        'courses': FieldValue.arrayUnion(userDataList),
+        'coursesEvent': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
         String titre = "Commande";
         String body =

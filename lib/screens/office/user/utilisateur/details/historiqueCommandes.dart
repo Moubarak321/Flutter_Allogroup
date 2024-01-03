@@ -94,7 +94,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left),color: Colors.white),
-        title: Text('Vos commandes',
+        title: Text('Vos commandes de repas',
            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
@@ -106,7 +106,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'Vos derniers achats',
+                'Vos derniers achats de repas',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -126,7 +126,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('paiementBoutique')) {
+                if (!userData.containsKey('paiementFood')) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -137,7 +137,7 @@ class HistoriqueCommandesRepas extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['paiementBoutique'] as List<dynamic>;
+                final courses = userData['paiementFood'] as List<dynamic>;
 
                 courses.sort((a, b) =>
                     b['dateLivraison'].seconds.compareTo(a['dateLivraison'].seconds));

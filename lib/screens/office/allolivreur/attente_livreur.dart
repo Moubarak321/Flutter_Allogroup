@@ -16,7 +16,7 @@ class ConfirmationLivraison extends StatelessWidget {
     if (typeLivraison == 'Livraison de bien') {
       return codesecret.toString();
     } else {
-      var message = "gestion du code par le restaurant";
+      var message = "gestion du code par la partie tierce";
       return message;
     }
   }
@@ -130,7 +130,7 @@ class ConfirmationLivraison extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'En cas de manquement, vous pouvez appeler ou écrire au +22953899427',
+                '+22953899427',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,

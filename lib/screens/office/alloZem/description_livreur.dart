@@ -317,7 +317,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
         title: Text(
-          'Informations sur la Course',
+          'Informations sur le déplacement',
           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20),
         ),
         actions: [

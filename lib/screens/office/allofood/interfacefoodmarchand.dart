@@ -212,7 +212,7 @@ class _InterfaceFoodMarchand extends State<InterfaceFoodMarchand> {
           .collection('users')
           .doc(commandes[0]['commandaire'])
           .set({
-        'courses': FieldValue.arrayUnion(userDataList),
+        'coursesFood': FieldValue.arrayUnion(userDataList),
       }, SetOptions(merge: true)).then((_) {
         String titre = "Commande";
         String body =

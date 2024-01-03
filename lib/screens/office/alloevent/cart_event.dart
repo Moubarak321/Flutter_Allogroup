@@ -40,7 +40,7 @@ class _CartEventState extends State<CartEvent> {
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        List<dynamic> cart = userData['cartFood'] as List<dynamic>;
+        List<dynamic> cart = userData['cartEvent'] as List<dynamic>;
 
         for (var cartItem in cart) {
           if (cartItem['status'] == false) {
@@ -90,7 +90,7 @@ class _CartEventState extends State<CartEvent> {
             .collection('users')
             .doc(user.uid)
             .update({
-          'cartFood': updatedCart,
+          'cartEvent': updatedCart,
         });
       }
 

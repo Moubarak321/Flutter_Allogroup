@@ -57,7 +57,7 @@ class _InterfaceZemState extends State<InterfaceZem> {
                 .collection('users')
                 .doc(courseData['commandaire'])
                 .update({
-              'coursesTermine': FieldValue.arrayUnion(userCourses),
+              'coursesTermineZem': FieldValue.arrayUnion(userCourses),
             });
           }
         }

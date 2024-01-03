@@ -110,7 +110,7 @@ class ConfirmationLivraison extends StatelessWidget {
               );
             },
             icon: const Icon(LineAwesomeIcons.angle_left, color: Colors.white)),
-        title: Text('Service de livraison',
+        title: Text('Service de déplacement',
             style:
                 TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
@@ -123,7 +123,7 @@ class ConfirmationLivraison extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'En cas de manquement, vous pouvez appeler ou écrire au +22953899427',
+                '+22953899427',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -144,7 +144,7 @@ class ConfirmationLivraison extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('courses')) {
+                if (!userData.containsKey('coursesZem')) {
                   // L'utilisateur n'a pas de données de courses
                   return Center(
                     child: Text(
@@ -157,7 +157,7 @@ class ConfirmationLivraison extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['courses'] as List<dynamic>;
+                final courses = userData['coursesZem'] as List<dynamic>;
                 // Only display the last two courses
                 final displayedCourses = courses.length >= 1
                     ? courses.sublist(courses.length - 1)

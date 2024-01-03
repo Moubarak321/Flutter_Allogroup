@@ -185,7 +185,7 @@ class Zem extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('courses')) {
+                if (!userData.containsKey('coursesZem')) {
                   // L'utilisateur n'a pas de données de courses
                   return Center(
                     child: Text(
@@ -198,7 +198,7 @@ class Zem extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['courses'] as List<dynamic>;
+                final courses = userData['coursesZem'] as List<dynamic>;
 
                 // Only display the last two courses
                 final displayedCourses = courses.length >= 1

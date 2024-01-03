@@ -74,7 +74,7 @@ class _ButtonServicesState extends State<ButtonServices> {
     return SliverToBoxAdapter(
       child: Center(
         child: SizedBox(
-          height: 200, // Ajustez la hauteur en fonction du nombre de rangées
+          height: 100, // Ajustez la hauteur en fonction du nombre de rangées
           child: Wrap(
             spacing: 20,
             runSpacing: 20,
