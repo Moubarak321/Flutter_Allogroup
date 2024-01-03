@@ -205,7 +205,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
             .collection('users')
             .doc(user.uid)
             .update({
-          'courses': FieldValue.arrayUnion([userData])
+          'coursesZem': FieldValue.arrayUnion([userData])
         });
       }
     } catch (error) {

@@ -12,14 +12,7 @@ class ConfirmationLivraison extends StatelessWidget {
     return FirebaseAuth.instance.currentUser;
   }
 
-  String gestioncode(typeLivraison, codesecret) {
-    if (typeLivraison == 'Livraison de bien') {
-      return codesecret.toString();
-    } else {
-      var message = "gestion du code par le restaurant";
-      return message;
-    }
-  }
+  
 
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
@@ -35,7 +28,7 @@ class ConfirmationLivraison extends StatelessWidget {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-    final codeMessage = gestioncode(typeLivraison, codesecret);
+    final codeMessage = codesecret;
 
     return Container(
       width: double.infinity,

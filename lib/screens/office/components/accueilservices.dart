@@ -86,8 +86,8 @@ class _ButtonServicesState extends State<ButtonServices> {
                     Column(
                       children: [
                         Container(
-                          height: 90,
-                          width: 90,
+                          height: 60,
+                          width: 60,
                           child: GestureDetector(
                             onTap: () async {
                               setState(() {

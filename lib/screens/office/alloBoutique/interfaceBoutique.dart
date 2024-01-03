@@ -193,7 +193,7 @@ class _InterfaceBoutique extends State<InterfaceBoutique> {
 
       var userData = {
         'id': courseId,
-        'type_courses': 'Livraison de repas de chez $adresseRestaurant',
+        'type_courses': 'Livraison de produit de chez $adresseRestaurant',
         'addressRecuperation': marchandData['adresse'],
         'numeroARecuperation': marchandData['phoneNumber'],
         'addressLivraison': commandes[0]['lieuLivraison'],

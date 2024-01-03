@@ -89,7 +89,7 @@ Future<dynamic> GetProductFromCart() async {
 
     if (userDoc.exists) {
       Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      List<dynamic> cart = userData['cart'] as List<dynamic>;
+      List<dynamic> cart = userData['cartboutique'] as List<dynamic>;
 
       for (var cartItem in cart) {
         if (cartItem['status'] == false) {
@@ -179,7 +179,7 @@ Future<void> clearCart() async {
 
       // Vider le champ 'cart' dans Firestore
       await userDocRef.update({
-        'cart': [],
+        'cartboutique': [],
       });
     }
   } catch (e) {
