@@ -1,3 +1,4 @@
+import 'package:allogroup/screens/office/alloevent/paiement_event.dart';
 import 'package:allogroup/screens/office/components/function.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
@@ -7,16 +8,15 @@ import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:allogroup/screens/office/allofood/paiement.dart';
 
-class Cart extends StatefulWidget {
-  const Cart({super.key});
+class CartEvent extends StatefulWidget {
+  const CartEvent({super.key});
 
   @override
-  State<Cart> createState() => _CartState();
+  State<CartEvent> createState() => _CartEventState();
 }
 
-class _CartState extends State<Cart> {
+class _CartEventState extends State<CartEvent> {
   bool isLoading = true;
   String? error;
   late String total;
@@ -40,7 +40,7 @@ class _CartState extends State<Cart> {
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        List<dynamic> cart = userData['cartboutique'] as List<dynamic>;
+        List<dynamic> cart = userData['cartFood'] as List<dynamic>;
 
         for (var cartItem in cart) {
           if (cartItem['status'] == false) {
@@ -90,7 +90,7 @@ class _CartState extends State<Cart> {
             .collection('users')
             .doc(user.uid)
             .update({
-          'cartboutique': updatedCart,
+          'cartFood': updatedCart,
         });
       }
 
@@ -151,7 +151,7 @@ class _CartState extends State<Cart> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Utilisateur(),
+                    builder: (context) => PaiementEvent(),
                   ),
                 );
               },

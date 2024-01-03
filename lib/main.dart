@@ -1,6 +1,7 @@
 // import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:allogroup/screens/office/alloBoutique/interfaceBoutique.dart';
 import 'package:allogroup/screens/office/alloBoutique/main_article_page.dart';
+import 'package:allogroup/screens/office/alloevent/main_event_page.dart';
 import 'package:allogroup/screens/office/alloZem/interfaceZem.dart';
 import 'package:allogroup/screens/office/alloZem/main_zem_page.dart';
 import 'package:allogroup/screens/office/allofood/cart.dart';
@@ -237,7 +238,8 @@ class _MyAppState extends State<MyApp> {
         Routes.interfaceBoutique: (context) => MainArticlePage(),
         Routes.interfaceZem: (context) => Zem(),
         Routes.interfaceKekenon: (context) => InterfaceZem(),
-        Routes.interfaceShopKeeper: (context) => InterfaceBoutique()
+        Routes.interfaceShopKeeper: (context) => InterfaceBoutique(),
+        Routes.evenement : (context) => MainEventPage()
       },
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(10, 80, 137, 0.8),

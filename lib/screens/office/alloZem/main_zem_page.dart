@@ -14,8 +14,6 @@ class Zem extends StatelessWidget {
     return FirebaseAuth.instance.currentUser;
   }
 
- 
-
   Widget buildCourseCard(Map<String, dynamic> courseData) {
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
@@ -30,7 +28,7 @@ class Zem extends StatelessWidget {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
-    final codeMessage =  codesecret;
+    final codeMessage = codesecret;
 
     return Container(
       width: double.infinity,
@@ -144,7 +142,7 @@ class Zem extends StatelessWidget {
             height: 200,
             child: Center(
               child: Image.asset(
-                'assets/images/zem.jpg', // Replace 'your_image.png' with the actual path to your image asset
+                'assets/images/zem.png', // Replace 'your_image.png' with the actual path to your image asset
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,

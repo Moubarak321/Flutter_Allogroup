@@ -1,19 +1,19 @@
-import 'package:allogroup/screens/office/alloBoutique/cart_boutique.dart';
+import 'package:allogroup/screens/office/alloevent/cart_event.dart';
 import 'package:allogroup/screens/office/allolivreur/main_livreur_page.dart';
-import 'package:allogroup/screens/office/components/articlecard_body.dart';
+import 'package:allogroup/screens/office/components/eventBody.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 
-class MainArticlePage extends StatefulWidget {
-  const MainArticlePage({super.key});
+class MainEventPage extends StatefulWidget {
+  const MainEventPage({super.key});
 
   @override
-  State<MainArticlePage> createState() => _MainArticlePageState();
+  State<MainEventPage> createState() => _MainEventPageState();
 }
 
-class _MainArticlePageState extends State<MainArticlePage> {
+class _MainEventPageState extends State<MainEventPage> {
   bool foodButtonSelected = true; // Par défaut, "food" est actif
   bool homeButtonSelected = false; // Par défaut, "Home" est inactif
   bool deliveryButtonSelected = false; // "Delivery" est inactif
@@ -65,12 +65,12 @@ class _MainArticlePageState extends State<MainArticlePage> {
                 Column(
                   children: [
                     BigText(
-                      text: "Allô Market",
+                      text: "Allô Events",
                       color: Color.fromRGBO(10, 80, 137, 0.8),
                     ),
                     Row(
                       children: [
-                        SmallText(text: "Boutiques", color: Colors.orange),
+                        SmallText(text: "Evènementiels", color: Colors.orange),
                         // Icon(Icons.arrow_drop_down_circle_rounded)
                       ],
                     ),
@@ -91,7 +91,7 @@ class _MainArticlePageState extends State<MainArticlePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return Cart();
+                              return CartEvent();
                             },
                           ),
                         );
@@ -119,7 +119,7 @@ class _MainArticlePageState extends State<MainArticlePage> {
 
           Expanded(
             child: SingleChildScrollView(
-              child: ArticlePageBody(),
+              child: EventBodyCard(),
             ),
           ),
           SizedBox(
@@ -140,7 +140,7 @@ class _MainArticlePageState extends State<MainArticlePage> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return MainArticlePage(); // Remplacez DetailPage par votre propre page.
+                return EventBodyCard(); // Remplacez DetailPage par votre propre page.
               },
             ),
           );

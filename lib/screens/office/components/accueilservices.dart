@@ -37,7 +37,8 @@ class _ButtonServicesState extends State<ButtonServices> {
     Routes.interfaceMarchand,
     Routes.interfaceLivreur,
     Routes.interfaceShopKeeper,
-    Routes.interfaceKekenon
+    Routes.interfaceKekenon,
+    Routes.evenement
   ]; // Routes correspondant aux boutons
 
   Future<String?> getUserRole() async {
@@ -108,6 +109,8 @@ class _ButtonServicesState extends State<ButtonServices> {
                               } else if (userRole == "Chauffeur" &&
                                   index == 3) {
                                 Navigator.pushNamed(context, serviceRoutes1[3]);
+                              } else if (userRole == "Event" && index == 4) {
+                                Navigator.pushNamed(context, serviceRoutes1[4]);
                               } else {
                                 Navigator.pushNamed(
                                     context, serviceRoutes[index]);

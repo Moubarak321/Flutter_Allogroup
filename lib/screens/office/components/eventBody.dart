@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:allogroup/screens/office/alloBoutique/recommended_article_detail.dart';
+import 'package:allogroup/screens/office/allofood/recommended_food_detail.dart';
 import 'package:allogroup/screens/office/components/app_column_restau.dart';
 import 'package:allogroup/screens/office/widgets/big_text.dart';
 import 'package:allogroup/screens/office/widgets/dimensions.dart';
@@ -12,14 +12,14 @@ import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
-class ArticlePageBody extends StatefulWidget {
-  const ArticlePageBody({Key? key}) : super(key: key);
+class EventBodyCard extends StatefulWidget {
+  const EventBodyCard({Key? key}) : super(key: key);
 
   @override
-  State<ArticlePageBody> createState() => _ArticlePageBodyState();
+  State<EventBodyCard> createState() => _EventBodyCardState();
 }
 
-class _ArticlePageBodyState extends State<ArticlePageBody> {
+class _EventBodyCardState extends State<EventBodyCard> {
   PageController pageController = PageController(
       viewportFraction:
           0.85); //gestion des marges au niveau du caroussel à droite et à gauche de sorte qu'on ait un aperçu du prochain er précédent slide
@@ -41,7 +41,7 @@ class _ArticlePageBodyState extends State<ArticlePageBody> {
 
       // Accédez à la collection "Marchands" dans Firestore
       QuerySnapshot marchandsSnapshot =
-          await FirebaseFirestore.instance.collection('boutiques').get();
+          await FirebaseFirestore.instance.collection('events').get();
       // Parcourez les documents de la collection "Marchands"
       for (QueryDocumentSnapshot marchand in marchandsSnapshot.docs) {
         // Accédez à la sous-collection "Produits" de chaque marchand
@@ -72,7 +72,7 @@ class _ArticlePageBodyState extends State<ArticlePageBody> {
 
       // Accédez à la collection "Marchands" dans Firestore
       QuerySnapshot merchantsSnapshot =
-          await FirebaseFirestore.instance.collection('boutiques').get();
+          await FirebaseFirestore.instance.collection('events').get();
       // print("*****************************************DONE*************************************");
       // Parcourez les documents de la collection "Marchands"
       for (QueryDocumentSnapshot merchantDocument in merchantsSnapshot.docs) {

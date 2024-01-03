@@ -102,7 +102,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 .collection('users')
                 .doc(user?.uid)
                 .update({
-                  'cartboutique': FieldValue.arrayUnion([userData]),
+                  'cart': FieldValue.arrayUnion([userData]),
                 })
                 .then((_) {})
                 .catchError((error) {
@@ -111,7 +111,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
           } else {
             // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
             final newCartData = {
-              'cartboutique': [userData], // Le premier produit est ajouté au panier.
+              'cart': [userData], // Le premier produit est ajouté au panier.
             };
 
             FirebaseFirestore.instance
@@ -175,7 +175,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.popAndPushNamed(context, '/cart_boutique');
+                      Navigator.popAndPushNamed(context, '/cart_event');
                     },
                     child: AppIcon(icon: Icons.shopping_cart_outlined)),
               ],
