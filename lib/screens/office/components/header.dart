@@ -156,7 +156,7 @@ class _HeaderState extends State<Header> {
                   child: Column(children: [
                     //avatar utilisateur
                     const SizedBox(
-                      height: 5ad,
+                      height: 5,
                     ), // height de l'avatar
                     Row(
                       children: [
@@ -167,7 +167,7 @@ class _HeaderState extends State<Header> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.white70,
-                            radius: 40,
+                            radius: 20,
                             child: FutureBuilder<String>(
                               future: _getProfileImageUrl(),
                               builder: (context, snapshot) {
@@ -182,7 +182,7 @@ class _HeaderState extends State<Header> {
                                     return CircleAvatar(
                                       backgroundImage:
                                           NetworkImage(snapshot.data!),
-                                      radius: 35,
+                                      radius: 25,
                                     );
                                   }
                                 }

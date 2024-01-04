@@ -51,7 +51,18 @@ class _HomeState extends State<Home> {
       body: CustomScrollView(
         //widget scroll view wrapping the body
         slivers: [
-          
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+
+            //Barre de navigation
+            pinned: true, //fixation de la navbar
+            // title: const Text("Allô Group"), //nom de l'app
+            title: Align(
+              // alignment: Alignment.centerLeft,
+              child: const Text("Allô Group",
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+            ),
+          ),
           // imbrication du composant header directement en dessous de la barre de navigation
           Header(),
           ButtonServices(),
