@@ -145,7 +145,7 @@ class HistoriqueZemActuel extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('coursesTermineeZem')) {
+                if (!userData.containsKey('coursesTermineZem')) {
                   return Center(
                     child: Text(
                       "Aucune demande",

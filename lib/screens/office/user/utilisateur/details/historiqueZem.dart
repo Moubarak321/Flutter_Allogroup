@@ -126,7 +126,7 @@ class HistoriqueZem extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('coursesTermineeZem')) {
+                if (!userData.containsKey('coursesTermineZem')) {
                   return Center(
                     child: Text(
                       "Aucune demande",
@@ -137,7 +137,7 @@ class HistoriqueZem extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['coursesTermineeZem'] as List<dynamic>;
+                final courses = userData['coursesTermineZem'] as List<dynamic>;
 
                 courses.sort((a, b) =>
                     b['dateLivraison'].seconds.compareTo(a['dateLivraison'].seconds));

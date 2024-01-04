@@ -127,7 +127,7 @@ class HistoriqueCourses extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('coursesLivraisons')) {
+                if (!userData.containsKey('coursesTermineLivraison')) {
                 // if (!userData.containsKey('coursesTermineLivraison')) {
                   // L'utilisateur n'a pas de données de courses
                   return Center(
@@ -142,7 +142,7 @@ class HistoriqueCourses extends StatelessWidget {
                 }
 
                 final latestCourses = List<Map<String, dynamic>>.from(
-                  (userData['coursesLivraisons'] as List<dynamic>).take(5),
+                  (userData['coursesTermineLivraison'] as List<dynamic>).take(5),
                   // (userData['coursesTermineLivraison'] as List<dynamic>).take(5),
                 );
 
