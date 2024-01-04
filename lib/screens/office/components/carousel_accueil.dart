@@ -76,7 +76,7 @@ class _CarouselState extends State<Carousel> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.only(top: 30, bottom: 120),
+        padding: const EdgeInsets.only(top: 100, bottom: 120),
         child: Column(
           children: <Widget>[
             Text(
