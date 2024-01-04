@@ -15,7 +15,7 @@ class _HeaderState extends State<Header> {
   late TextEditingController _roleController;
 
   String userName = '';
-  String fund = '' ;
+  String fund = '';
   Future<void> _loadUserRole() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
@@ -27,10 +27,10 @@ class _HeaderState extends State<Header> {
 
       setState(() {
         _roleController.text = userDoc.get("role").toString();
-       
       });
     }
   }
+
   Future<String> _getProfileImageUrl() async {
     final User? user = FirebaseAuth.instance.currentUser;
     String imageUrl = '';
@@ -105,7 +105,8 @@ class _HeaderState extends State<Header> {
     // Retourner null si l'utilisateur n'a pas de portefeuille ou s'il y a une erreur
     return null;
   }
-   @override
+
+  @override
   void dispose() {
     _roleController.dispose();
     super.dispose();
@@ -114,7 +115,7 @@ class _HeaderState extends State<Header> {
   @override
   void initState() {
     super.initState();
-     _roleController = TextEditingController();
+    _roleController = TextEditingController();
     _loadUserRole();
     _loadUserName().then((name) {
       setState(() {
@@ -122,12 +123,13 @@ class _HeaderState extends State<Header> {
       });
     });
     getUserWalletBalance().then((walletBalance) {
-    if (walletBalance != null) {
-      setState(() {
-        fund = walletBalance.toString(); // Convertir le solde du portefeuille en String
-      });
-    }
-  });
+      if (walletBalance != null) {
+        setState(() {
+          fund = walletBalance
+              .toString(); // Convertir le solde du portefeuille en String
+        });
+      }
+    });
   }
 
   @override
@@ -144,7 +146,7 @@ class _HeaderState extends State<Header> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  height: size.height / 5, //voir ligne 12
+                  height: size.height / 6, //voir ligne 12
                   decoration: const BoxDecoration(
                     // arrondir les coins de la boxe et ajouter de la couleur
                     // color: Colors.teal,
@@ -156,7 +158,7 @@ class _HeaderState extends State<Header> {
                   child: Column(children: [
                     //avatar utilisateur
                     const SizedBox(
-                      height: 5,
+                      height: 20,
                     ), // height de l'avatar
                     Row(
                       children: [
@@ -167,7 +169,7 @@ class _HeaderState extends State<Header> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.white70,
-                            radius: 20,
+                            radius: 40,
                             child: FutureBuilder<String>(
                               future: _getProfileImageUrl(),
                               builder: (context, snapshot) {
@@ -182,7 +184,7 @@ class _HeaderState extends State<Header> {
                                     return CircleAvatar(
                                       backgroundImage:
                                           NetworkImage(snapshot.data!),
-                                      radius: 25,
+                                      radius: 35,
                                     );
                                   }
                                 }
@@ -221,7 +223,7 @@ class _HeaderState extends State<Header> {
                                 color: Colors.black54,
                               ),
 
-                              child:  Text(
+                              child: Text(
                                 _roleController.text,
                                 style: TextStyle(
                                   color: Colors.white,
@@ -231,7 +233,7 @@ class _HeaderState extends State<Header> {
                           ],
                         ),
                         const Spacer(),
-                         Text(
+                        Text(
                           "$fund CFA",
                           style: TextStyle(
                             color: Colors.white,

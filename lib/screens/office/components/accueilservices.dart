@@ -74,10 +74,10 @@ class _ButtonServicesState extends State<ButtonServices> {
     return SliverToBoxAdapter(
       child: Center(
         child: SizedBox(
-          height: 200, // Ajustez la hauteur en fonction du nombre de rangées
+          height: 170, // Ajustez la hauteur en fonction du nombre de rangées
           child: Wrap(
             spacing: 20,
-            runSpacing: 20,
+            runSpacing: 15,
             alignment: WrapAlignment.center,
             children: List.generate(
               serviceNames.length,
@@ -87,8 +87,8 @@ class _ButtonServicesState extends State<ButtonServices> {
                     Column(
                       children: [
                         Container(
-                          height: 100,
-                          width: 100,
+                          height: 75,
+                          width: 75,
                           child: GestureDetector(
                             onTap: () async {
                               setState(() {
@@ -944,3 +944,5 @@ class _ButtonServicesState extends State<ButtonServices> {
 //     );
 //   }
 // }
+
+

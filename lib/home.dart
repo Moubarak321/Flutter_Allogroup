@@ -58,10 +58,28 @@ class _HomeState extends State<Home> {
             pinned: true, //fixation de la navbar
             // title: const Text("Allô Group"), //nom de l'app
             title: Align(
-              // alignment: Alignment.centerLeft,
+              alignment: Alignment.centerLeft,
               child: const Text("Allô Group",
                   style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
+            actions: [
+              IconButton(
+                  //button shopping
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Notifications();
+                        },
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  ))
+            ],
           ),
           // imbrication du composant header directement en dessous de la barre de navigation
           Header(),
