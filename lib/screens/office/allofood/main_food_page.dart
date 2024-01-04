@@ -41,15 +41,14 @@ class _MainFoodPageState extends State<MainFoodPage> {
       deliveryButtonSelected = true;
       homeButtonSelected = false;
       foodButtonSelected = false;
-
     });
     // Vous pouvez ajouter ici le code pour gérer la page de livraison
   }
 
   @override
   Widget build(BuildContext context) {
-    //print("height ${MediaQuery.of(context).size.height}");
-    //print("width ${MediaQuery.of(context).size.width}");
+    print("height ${MediaQuery.of(context).size.height}");
+    print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
       // appBar: AppBar(backgroundColor: Colors.white,),
       body: Column(
@@ -87,15 +86,15 @@ class _MainFoodPageState extends State<MainFoodPage> {
                       color: Color.fromRGBO(10, 80, 137, 0.8),
                     ),
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Cart();
-                    },
-                  ),
-                );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Cart();
+                            },
+                          ),
+                        );
                       },
                       child: Icon(
                         Icons.shopping_cart_rounded,
@@ -151,7 +150,9 @@ class _MainFoodPageState extends State<MainFoodPage> {
             : Color.fromRGBO(10, 80, 137, 0.8),
         child: Icon(
           Icons.fastfood,
-          color :foodButtonSelected ? Colors.white : Color.fromRGBO(10, 80, 137, 0.8),
+          color: foodButtonSelected
+              ? Colors.white
+              : Color.fromRGBO(10, 80, 137, 0.8),
         ),
       ),
       bottomNavigationBar: ClipRRect(
@@ -201,6 +202,3 @@ class _MainFoodPageState extends State<MainFoodPage> {
     );
   }
 }
-
-
-

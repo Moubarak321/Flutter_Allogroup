@@ -7,7 +7,7 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
+class HistoriquePaiementBoutique extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
@@ -16,16 +16,13 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
     // Initialisez la localisation française
     initializeDateFormatting('fr_FR', null);
 
-    final photo = courseData['photo'];
-    final password = courseData["password"];
-    final livreurName = courseData['fullName'];
-    final numeroLivreur = courseData['numero'];
-    final produit = courseData['title'];
+    final boutique = courseData['boutique'];
+    final categorie = courseData['categorie'];
     final prix = courseData['prix'];
-    final type = courseData['type_courses'];
-    final adresselivraison = courseData['addressLivraison'];
-    final contactALivraison = courseData['numeroALivraison'];
-    final livraison = courseData['dateDeLivraison'];
+    final quantite = courseData['quantite'];
+    final titre = courseData['titre'];
+    // final livraison = courseData['dateLivraison'];
+    final livraison = courseData['dateLivraison'];
     final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
     final formattedDate =
         DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
@@ -58,45 +55,31 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Bilan de votre course actuelle",
+            "Bilan d'un achat",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            "Votre livreur : $livreurName $numeroLivreur",
-            style: TextStyle(fontSize: 18.0, color: Colors.white),
-          ),
-          Center(
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(photo),
-              radius: 75,
-            ),
-          ),
-          Text(
-            'Livrable : $produit',
+            'Boutique : $boutique',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Type de course : $type',
+            'Article: $titre',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Prix unitaire : $prix FCFA',
+            'Catégorie: $categorie',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Mot de passe à communiquer au destinataire : $password ',
+            'Prix unitaire: $prix FCFA',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Date de livraison : $formattedDate',
+            'Quantité: $quantite',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Destinataire : $adresselivraison',
-            style: TextStyle(fontSize: 18.0, color: Colors.white),
-          ),
-          Text(
-            'Numero du destinataire : $contactALivraison',
+            'Date de livraison: $formattedDate',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ],
@@ -111,20 +94,19 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
         leading: IconButton(
             onPressed: () => Get.back(),
             icon: const Icon(LineAwesomeIcons.angle_left),color: Colors.white),
-        title: Text('Livraisons',
-            style:
-                TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+        title: Text('Vos paiements en boutiques',
+           style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
       body: Column(
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
                 right: Dimensions.width20, left: Dimensions.width20),
-            color: Colors.blue,
+                color: Colors.blue,
             height: 100,
             child: Center(
               child: Text(
-                'Vos récentes livraisons',
+                'Derniers paiements',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -144,8 +126,7 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('coursesFood')) {
-                // if (!userData.containsKey('coursesLivraison')) {
+                if (!userData.containsKey('paiementBoutique')) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -156,10 +137,21 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['coursesFood'] as List<dynamic>;
+                final courses = userData['paiementBoutique'] as List<dynamic>;
 
+                courses.sort((a, b) =>
+                    b['dateLivraison'].seconds.compareTo(a['dateLivraison'].seconds));
 
-                if (courses.isEmpty) {
+                // Take only the first 5 courses
+                final latestCourses = courses.take(5).toList();
+
+               
+                // Filter the courses list to include only those with status set to true
+                // final filteredCourses = courses
+                //     .where((courseData) => courseData['status'] == false)
+                //     .toList();
+
+                if (latestCourses.isEmpty) {
                   return Center(
                     child: Text(
                       "Aucun produit",
@@ -169,14 +161,13 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
                     ),
                   );
                 }
-
+                
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: courses.length,
+                  itemCount: latestCourses.length,
                   itemBuilder: (context, index) {
-                    print(
-                        "latestCourses---------------------------------${courses[0]}");
-                    final courseData = courses[index] as Map<String, dynamic>;
+                    final courseData =
+                        latestCourses[index] as Map<String, dynamic>;
 
                     return buildCourseCard(courseData);
                   },

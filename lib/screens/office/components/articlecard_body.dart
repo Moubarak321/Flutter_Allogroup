@@ -583,7 +583,7 @@ class _ArticlePageBodyState extends State<ArticlePageBody> {
                                 GestureDetector(
                                   onTap: () {
                                     Get.snackbar("Infos",
-                                        "Le temps de cuisson est d'environ $duree min",
+                                        "Le temps de reponse est d'environs $duree min",
                                         backgroundColor: Colors.orange,
                                         colorText: Colors.white);
                                   },

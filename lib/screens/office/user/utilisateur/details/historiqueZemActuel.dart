@@ -7,7 +7,7 @@ import 'package:allogroup/screens/office/widgets/dimensions.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
+class HistoriqueZemActuel extends StatelessWidget {
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
@@ -110,8 +110,9 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(LineAwesomeIcons.angle_left),color: Colors.white),
-        title: Text('Livraisons',
+            icon: const Icon(LineAwesomeIcons.angle_left),
+            color: Colors.white),
+        title: Text('Trajet actuel',
             style:
                 TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
       ),
@@ -124,7 +125,7 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
             height: 100,
             child: Center(
               child: Text(
-                'Vos récentes livraisons',
+                'Votre trajet',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -144,11 +145,10 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
                 }
 
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
-                if (!userData.containsKey('coursesFood')) {
-                // if (!userData.containsKey('coursesLivraison')) {
+                if (!userData.containsKey('coursesTermineeZem')) {
                   return Center(
                     child: Text(
-                      "Aucun produit",
+                      "Aucune demande",
                       style: TextStyle(
                         fontSize: 20.0,
                       ),
@@ -156,13 +156,14 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['coursesFood'] as List<dynamic>;
+                final courses = userData['coursesTermineeZem'] as List<dynamic>;
 
+                final latestCourses = [courses.last];
 
-                if (courses.isEmpty) {
+                if (latestCourses.isEmpty) {
                   return Center(
                     child: Text(
-                      "Aucun produit",
+                      "Aucune demande",
                       style: TextStyle(
                         fontSize: 20.0,
                       ),
@@ -172,11 +173,12 @@ class HistoriqueLivraisonsUtilisateur extends StatelessWidget {
 
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: courses.length,
+                  itemCount: latestCourses.length,
                   itemBuilder: (context, index) {
                     print(
-                        "latestCourses---------------------------------${courses[0]}");
-                    final courseData = courses[index] as Map<String, dynamic>;
+                        "latestCourses---------------------------------${latestCourses[0]}");
+                    final courseData =
+                        latestCourses[index] as Map<String, dynamic>;
 
                     return buildCourseCard(courseData);
                   },

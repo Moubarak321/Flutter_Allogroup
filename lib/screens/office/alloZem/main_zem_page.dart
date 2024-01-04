@@ -139,7 +139,7 @@ class Zem extends StatelessWidget {
             padding: EdgeInsets.only(
                 right: Dimensions.width20, left: Dimensions.width20),
             // color: Colors.white,
-            height: 200,
+            height: 260,
             child: Center(
               child: Image.asset(
                 'assets/images/zem.png', // Replace 'your_image.png' with the actual path to your image asset
