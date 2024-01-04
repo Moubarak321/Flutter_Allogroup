@@ -156,7 +156,7 @@ class _HeaderState extends State<Header> {
                   child: Column(children: [
                     //avatar utilisateur
                     const SizedBox(
-                      height: 20,
+                      height: 5ad,
                     ), // height de l'avatar
                     Row(
                       children: [
