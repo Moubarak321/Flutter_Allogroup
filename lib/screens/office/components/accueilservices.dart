@@ -74,7 +74,7 @@ class _ButtonServicesState extends State<ButtonServices> {
     return SliverToBoxAdapter(
       child: Center(
         child: SizedBox(
-          height: 100, // Ajustez la hauteur en fonction du nombre de rangées
+          height: 200, // Ajustez la hauteur en fonction du nombre de rangées
           child: Wrap(
             spacing: 20,
             runSpacing: 20,
@@ -87,8 +87,8 @@ class _ButtonServicesState extends State<ButtonServices> {
                     Column(
                       children: [
                         Container(
-                          height: 60,
-                          width: 60,
+                          height: 100,
+                          width: 100,
                           child: GestureDetector(
                             onTap: () async {
                               setState(() {
