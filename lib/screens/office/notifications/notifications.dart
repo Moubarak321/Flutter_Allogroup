@@ -212,7 +212,20 @@ class Notifications extends StatelessWidget {
                   );
                 }
 
-                final courses = userData['promotion'] as List<dynamic>;
+                List<dynamic> courses = userData['promotion'] as List<dynamic>;
+
+                // Sort the courses based on the date
+                courses.sort((a, b) {
+                  final DateTime dateA = a['date'] != null
+                      ? DateTime.fromMillisecondsSinceEpoch(a['date'])
+                      : DateTime(0);
+                  final DateTime dateB = b['date'] != null
+                      ? DateTime.fromMillisecondsSinceEpoch(b['date'])
+                      : DateTime(0);
+
+                  return dateB.compareTo(dateA);
+                });
+
 
                 return ListView.builder(
                   itemCount: courses.length,
