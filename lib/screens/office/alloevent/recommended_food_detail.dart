@@ -127,7 +127,7 @@ class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
                                 GestureDetector(
                                   onTap: () {
                                     Get.snackbar("Infos",
-                                        "Le temps de cuisson est d'environ $duree min",
+                                        "Le temps de réponse est d'environ $duree min",
                                         backgroundColor: Colors.orange,
                                         colorText: Colors.white);
                                   },

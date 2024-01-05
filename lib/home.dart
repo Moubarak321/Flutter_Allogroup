@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'screens/office/components/header.dart';
 import 'screens/office/components/accueilservices.dart';
 import 'screens/office/components/carousel_accueil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -17,7 +18,51 @@ class _HomeState extends State<Home> {
   bool homeButtonSelected = true; // Par défaut, "Home" est inactif
   bool notifButtonSelected = false; // Par défaut, "food" est actif
   bool profilButtonSelected = false; // "Delivery" est inactif
+  int numberOfPromotions = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    // Appeler la fonction pour récupérer la taille des promotions lors de l'initialisation du widget
+    fetchPromotionsSize();
+  }
+
+  Future<void> fetchPromotionsSize() async {
+    int size = await getSizeOfPromotions();
+    setState(() {
+      numberOfPromotions = size;
+    });
+  }
+
+  Future<int> getSizeOfPromotions() async {
+  try {
+    // Accès au document 'zone' dans la collection 'administrateur'
+    DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
+        .collection('administrateur')
+        .doc('admin')
+        .get();
+
+    if (adminSnapshot.exists) {
+      // Vérification de l'existence de la clé 'promotions'
+      Map<String, dynamic>? data =
+          adminSnapshot.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('promotion')) {
+        List<dynamic> promotions = data['promotion'];
+
+        // Récupération de la taille de la liste 'promotions'
+        return promotions.length;
+      }
+    }
+
+    // Retourner 0 si la clé 'promotions' est absente ou vide
+    return 0;
+  } catch (e) {
+    // Gestion des erreurs selon le besoin
+    print('Erreur lors de la récupération de la taille des promotions : $e');
+    return -1; // Retourner une valeur d'erreur
+  }
+}
   void selectHome() {
     setState(() {
       homeButtonSelected = true; // Par défaut, "Home" est inactif
@@ -63,6 +108,30 @@ class _HomeState extends State<Home> {
                   style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
             actions: [
+              // Ajout du cercle pour le compteur de notifications
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '$numberOfPromotions', // Remplacez cette valeur par le nombre de notifications
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               IconButton(
                   //button shopping
                   onPressed: () {
@@ -78,7 +147,7 @@ class _HomeState extends State<Home> {
                   icon: const Icon(
                     Icons.notifications,
                     color: Colors.white,
-                  ))
+                  )),    
             ],
           ),
           // imbrication du composant header directement en dessous de la barre de navigation
