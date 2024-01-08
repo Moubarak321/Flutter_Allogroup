@@ -8,7 +8,7 @@ import 'package:allogroup/screens/office/widgets/small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:allogroup/screens/office/allofood/popular_food_details.dart';
+import 'package:allogroup/screens/office/alloevent/popular_event_details.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -515,7 +515,7 @@ class _EventBodyCardState extends State<EventBodyCard> {
                 MaterialPageRoute(
                   builder: (context) {
                     // print("--------------$produit");
-                    return PopularFoodDetail(produit: tousLesProduits[index]);
+                    return PopularEventDetail(produit: tousLesProduits[index]);
                   },
                 ),
               );

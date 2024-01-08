@@ -25,7 +25,7 @@ class _CartEventState extends State<CartEvent> {
 
   String getTotalPrice() {
     int totalPrice = calculateTotalPrice();
-    return "$totalPrice F"; 
+    return "$totalPrice F";
   }
 
   Future<dynamic> GetProductFromCart() async {
@@ -98,12 +98,12 @@ class _CartEventState extends State<CartEvent> {
         tousLesProduits = updatedCart;
       });
 
-      Get.snackbar("Succès", "Le produit a été retiré du panier", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+      Get.snackbar("Succès", "Le produit a été retiré du panier",
+          backgroundColor: Colors.orange, colorText: Colors.white);
     } catch (e) {
       Get.snackbar("Erreur",
-          "Une erreur s'est produite lors de la suppression du produit ", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
+          "Une erreur s'est produite lors de la suppression du produit ",
+          backgroundColor: Colors.orange, colorText: Colors.white);
     }
   }
 
@@ -144,8 +144,9 @@ class _CartEventState extends State<CartEvent> {
                 iconColor: Colors.white,
               ),
             ),
-            Text("Votre panier", 
-            style: TextStyle(color: Colors.white, fontSize: Dimensions.height20)),
+            Text("Votre panier",
+                style: TextStyle(
+                    color: Colors.white, fontSize: Dimensions.height20)),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -187,7 +188,7 @@ class _CartEventState extends State<CartEvent> {
               )
             else
               // Expanded(
-      
+
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -234,13 +235,14 @@ class _CartEventState extends State<CartEvent> {
                               // width: 200,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(Dimensions.radius20),
+                                  topRight:
+                                      Radius.circular(Dimensions.radius20),
                                   bottomRight:
                                       Radius.circular(Dimensions.radius20),
                                 ),
                                 color: Colors.white,
                               ),
-      
+
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     left: Dimensions.width10,
@@ -288,7 +290,7 @@ class _CartEventState extends State<CartEvent> {
                                                   size: Dimensions.font20,
                                                   color: const Color.fromARGB(
                                                       255, 139, 105, 52)),
-      
+
                                               SizedBox(
                                                 width: Dimensions.width10 / 2,
                                               ),
@@ -302,17 +304,15 @@ class _CartEventState extends State<CartEvent> {
                                               SizedBox(
                                                 width: Dimensions.width10 / 2,
                                               ),
-                                              
                                             ],
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            
                                             Get.snackbar("Succes",
-                                                "Ce produit à bien été ajouté au panier", backgroundColor: Colors.orange,
-                                        colorText: Colors.white);
-                                           
+                                                "Ce produit à bien été ajouté au panier",
+                                                backgroundColor: Colors.orange,
+                                                colorText: Colors.white);
                                           },
                                           child: Container(
                                             padding: EdgeInsets.only(
@@ -321,8 +321,9 @@ class _CartEventState extends State<CartEvent> {
                                                 left: Dimensions.width10,
                                                 right: Dimensions.width10),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(
-                                                  Dimensions.radius20),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      Dimensions.radius20),
                                               color: Color.fromRGBO(
                                                   10, 80, 137, 0.8),
                                             ),

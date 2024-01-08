@@ -11,16 +11,16 @@ import 'package:allogroup/screens/office/widgets/quantity_controller.dart';
 import '../widgets/expandable_text_widget.dart';
 import 'package:get_storage/get_storage.dart';
 
-class PopularFoodDetail extends StatefulWidget {
+class PopularArticleDetail extends StatefulWidget {
   final Map<String, dynamic> produit;
 
-  PopularFoodDetail({required this.produit, Key? key}) : super(key: key);
+  PopularArticleDetail({required this.produit, Key? key}) : super(key: key);
 
   @override
-  _PopularFoodDetailState createState() => _PopularFoodDetailState();
+  _PopularArticleDetailState createState() => _PopularArticleDetailState();
 }
 
-class _PopularFoodDetailState extends State<PopularFoodDetail> {
+class _PopularArticleDetailState extends State<PopularArticleDetail> {
 //Début gestion du panier
   final QuantityController quantityController =
       Get.put(QuantityController()); // Initialize the controller
@@ -102,7 +102,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 .collection('users')
                 .doc(user?.uid)
                 .update({
-                  'cartboutique': FieldValue.arrayUnion([userData]),
+                  'cartBoutique': FieldValue.arrayUnion([userData]),
                 })
                 .then((_) {})
                 .catchError((error) {
@@ -111,7 +111,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
           } else {
             // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
             final newCartData = {
-              'cartboutique': [userData], // Le premier produit est ajouté au panier.
+              'cartBoutique': [userData], // Le premier produit est ajouté au panier.
             };
 
             FirebaseFirestore.instance

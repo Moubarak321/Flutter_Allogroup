@@ -102,7 +102,7 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 .collection('users')
                 .doc(user?.uid)
                 .update({
-                  'cart': FieldValue.arrayUnion([userData]),
+                  'cartFood': FieldValue.arrayUnion([userData]),
                 })
                 .then((_) {})
                 .catchError((error) {
@@ -111,7 +111,9 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
           } else {
             // L'utilisateur n'a pas de panier, créez-en un nouveau pour lui.
             final newCartData = {
-              'cart': [userData], // Le premier produit est ajouté au panier.
+              'cartFood': [
+                userData
+              ], // Le premier produit est ajouté au panier.
             };
 
             FirebaseFirestore.instance
@@ -332,5 +334,3 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
     );
   }
 }
-
-
