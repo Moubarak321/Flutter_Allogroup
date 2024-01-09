@@ -44,37 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAt4VPS-YSo-lyKqUzXJEcHTthwHbBtNLQ',
-    appId: '1:570659806740:web:b69f3c7b69d6e2a4c61101',
-    messagingSenderId: '570659806740',
-    projectId: 'allogroup-bfda9',
-    authDomain: 'allogroup-bfda9.firebaseapp.com',
-    storageBucket: 'allogroup-bfda9.appspot.com',
+    apiKey: 'AIzaSyA5RGQzj1CdR_A5TOjRXUcw1Q7K_iOEfd8',
+    appId: '1:247964597670:web:2b0495a8a3431a3b7ce367',
+    messagingSenderId: '247964597670',
+    projectId: 'allodatabase',
+    authDomain: 'allodatabase.firebaseapp.com',
+    storageBucket: 'allodatabase.appspot.com',
+    measurementId: 'G-X56CDP0J6V',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCdW0PXdfhIHQNTNjajgp9QVESWkzIRWjk',
-    appId: '1:570659806740:android:55cc462560e654bbc61101',
-    messagingSenderId: '570659806740',
-    projectId: 'allogroup-bfda9',
-    storageBucket: 'allogroup-bfda9.appspot.com',
+    apiKey: 'AIzaSyBddRjYD_gVfk_uatGovxOHU1bR3R0H44Y',
+    appId: '1:247964597670:android:f2060faa1dc611947ce367',
+    messagingSenderId: '247964597670',
+    projectId: 'allodatabase',
+    storageBucket: 'allodatabase.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBY2usrZbtPXNdo7G7gHZaYLu2trWeFuZ0',
-    appId: '1:570659806740:ios:9dc96ccc7f0b977ac61101',
-    messagingSenderId: '570659806740',
-    projectId: 'allogroup-bfda9',
-    storageBucket: 'allogroup-bfda9.appspot.com',
-    iosBundleId: 'com.example.mobile',
+    apiKey: 'AIzaSyADnPjL66tPP7d7aMYDyQsc8_L5x-92pFc',
+    appId: '1:247964597670:ios:bcac6c5c86a0ba8b7ce367',
+    messagingSenderId: '247964597670',
+    projectId: 'allodatabase',
+    storageBucket: 'allodatabase.appspot.com',
+    iosBundleId: 'com.example.allogroup',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBY2usrZbtPXNdo7G7gHZaYLu2trWeFuZ0',
-    appId: '1:570659806740:ios:9c6534e3276a3f28c61101',
-    messagingSenderId: '570659806740',
-    projectId: 'allogroup-bfda9',
-    storageBucket: 'allogroup-bfda9.appspot.com',
-    iosBundleId: 'com.example.mobile.RunnerTests',
+    apiKey: 'AIzaSyADnPjL66tPP7d7aMYDyQsc8_L5x-92pFc',
+    appId: '1:247964597670:ios:a3332f3c24c55cfe7ce367',
+    messagingSenderId: '247964597670',
+    projectId: 'allodatabase',
+    storageBucket: 'allodatabase.appspot.com',
+    iosBundleId: 'com.example.allogroup.RunnerTests',
   );
 }
