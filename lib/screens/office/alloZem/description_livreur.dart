@@ -173,16 +173,20 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
 
         // Récupérer le token de l'utilisateur
         String? fcmToken = await getUserFCMToken(user.uid);
-
+        print("------------------------Data grouping");
         final userData = {
           'id': courseId,
           'commandaire': user.uid,
           'type_courses': 'Transport de personne',
-          'addressRecuperation': pickupAddress,
-          'numeroARecuperation': pickupNumero,
-          'addressLivraison': deliveryAddress,
-          'numeroALivraison': deliveryNumero,
-          'dateDeLivraison': selectedDateTime,
+          // 'addressRecuperation': pickupAddress,
+          // 'numeroARecuperation': pickupNumero,
+          // 'addressLivraison': deliveryAddress,
+          // 'numeroALivraison': deliveryNumero,
+          'addressRecuperation': "pickupAddress",
+          'numeroARecuperation': "pickupNumero",
+          'addressLivraison': "deliveryAddress",
+          'numeroALivraison': "deliveryNumero",
+          'dateDeLivraison': "selectedDateTime",
           'password': password,
           'title': title,
           'details': details,
@@ -190,6 +194,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
           'status': false,
           'fcmToken': fcmToken,
         };
+        print("------------------------end Data grouping");
+        print(userData);
 
         // Ajouter les données à la collection 'administrateur'
         await FirebaseFirestore.instance
@@ -200,13 +206,15 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         });
 
         // Ajouter les données à la collection 'users'
-
+        print("------------------------------Avant envoi");
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
           'coursesZem': FieldValue.arrayUnion([userData])
         });
+        print("------------------------------après envoi");
+        sendNotificationLivraison();
       }
     } catch (error) {
       // Gérer les erreurs
@@ -352,7 +360,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   });
                 } else {
                   saveFormDataToFirestore();
-                  sendNotificationLivraison();
                   Get.snackbar("Super", "Votre Kêkênon arrive",
                       backgroundColor: Colors.orange, colorText: Colors.white);
 

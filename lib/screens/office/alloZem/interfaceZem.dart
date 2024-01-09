@@ -13,8 +13,7 @@ import 'dart:convert';
 
 class InterfaceZem extends StatefulWidget {
   @override
-  _InterfaceZemState createState() =>
-      _InterfaceZemState();
+  _InterfaceZemState createState() => _InterfaceZemState();
 }
 
 class _InterfaceZemState extends State<InterfaceZem> {
@@ -183,14 +182,14 @@ class _InterfaceZemState extends State<InterfaceZem> {
 
           // Vérifier si la liste des commandes existe
           userCourses ??= [];
-           
+
           print("les courses en  données");
           print(courseData);
           String titre = 'Livraison';
           String body = 'Votre livreur est en route';
           print(
               'courseData--------------------------- ${courseData["fcmToken"]}');
-          sendNotificationToClient(courseData['fcmToken'], titre, body); 
+          sendNotificationToClient(courseData['fcmToken'], titre, body);
 
           // Ajouter les données de la course à la liste des commandes de l'utilisateur
           userCourses.add(courseData);
@@ -289,9 +288,9 @@ class _InterfaceZemState extends State<InterfaceZem> {
     final titre = courseData['title'];
     final commission = courseData['prix'] * 0.2;
     final livraison = courseData['dateDeLivraison'];
-    final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
-    final formattedDate =
-        DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
+    // final date = DateTime.fromMillisecondsSinceEpoch(livraison.seconds * 1000);
+    // final formattedDate =
+    //     DateFormat('EEEE d MMMM y, HH:mm:ss', 'fr_FR').format(date);
 
     return Container(
       width: double.infinity,
@@ -341,7 +340,9 @@ class _InterfaceZemState extends State<InterfaceZem> {
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
-            'Date de livraison: $formattedDate',
+            // 'Date de livraison: $formattedDate',
+            'Date de livraison: $livraison',
+
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
           Text(
