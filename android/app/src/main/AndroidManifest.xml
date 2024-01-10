@@ -47,7 +47,10 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-       
+       <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyADnPjL66tPP7d7aMYDyQsc8_L5x-92pFc" />
+
     </application>
     <!-- Nouvelle ligne pour autorisation des permissions.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

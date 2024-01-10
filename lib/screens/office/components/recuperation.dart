@@ -6,6 +6,8 @@ import 'package:google_places_flutter/model/prediction.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
+// AIzaSyAvZjW1qK8FgWbZKTQCPPbyy1rAwcnqi3o
+// AIzaSyA5RGQzj1CdR_A5TOjRXUcw1Q7K_iOEfd8   ********
 // ignore: must_be_immutable
 class PickupInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -118,7 +120,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             children: [
               GooglePlaceAutoCompleteTextField(
                 textEditingController: controller,
-                googleAPIKey: "YOUR_GOOGLE_API_KEY",
+                googleAPIKey: "AIzaSyA5RGQzj1CdR_A5TOjRXUcw1Q7K_iOEfd8",
                 inputDecoration: InputDecoration(
                   hintText: "Adresse de récupération",
                   border: InputBorder.none,
@@ -128,7 +130,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                 countries: ["bj"],
                 isLatLngRequired: false,
                 getPlaceDetailWithLatLng: (Prediction prediction) {
-                  print("placeDetails" + prediction.lat.toString());
+                  print("placeDetails${prediction.lat}");
                 },
                 itemClick: (Prediction prediction) {
                   controller.text = prediction.description ?? "";
@@ -138,31 +140,83 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                 },
                 seperatedBuilder: Divider(),
                 itemBuilder: (context, index, Prediction prediction) {
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        Icon(Icons.location_on),
-                        SizedBox(width: 7),
-                        Expanded(
-                            child: Text("${prediction.description ?? ""}")),
-                      ],
+                  return GestureDetector(
+                    onTap: () {
+                      // Déclencher une action lorsque l'utilisateur sélectionne une prédiction
+                      controller.text = prediction.description ?? "";
+                      controller.selection = TextSelection.fromPosition(
+                          TextPosition(
+                              offset: prediction.description?.length ?? 0));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_on),
+                          SizedBox(width: 7),
+                          Expanded(
+                              child: Text("${prediction.description ?? ""}")),
+                        ],
+                      ),
                     ),
                   );
                 },
                 isCrossBtnShown: true,
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       useCurrentLocation = false;
-              //     });
-              //   },
-              //   child: Text("Utiliser une adresse spécifiée"),
-              // ),
             ],
           ),
         ),
+        // Container(
+        //   padding: EdgeInsets.symmetric(horizontal: 20),
+        //   child: Column(
+        //     children: [
+        //       GooglePlaceAutoCompleteTextField(
+        //         textEditingController: controller,
+        //         googleAPIKey: "AIzaSyA5RGQzj1CdR_A5TOjRXUcw1Q7K_iOEfd8",
+        //         inputDecoration: InputDecoration(
+        //           hintText: "Adresse de récupération",
+        //           border: InputBorder.none,
+        //           enabledBorder: InputBorder.none,
+        //         ),
+        //         debounceTime: 400,
+        //         countries: ["bj"],
+        //         isLatLngRequired: false,
+        //         getPlaceDetailWithLatLng: (Prediction prediction) {
+        //           print("placeDetails" + prediction.lat.toString());
+        //         },
+        //         itemClick: (Prediction prediction) {
+        //           controller.text = prediction.description ?? "";
+        //           controller.selection = TextSelection.fromPosition(
+        //               TextPosition(
+        //                   offset: prediction.description?.length ?? 0));
+        //         },
+        //         seperatedBuilder: Divider(),
+        //         itemBuilder: (context, index, Prediction prediction) {
+        //           return Container(
+        //             padding: EdgeInsets.all(10),
+        //             child: Row(
+        //               children: [
+        //                 Icon(Icons.location_on),
+        //                 SizedBox(width: 7),
+        //                 Expanded(
+        //                     child: Text("${prediction.description ?? ""}")),
+        //               ],
+        //             ),
+        //           );
+        //         },
+        //         isCrossBtnShown: true,
+        //       ),
+        //       // ElevatedButton(
+        //       //   onPressed: () {
+        //       //     setState(() {
+        //       //       useCurrentLocation = false;
+        //       //     });
+        //       //   },
+        //       //   child: Text("Utiliser une adresse spécifiée"),
+        //       // ),
+        //     ],
+        //   ),
+        // ),
         SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {

@@ -37,7 +37,7 @@ class DeliveryInfoWidget extends StatelessWidget {
             children: [
               GooglePlaceAutoCompleteTextField(
                 textEditingController: controller,
-                googleAPIKey: "YOUR_GOOGLE_API_KEY",
+                googleAPIKey: "AIzaSyAvZjW1qK8FgWbZKTQCPPbyy1rAwcnqi3o",
                 inputDecoration: InputDecoration(
                   hintText: "Adresse de récupération",
                   border: InputBorder.none,
@@ -47,7 +47,7 @@ class DeliveryInfoWidget extends StatelessWidget {
                 countries: ["bj"],
                 isLatLngRequired: false,
                 getPlaceDetailWithLatLng: (Prediction prediction) {
-                  print("placeDetails" + prediction.lat.toString());
+                  print("placeDetails${prediction.lat}");
                 },
                 itemClick: (Prediction prediction) {
                   controller.text = prediction.description ?? "";
