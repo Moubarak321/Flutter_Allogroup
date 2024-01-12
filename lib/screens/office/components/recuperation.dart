@@ -41,23 +41,32 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   }
 
   Future<void> _handlePressButton() async {
-    Prediction? p = await PlacesAutocomplete.show(
-      context: context,
-      apiKey: kGoogleApiKey,
-      mode: Mode.overlay,
-      language: "fr",
-      components: [new Component(Component.country, "bj")],
-      hint: 'Rechercher des villes',
-      startText: controller.text, 
+    try {
+      Prediction? p = await PlacesAutocomplete.show(
+        offset: 0,
+        radius: 1000,
+        strictbounds: false,
+        region: "us",
+        language: "en",
+        context: context,
+        mode: Mode.overlay,
+        apiKey: kGoogleApiKey,
+        //sessionToken: sessionToken,
+        components: [new Component(Component.country, "us")],
+        types: ["(cities)"],
+        hint: "Search City",
+        //startText: city == null || city == "" ? "" : city
     );
-
-    if (p != null) {
-      print(p.description);
-    } else {
-      print('Erreur');
+   
+      if (p != null) {
+        print(p.description);
+      } else {
+        print('Erreur : La prédiction est nulle');
+      }
+    } catch (e) {
+      print("Erreur lors de l'autocomplétion : $e");
     }
-  }
-
+    }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -139,32 +148,32 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      labelText: 'Rechercher des villes',
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: () async {
-                          await _handlePressButton();
-                        },
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        labelText: 'Rechercher des villes',
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () async {
+                            await _handlePressButton();
+                          },
+                        ),
                       ),
+                      onChanged: (value) {
+                        // Vous pouvez ajouter des filtres supplémentaires ici si nécessaire
+                      },
                     ),
-                    onChanged: (value) {
-                      // Vous pouvez ajouter des filtres supplémentaires ici si nécessaire
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             ],
           ),
         ),
-        
+
         SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {

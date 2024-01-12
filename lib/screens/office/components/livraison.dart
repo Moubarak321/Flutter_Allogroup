@@ -26,24 +26,35 @@ class DeliveryInfoWidget extends StatefulWidget {
 class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
   TextEditingController controller = TextEditingController();
 
-  Future<void> _handlePressButton(BuildContext context) async {
-    Prediction? p = await PlacesAutocomplete.show(
-      context: context,
-      apiKey: kGoogleApiKey,
-      mode: Mode.overlay,
-      language: "fr",
-      components: [new Component(Component.country, "bj")],
-      hint: 'Rechercher des villes',
-      startText: controller.text,
+   Future<void> _handlePressButton() async {
+    try {
+      Prediction? p = await PlacesAutocomplete.show(
+        offset: 0,
+        radius: 1000,
+        strictbounds: false,
+        region: "us",
+        language: "en",
+        context: context,
+        mode: Mode.overlay,
+        apiKey: kGoogleApiKey,
+        //sessionToken: sessionToken,
+        components: [new Component(Component.country, "us")],
+        types: ["(cities)"],
+        hint: "Search City",
+        //startText: city == null || city == "" ? "" : city
     );
-
-    if (p != null) {
-      print(p.description);
-    } else {
-      print('Erreur');
+   
+      if (p != null) {
+        print(p.description);
+      } else {
+        print('Erreur : La prédiction est nulle');
+      }
+    } catch (e) {
+      print("Erreur lors de l'autocomplétion : $e");
     }
-  }
+    }
 
+    
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -72,7 +83,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
                         suffixIcon: IconButton(
                           icon: Icon(Icons.search),
                           onPressed: () async {
-                            await _handlePressButton(context);
+                            await _handlePressButton();
                           },
                         ),
                       ),
