@@ -33,15 +33,13 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
         radius: 1000,
         strictbounds: false,
         region: "us",
-        language: "en",
+        language: "fr",
         context: context,
         mode: Mode.overlay,
         apiKey: kGoogleApiKey,
-        //sessionToken: sessionToken,
-        components: [new Component(Component.country, "us")],
-        types: ["(cities)"],
-        hint: "Search City",
-        //startText: city == null || city == "" ? "" : city
+        components: [new Component(Component.country, "bj")],
+        types: [],
+        hint: "Emplacement",
     );
    
       if (p != null) {

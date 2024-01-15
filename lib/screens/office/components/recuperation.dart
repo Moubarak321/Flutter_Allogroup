@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 // import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -37,7 +36,6 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   @override
   void initState() {
     super.initState();
-    fetchDeliveryAddresses();
   }
 
   Future<void> _handlePressButton() async {
@@ -47,15 +45,13 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
         radius: 1000,
         strictbounds: false,
         region: "us",
-        language: "en",
+        language: "fr",
         context: context,
         mode: Mode.overlay,
         apiKey: kGoogleApiKey,
-        //sessionToken: sessionToken,
-        components: [new Component(Component.country, "us")],
-        types: ["(cities)"],
-        hint: "Search City",
-        //startText: city == null || city == "" ? "" : city
+        components: [new Component(Component.country, "bj")],
+        types: [],
+        hint: "Emplacement",
     );
    
       if (p != null) {
@@ -105,31 +101,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
     return pickupAddress;
   }
 
-  void fetchDeliveryAddresses() async {
-    try {
-      // Récupérer les données depuis Firestore
-      DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
-          .collection('administrateur')
-          .doc('zone')
-          .get();
-
-      // Vérifier si le document existe et s'il contient la clé 'livraison'
-      if (zoneSnapshot.exists) {
-        Map<String, dynamic>? data =
-            zoneSnapshot.data() as Map<String, dynamic>?;
-        if (data != null && data.containsKey('livraison')) {
-          List<dynamic> livraisonList = data['livraison'];
-          setState(() {
-            addressList = List<String>.from(livraisonList);
-            selectedAddress = addressList.isNotEmpty ? addressList.first : null;
-          });
-        }
-      }
-    } catch (e) {
-      print('Erreur lors de la récupération des adresses de livraison : $e');
-      // Gérer l'erreur selon vos besoins
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +154,14 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             });
             _determinePosition();
           },
-          child: Text("Choisir ma position"),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.location_on), 
+              SizedBox(width: 8), 
+              Text("Choisir ma position actuelle"),
+            ],
+          ),
         ),
         SizedBox(height: 20.0),
         Text(
