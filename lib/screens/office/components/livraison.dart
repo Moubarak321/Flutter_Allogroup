@@ -74,7 +74,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    TextField(
+                    TextFormField(
                       controller: controller,
                       decoration: InputDecoration(
                         labelText: 'Rechercher des villes',

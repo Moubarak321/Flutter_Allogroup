@@ -120,11 +120,28 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Container(
+              ElevatedButton(
+          onPressed: () {
+            setState(() {
+              useCurrentLocation = true;
+            });
+            _determinePosition();
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.location_on), 
+              SizedBox(width: 8), 
+              Text("Choisir ma position actuelle"),
+            ],
+          ),
+        ),
+        SizedBox(height: 20.0),
+        Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    TextField(
+                    TextFormField(
                       controller: controller,
                       decoration: InputDecoration(
                         labelText: 'Rechercher des villes',
@@ -144,25 +161,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
               ),
             ],
           ),
-        ),
-
-        SizedBox(height: 20.0),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              useCurrentLocation = true;
-            });
-            _determinePosition();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.location_on), 
-              SizedBox(width: 8), 
-              Text("Choisir ma position actuelle"),
-            ],
-          ),
-        ),
+        ),  
         SizedBox(height: 20.0),
         Text(
           'Prendre chez',
