@@ -132,7 +132,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             children: [
               Icon(Icons.location_on), 
               SizedBox(width: 8), 
-              Text("Choisir ma position actuelle"),
+              Text("Ma position"),
             ],
           ),
         ),
