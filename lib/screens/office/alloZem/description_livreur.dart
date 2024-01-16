@@ -208,7 +208,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         final userData = {
           'id': courseId,
           'commandaire': user.uid,
-          'type_courses': 'Livraison de bien',
+          'type_courses': 'Taxi moto',
           'addressRecuperation': pickupAddress,
           'numeroARecuperation': pickupNumero,
           'addressLivraison': deliveryAddress,
