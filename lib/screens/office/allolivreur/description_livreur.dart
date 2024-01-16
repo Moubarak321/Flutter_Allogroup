@@ -16,9 +16,10 @@ class DeliveryFormPage extends StatefulWidget {
   @override
   _DeliveryFormPageState createState() => _DeliveryFormPageState();
 }
-
+const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 class _DeliveryFormPageState extends State<DeliveryFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
   String? pickupAddress;
   int? pickupNumero;
   String? deliveryAddress;
@@ -100,69 +101,99 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
+  
+ Future<int> Recuperationdistance(String pickupAddress, String deliveryAddress) async {
+  try {
+    final String apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json";
+    
+    final Map<String, String> params = {
+      'origins': pickupAddress,
+      'destinations': deliveryAddress,
+      'key': kGoogleApiKey,
+    };
 
-  Future<int> Recuperationprix(String pickupAddress) async {
-    try {
-      // Récupérer les données depuis Firestore
-      DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
-          .collection('administrateur')
-          .doc('zone')
-          .get();
+    final Uri uri = Uri.parse(apiUrl).replace(queryParameters: params);
 
-      // Vérifier si le document existe et s'il contient la clé 'livraison'
-      if (zoneSnapshot.exists) {
-        Map<String, dynamic>? data =
-            zoneSnapshot.data() as Map<String, dynamic>?;
+    final http.Response response = await http.get(uri);
 
-        if (data != null && data.containsKey('livraison')) {
-          List<dynamic> livraisonList = data['livraison'];
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
 
-          // Parcourir la liste des adresses de livraison pour trouver l'indice
-          for (int i = 0; i < livraisonList.length; i++) {
-            // Vérifier si l'adresse correspond à celle fournie
-            if (livraisonList[i] == pickupAddress) {
-              return await getPrixForIndice(i);
-            }
-          }
+      // Vérifier si la requête a réussi
+      if (data['status'] == 'OK') {
+        // Extraire la distance depuis la réponse JSON
+        final String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
 
-          return -1;
-        }
+        // Convertir la distance en mètres
+        final double distanceInMeters = double.parse(
+          distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
+        );
+
+        // Appliquer la logique de tarification basée sur la distance
+        return distanceInMeters.toInt(); // Convertir la distance en entier
+      } else {
+        print("Erreur dans la réponse de l'API Distance Matrix: ${data['status']}");
       }
-    } catch (e) {
-      print('Erreur lors de la récupération des adresses de livraison : $e');
+    } else {
+      print("Erreur lors de la requête vers l'API Distance Matrix. Statut : ${response.statusCode}");
     }
-
-    return -1;
+  } catch (e) {
+    print("Erreur lors de la récupération de la distance : $e");
   }
 
-  Future<int> getPrixForIndice(int indice) async {
-    try {
-      // Récupérer les données depuis Firestore pour les prix
-      DocumentSnapshot prixSnapshot = await FirebaseFirestore.instance
-          .collection('administrateur')
-          .doc('zone')
-          .get();
+  // En cas d'erreur, retourner une valeur par défaut
+  return -1;
+}
 
-      // Vérifier si le document existe et s'il contient la clé 'prix'
-      if (prixSnapshot.exists) {
-        Map<String, dynamic>? data =
-            prixSnapshot.data() as Map<String, dynamic>?;
+  Future<int> Recuperationprix(String pickupAddress, String deliveryAddress) async {
+  try {
+    final String apiUrl =
+        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$pickupAddress&destinations=$deliveryAddress&key=$kGoogleApiKey";
 
-        if (data != null && data.containsKey('prix')) {
-          List<dynamic> prixList = data['prix'];
+    final http.Response response = await http.get(Uri.parse(apiUrl));
 
-          if (indice >= 0 && indice < prixList.length) {
-            return prixList[
-                indice]; // Retourner le prix correspondant à l'indice
-          }
-        }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      // Vérifier si la requête a réussi
+      if (data['status'] == 'OK') {
+        // Extraire la distance depuis la réponse JSON
+        final String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
+
+        // Convertir la distance en mètres
+        final double distanceInMeters = double.parse(
+          distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
+        );
+
+        // Appliquer la logique de tarification basée sur la distance
+        return calculerPrix(distanceInMeters);
+      } else {
+        print("Erreur dans la réponse de l'API Distance Matrix");
       }
-    } catch (e) {
-      // print('Erreur lors de la récupération des prix : $e');
+    } else {
+      print("Erreur lors de la requête vers l'API Distance Matrix");
     }
-
-    return -1; // Prix non trouvé pour l'indice donné
+  } catch (e) {
+    print("Erreur lors de la récupération de la distance : $e");
   }
+
+  // En cas d'erreur, retourner une valeur par défaut
+  return -1;
+}
+
+  int calculerPrix(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return 500; 
+    } else if (distanceInMeters < 5000) {
+      return 1000; // Exemple de prix pour une distance entre 1 km et 5 km
+    } else {
+      return 1500; // Exemple de prix pour une distance supérieure à 5 km
+    }
+  }
+
+ 
 
   Future<void> saveFormDataToFirestore() async {
     try {
@@ -186,7 +217,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
           'password': password,
           'title': title,
           'details': details,
-          'prix': await Recuperationprix(pickupAddress ?? ''),
+          'prix': await Recuperationprix(pickupAddress ?? '', deliveryAddress ?? ''),
           'status': false,
           'fcmToken': fcmToken,
         };
@@ -395,7 +426,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 ),
               ),
               Step(
-                title: Text("Information sur la zone d'échange "),
+                title: Text("Information sur le lieu de départ "),
                 content: PickupInfoWidget(
                   formKey: _formKey,
                   pickupAddress: pickupAddress,
@@ -415,6 +446,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   deliveryAddress: deliveryAddress,
                   deliveryNumero: deliveryNumero,
                   updateDeliveryInfo: (address, numero) {
+                    print(address);
                     setState(() {
                       deliveryAddress = address;
                       deliveryNumero = numero;
@@ -491,14 +523,14 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Zone de Récupération: $pickupAddress',
+                          'Récupération: $pickupAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
                         Text(
-                          'Destinataire: $deliveryAddress',
+                          'Destination: $deliveryAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
@@ -511,8 +543,40 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
+                        Text(
+                              'Estimation de distance: ',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white, // Couleur du texte
+                              ),
+                            ),
+                            FutureBuilder<int>(
+                              future: Recuperationdistance(pickupAddress ?? '', deliveryAddress ?? ''),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator(); // Afficher un indicateur de chargement pendant le chargement de la distance
+                                } else if (snapshot.hasError) {
+                                  return Text(
+                                    'Erreur lors de la récupération de la distance',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                } else {
+                                  // Utiliser la distance récupérée
+                                  return Text(
+                                    '${snapshot.data} mètres',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                         FutureBuilder<int>(
-                          future: Recuperationprix(pickupAddress ?? ''),
+                          future: Recuperationprix(pickupAddress ?? '', deliveryAddress ?? ''),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

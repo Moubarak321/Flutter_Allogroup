@@ -43,7 +43,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
     });
   }
 
- Future<String> showGoogleAutoComplete(BuildContext context) async {
+  Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {
       Prediction? p = await PlacesAutocomplete.show(
         offset: 0,
@@ -62,6 +62,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
       if (p != null) {
         String selectedAddress = p.description!;
         updateSelectedAddress(selectedAddress);
+        print(selectedAddress);
         return selectedAddress;
       } else {
         print('Aucune prédiction trouvée');
@@ -73,7 +74,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
       return ''; // ou une valeur par défaut
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -110,7 +111,8 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                   controller: controller,
                   readOnly: true,
                   onTap: () async {
-                    String selectedPlace = await showGoogleAutoComplete(context);
+                    String selectedPlace =
+                        await showGoogleAutoComplete(context);
                     controller.text = selectedPlace;
 
                     setState(() {
