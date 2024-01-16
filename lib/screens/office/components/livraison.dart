@@ -28,6 +28,12 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
   TextEditingController controller = TextEditingController();
   bool showSourceField = false;
 
+  void updateSelectedAddress(String address) {
+    setState(() {
+      widget.deliveryAddress = address;
+    });
+  }
+
   Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {
       Prediction? p = await PlacesAutocomplete.show(
@@ -44,7 +50,14 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
         hint: "Emplacement",
       );
 
-      return p!.description!;
+       if (p != null) {
+        String selectedAddress = p.description!;
+        updateSelectedAddress(selectedAddress);
+        return selectedAddress;
+      } else {
+        print('Aucune prédiction trouvée');
+        return ''; // ou une valeur par défaut
+      }
     } catch (e) {
       print("Erreur lors de l'autocomplétion : $e");
       // Gérer l'erreur selon vos besoins
