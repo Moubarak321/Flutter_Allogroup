@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:get/get.dart';
 
 const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 
@@ -32,13 +32,13 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   String? selectedAddress;
   TextEditingController controller = TextEditingController();
   bool useCurrentLocation = false;
-
+  bool showSourceField = false;
   @override
   void initState() {
     super.initState();
   }
 
-  Future<void> _handlePressButton() async {
+ Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {
       Prediction? p = await PlacesAutocomplete.show(
         offset: 0,
@@ -52,17 +52,16 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
         components: [new Component(Component.country, "bj")],
         types: [],
         hint: "Emplacement",
-    );
-   
-      if (p != null) {
-        print(p.description);
-      } else {
-        print('Erreur : La prédiction est nulle');
-      }
+      );
+
+      return p!.description!;
     } catch (e) {
       print("Erreur lors de l'autocomplétion : $e");
+      // Gérer l'erreur selon vos besoins
+      return ''; // ou une valeur par défaut
     }
-    }
+  }
+
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -101,8 +100,6 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
     return pickupAddress;
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -121,47 +118,61 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
           child: Column(
             children: [
               ElevatedButton(
-          onPressed: () {
-            setState(() {
-              useCurrentLocation = true;
-            });
-            _determinePosition();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.location_on), 
-              SizedBox(width: 8), 
-              Text("Ma position"),
-            ],
-          ),
-        ),
-        SizedBox(height: 20.0),
-        Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
+                onPressed: () {
+                  setState(() {
+                    useCurrentLocation = true;
+                  });
+                  _determinePosition();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextFormField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        labelText: 'Rechercher des villes',
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () async {
-                            await _handlePressButton();
-                          },
-                        ),
-                      ),
-                      onChanged: (value) {
-                        // Vous pouvez ajouter des filtres supplémentaires ici si nécessaire
-                      },
-                    ),
+                    Icon(Icons.location_on),
+                    SizedBox(width: 8),
+                    Text("Ma position"),
                   ],
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                width: Get.width,
+                height: 50,
+                padding: EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(8)),
+                child: TextFormField(
+                  controller: controller,
+                  readOnly: true,
+                  onTap: () async {
+                    String selectedPlace = await showGoogleAutoComplete(context);
+                    controller.text = selectedPlace;
+
+                    setState(() {
+                      showSourceField = true;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      hintText: "Destination initiale",
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Icon(
+                          Icons.search,
+                          color: Colors.black12,
+                        ),
+                      )),
                 ),
               ),
             ],
           ),
-        ),  
+        ),
         SizedBox(height: 20.0),
         Text(
           'Prendre chez',
@@ -171,13 +182,6 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             color: Colors.orange,
           ),
         ),
-        // Text(
-        //   'Utiliser la position actuelle',
-        //   style: TextStyle(
-        //     fontSize: 16.0,
-        //     color: Colors.black,
-        //   ),
-        // ),
         IntlPhoneField(
           key: Key('phoneFieldKey'),
           flagsButtonPadding: const EdgeInsets.all(5),

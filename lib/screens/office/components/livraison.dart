@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:get/get.dart';
 
 const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 
@@ -25,8 +26,9 @@ class DeliveryInfoWidget extends StatefulWidget {
 
 class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
   TextEditingController controller = TextEditingController();
+  bool showSourceField = false;
 
-   Future<void> _handlePressButton() async {
+  Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {
       Prediction? p = await PlacesAutocomplete.show(
         offset: 0,
@@ -40,17 +42,15 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
         components: [new Component(Component.country, "bj")],
         types: [],
         hint: "Emplacement",
-    );
-   
-      if (p != null) {
-        print(p.description);
-      } else {
-        print('Erreur : La prédiction est nulle');
-      }
+      );
+
+      return p!.description!;
     } catch (e) {
       print("Erreur lors de l'autocomplétion : $e");
+      // Gérer l'erreur selon vos besoins
+      return ''; // ou une valeur par défaut
     }
-    }
+  }
 
     
   @override
@@ -71,25 +71,39 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        labelText: 'Rechercher des villes',
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () async {
-                            await _handlePressButton();
-                          },
+                width: Get.width,
+                height: 50,
+                padding: EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(8)),
+                child: TextFormField(
+                  controller: controller,
+                  readOnly: true,
+                  onTap: () async {
+                    String selectedPlace = await showGoogleAutoComplete(context);
+                    controller.text = selectedPlace;
+
+                    setState(() {
+                      showSourceField = true;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      hintText: "Destination finale",
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Icon(
+                          Icons.search,
+                          color: Colors.black12,
                         ),
-                      ),
-                      onChanged: (value) {
-                        // Vous pouvez ajouter des filtres supplémentaires ici si nécessaire
-                      },
-                    ),
-                  ],
+                      )),
                 ),
               ),
             ],
