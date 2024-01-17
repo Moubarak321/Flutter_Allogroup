@@ -452,8 +452,8 @@ class _UtilisateurState extends State<Utilisateur> {
                 title: Text('Processus de Livraison'),
                 content: PickupInfoWidget(
                   formKey: _formKey,
-                  pickupAddress: pickupAddress,
-                  pickupNumero: pickupNumero,
+                  tempPickupAddress: pickupAddress,
+                  tempPickupNumero: pickupNumero,
                   updatePickupInfo: (address, numero) {
                     setState(() {
                       pickupAddress = address;

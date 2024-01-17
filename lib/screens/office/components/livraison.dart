@@ -9,14 +9,18 @@ const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 // ignore: must_be_immutable
 class DeliveryInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  String? deliveryAddress;
-  int? deliveryNumero;
+  // String? deliveryAddress;
+  // int? deliveryNumero;
+
+  String? tempDeliveryAddress;
+  int? tempDeliveryNumero;
+
   final Function(String, int) updateDeliveryInfo;
 
   DeliveryInfoWidget({
     required this.formKey,
-    required this.deliveryAddress,
-    required this.deliveryNumero,
+    required this.tempDeliveryAddress,
+    required this.tempDeliveryNumero,
     required this.updateDeliveryInfo,
   });
 
@@ -28,9 +32,12 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
   TextEditingController controller = TextEditingController();
   bool showSourceField = false;
 
+  String? tempDeliveryAddress;
+  int? tempDeliveryNumero;
+
   void updateSelectedAddress(String address) {
     setState(() {
-      widget.deliveryAddress = address;
+      widget.tempDeliveryAddress = address;
     });
   }
 
@@ -50,7 +57,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
         hint: "Emplacement",
       );
 
-       if (p != null) {
+      if (p != null) {
         String selectedAddress = p.description!;
         updateSelectedAddress(selectedAddress);
         return selectedAddress;
@@ -65,7 +72,6 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
     }
   }
 
-    
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -83,7 +89,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-            Container(
+              Container(
                 width: Get.width,
                 height: 50,
                 padding: EdgeInsets.only(left: 10),
@@ -101,19 +107,27 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
                 child: TextFormField(
                   controller: controller,
                   onTap: () async {
-                    String selectedPlace = await showGoogleAutoComplete(context);
+                    String selectedPlace =
+                        await showGoogleAutoComplete(context);
                     controller.text = selectedPlace;
 
                     setState(() {
                       showSourceField = true;
                     });
+                    // Assignez les valeurs à la variable temporaire ici
+                    tempDeliveryAddress = selectedPlace;
+                    tempDeliveryNumero = widget.tempDeliveryNumero ?? 0;
                   },
                   onChanged: (String? newValue) {
                     // Mettre à jour la valeur sélectionnée
                     setState(() {
-                      widget.deliveryAddress = newValue;
+                      widget.tempDeliveryAddress = newValue;
                     });
-                    widget.updateDeliveryInfo(newValue ?? '', widget.deliveryNumero ?? 0);
+
+                    // Utilisez les valeurs de la variable temporaire ici
+                    widget.updateDeliveryInfo(
+                        tempDeliveryAddress ?? '', tempDeliveryNumero ?? 0);
+                    // widget.updateDeliveryInfo(newValue ?? '', widget.deliveryNumero ?? 0);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -166,9 +180,17 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
             // Extraire le numéro de téléphone
             final phoneNumber = value.completeNumber;
 
-            // Appeler la fonction pour mettre à jour les données
+            // Assignez les valeurs à la variable temporaire ici
+            tempDeliveryAddress = widget.tempDeliveryAddress ?? '';
+            tempDeliveryNumero = int.parse(phoneNumber);
+
+            // Utilisez les valeurs de la variable temporaire ici
             widget.updateDeliveryInfo(
-                widget.deliveryAddress ?? '', int.parse(phoneNumber));
+                tempDeliveryAddress ?? '', tempDeliveryNumero ?? 0);
+
+            // // Appeler la fonction pour mettre à jour les données
+            // widget.updateDeliveryInfo(
+            //     widget.deliveryAddress ?? '', int.parse(phoneNumber));
           },
           validator: (value) {
             if (value == null) {

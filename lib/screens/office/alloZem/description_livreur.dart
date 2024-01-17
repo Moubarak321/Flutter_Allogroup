@@ -16,19 +16,27 @@ class DeliveryFormPage extends StatefulWidget {
   @override
   _DeliveryFormPageState createState() => _DeliveryFormPageState();
 }
+
 const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
+
 class _DeliveryFormPageState extends State<DeliveryFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
-  String? pickupAddress;
-  int? pickupNumero;
-  String? deliveryAddress;
-  int? deliveryNumero;
+
+  // String? pickupAddress;
+  // int? pickupNumero;
+  // String? deliveryAddress;
+  // int? deliveryNumero;
   String? title;
   String? details;
   String? password;
+  // DateTime? selectedDateTime = DateTime.now();
 
-  DateTime? selectedDateTime = DateTime.now();
+  String? tempPickupAddress;
+  int? tempPickupNumero;
+  String? tempDeliveryAddress;
+  int? tempDeliveryNumero;
+  DateTime? tempSelectedDateTime = DateTime.now();
+
   int currentStep = 0; // Étape actuelle du formulaire
 
   User? getCurrentUser() {
@@ -101,99 +109,102 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       print('Erreur lors de l\'envoi de la notification : $e');
     }
   }
-  
- Future<int> Recuperationdistance(String pickupAddress, String deliveryAddress) async {
-  try {
-    final String apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json";
-    
-    final Map<String, String> params = {
-      'origins': pickupAddress,
-      'destinations': deliveryAddress,
-      'key': kGoogleApiKey,
-    };
 
-    final Uri uri = Uri.parse(apiUrl).replace(queryParameters: params);
+  Future<int> Recuperationdistance(
+      String pickupAddress, String deliveryAddress) async {
+    try {
+      final String apiUrl =
+          "https://maps.googleapis.com/maps/api/distancematrix/json";
 
-    final http.Response response = await http.get(uri);
+      final Map<String, String> params = {
+        'origins': pickupAddress,
+        'destinations': deliveryAddress,
+        'key': kGoogleApiKey,
+      };
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final Uri uri = Uri.parse(apiUrl).replace(queryParameters: params);
 
-      // Vérifier si la requête a réussi
-      if (data['status'] == 'OK') {
-        // Extraire la distance depuis la réponse JSON
-        final String distanceText =
-            data['rows'][0]['elements'][0]['distance']['text'];
+      final http.Response response = await http.get(uri);
 
-        // Convertir la distance en mètres
-        final double distanceInMeters = double.parse(
-          distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
-        );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
 
-        // Appliquer la logique de tarification basée sur la distance
-        return distanceInMeters.toInt(); // Convertir la distance en entier
+        // Vérifier si la requête a réussi
+        if (data['status'] == 'OK') {
+          // Extraire la distance depuis la réponse JSON
+          final String distanceText =
+              data['rows'][0]['elements'][0]['distance']['text'];
+
+          // Convertir la distance en mètres
+          final double distanceInMeters = double.parse(
+            distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
+          );
+
+          // Appliquer la logique de tarification basée sur la distance
+          return distanceInMeters.toInt(); // Convertir la distance en entier
+        } else {
+          print(
+              "Erreur dans la réponse de l'API Distance Matrix: ${data['status']}");
+        }
       } else {
-        print("Erreur dans la réponse de l'API Distance Matrix: ${data['status']}");
+        print(
+            "Erreur lors de la requête vers l'API Distance Matrix. Statut : ${response.statusCode}");
       }
-    } else {
-      print("Erreur lors de la requête vers l'API Distance Matrix. Statut : ${response.statusCode}");
+    } catch (e) {
+      print("Erreur lors de la récupération de la distance : $e");
     }
-  } catch (e) {
-    print("Erreur lors de la récupération de la distance : $e");
+
+    // En cas d'erreur, retourner une valeur par défaut
+    return -1;
   }
 
-  // En cas d'erreur, retourner une valeur par défaut
-  return -1;
-}
+  Future<int> Recuperationprix(
+      String pickupAddress, String deliveryAddress) async {
+    try {
+      final String apiUrl =
+          "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$pickupAddress&destinations=$deliveryAddress&key=$kGoogleApiKey";
 
-  Future<int> Recuperationprix(String pickupAddress, String deliveryAddress) async {
-  try {
-    final String apiUrl =
-        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$pickupAddress&destinations=$deliveryAddress&key=$kGoogleApiKey";
+      final http.Response response = await http.get(Uri.parse(apiUrl));
 
-    final http.Response response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+        // Vérifier si la requête a réussi
+        if (data['status'] == 'OK') {
+          // Extraire la distance depuis la réponse JSON
+          final String distanceText =
+              data['rows'][0]['elements'][0]['distance']['text'];
 
-      // Vérifier si la requête a réussi
-      if (data['status'] == 'OK') {
-        // Extraire la distance depuis la réponse JSON
-        final String distanceText =
-            data['rows'][0]['elements'][0]['distance']['text'];
+          // Convertir la distance en mètres
+          final double distanceInMeters = double.parse(
+            distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
+          );
 
-        // Convertir la distance en mètres
-        final double distanceInMeters = double.parse(
-          distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
-        );
-
-        // Appliquer la logique de tarification basée sur la distance
-        return calculerPrix(distanceInMeters);
+          // Appliquer la logique de tarification basée sur la distance
+          return calculerPrix(distanceInMeters);
+        } else {
+          print("Erreur dans la réponse de l'API Distance Matrix");
+        }
       } else {
-        print("Erreur dans la réponse de l'API Distance Matrix");
+        print("Erreur lors de la requête vers l'API Distance Matrix");
       }
-    } else {
-      print("Erreur lors de la requête vers l'API Distance Matrix");
+    } catch (e) {
+      print("Erreur lors de la récupération de la distance : $e");
     }
-  } catch (e) {
-    print("Erreur lors de la récupération de la distance : $e");
-  }
 
-  // En cas d'erreur, retourner une valeur par défaut
-  return -1;
-}
+    // En cas d'erreur, retourner une valeur par défaut
+    return -1;
+  }
 
   int calculerPrix(double distanceInMeters) {
     if (distanceInMeters < 1000) {
-      return 500; 
+      return 500;
     } else if (distanceInMeters < 5000) {
       return 1000; // Exemple de prix pour une distance entre 1 km et 5 km
     } else {
       return 1500; // Exemple de prix pour une distance supérieure à 5 km
     }
   }
-
- 
 
   Future<void> saveFormDataToFirestore() async {
     try {
@@ -206,18 +217,32 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         String? fcmToken = await getUserFCMToken(user.uid);
 
         final userData = {
+          // 'id': courseId,
+          // 'commandaire': user.uid,
+          // 'type_courses': 'Taxi moto',
+          // 'addressRecuperation': pickupAddress,
+          // 'numeroARecuperation': pickupNumero,
+          // 'addressLivraison': deliveryAddress,
+          // 'numeroALivraison': deliveryNumero,
+          // 'dateDeLivraison': selectedDateTime,
           'id': courseId,
           'commandaire': user.uid,
           'type_courses': 'Taxi moto',
-          'addressRecuperation': pickupAddress,
-          'numeroARecuperation': pickupNumero,
-          'addressLivraison': deliveryAddress,
-          'numeroALivraison': deliveryNumero,
-          'dateDeLivraison': selectedDateTime,
+          'addressRecuperation':
+              tempPickupAddress, // Utilisez la variable temporaire
+          'numeroARecuperation':
+              tempPickupNumero, // Utilisez la variable temporaire
+          'addressLivraison':
+              tempDeliveryAddress, // Utilisez la variable temporaire
+          'numeroALivraison':
+              tempDeliveryNumero, // Utilisez la variable temporaire
+          'dateDeLivraison':
+              tempSelectedDateTime, // Utilisez la variable temporaire
           'password': password,
           'title': title,
           'details': details,
-          'prix': await Recuperationprix(pickupAddress ?? '', deliveryAddress ?? ''),
+          'prix': await Recuperationprix(
+              tempPickupAddress ?? '', tempDeliveryAddress ?? ''),
           'status': false,
           'fcmToken': fcmToken,
         };
@@ -324,11 +349,11 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
       case 0:
         return true;
       case 1:
-        return pickupAddress != null && pickupNumero != null;
+        return tempPickupAddress != null && tempPickupNumero != null;
       case 2:
-        return deliveryAddress != null && deliveryNumero != null;
+        return tempDeliveryAddress != null && tempDeliveryNumero != null;
       case 3:
-        return selectedDateTime != null;
+        return tempSelectedDateTime != null;
       case 4:
         return password != null;
       case 5:
@@ -429,12 +454,15 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 title: Text("Information sur le lieu de départ "),
                 content: PickupInfoWidget(
                   formKey: _formKey,
-                  pickupAddress: pickupAddress,
-                  pickupNumero: pickupNumero,
+                  // pickupAddress: pickupAddress,
+                  tempPickupAddress: tempPickupAddress,
+                  tempPickupNumero: tempPickupNumero,
                   updatePickupInfo: (address, numero) {
                     setState(() {
-                      pickupAddress = address;
-                      pickupNumero = numero;
+                      // pickupAddress = address;
+                      // pickupNumero = numero;
+                      tempPickupAddress = address;
+                      tempPickupNumero = numero;
                     });
                   },
                 ),
@@ -443,13 +471,19 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 title: Text('Information sur le receveur'),
                 content: DeliveryInfoWidget(
                   formKey: _formKey,
-                  deliveryAddress: deliveryAddress,
-                  deliveryNumero: deliveryNumero,
+                  // deliveryAddress: deliveryAddress,
+                  // deliveryNumero: deliveryNumero,
+                  tempDeliveryAddress:
+                      tempDeliveryAddress, // Utilisez la variable temporaire
+                  tempDeliveryNumero:
+                      tempDeliveryNumero, // Utilisez la variable temporaire
                   updateDeliveryInfo: (address, numero) {
                     print(address);
                     setState(() {
-                      deliveryAddress = address;
-                      deliveryNumero = numero;
+                      // deliveryAddress = address;
+                      // deliveryNumero = numero;
+                      tempDeliveryAddress = address;
+                      tempDeliveryNumero = numero;
                     });
                   },
                 ),
@@ -460,16 +494,19 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   children: [
                     // Use any date picker widget of your choice
                     ElevatedButton(
+                      // onPressed: () async {
+                      //   await setDate(context);
+                      // },
                       onPressed: () async {
-                        await setDate(context);
+                        tempSelectedDateTime = await setDate(context);
                       },
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.orange),
                       ),
                       child: Text(
-                        selectedDateTime != null
-                            ? 'Date sélectionnée: $selectedDateTime'
+                        tempSelectedDateTime != null
+                            ? 'Date sélectionnée: $tempSelectedDateTime'
                             : 'Date actuelle: ${DateTime.now()}',
                       ),
                     ),
@@ -523,60 +560,63 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Récupération: $pickupAddress',
+                          'Récupération: $tempPickupAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
                         Text(
-                          'Destination: $deliveryAddress',
+                          'Destination: $tempDeliveryAddress',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
                         Text(
-                          'Date de Livraison: $selectedDateTime',
+                          'Date de Livraison: $tempSelectedDateTime',
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
                         Text(
-                              'Estimation de distance: ',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.white, // Couleur du texte
-                              ),
-                            ),
-                            FutureBuilder<int>(
-                              future: Recuperationdistance(pickupAddress ?? '', deliveryAddress ?? ''),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator(); // Afficher un indicateur de chargement pendant le chargement de la distance
-                                } else if (snapshot.hasError) {
-                                  return Text(
-                                    'Erreur lors de la récupération de la distance',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                  );
-                                } else {
-                                  // Utiliser la distance récupérée
-                                  return Text(
-                                    '${snapshot.data} mètres',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
+                          'Estimation de distance: ',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // Couleur du texte
+                          ),
+                        ),
                         FutureBuilder<int>(
-                          future: Recuperationprix(pickupAddress ?? '', deliveryAddress ?? ''),
+                          future: Recuperationdistance(tempPickupAddress ?? '',
+                              tempDeliveryAddress ?? ''),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator(); // Afficher un indicateur de chargement pendant le chargement de la distance
+                            } else if (snapshot.hasError) {
+                              return Text(
+                                'Erreur lors de la récupération de la distance',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else {
+                              // Utiliser la distance récupérée
+                              return Text(
+                                '${snapshot.data} mètres',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        FutureBuilder<int>(
+                          future: Recuperationprix(tempPickupAddress ?? '',
+                              tempDeliveryAddress ?? ''),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

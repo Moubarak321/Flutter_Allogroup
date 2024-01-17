@@ -11,16 +11,24 @@ const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 // ignore: must_be_immutable
 class PickupInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  String? pickupAddress;
-  int? pickupNumero;
+  // String? pickupAddress;
+  // int? pickupNumero;
+
+  String? tempPickupAddress;
+  int? tempPickupNumero;
   final Function(String, int) updatePickupInfo;
+
+
+
 
   PickupInfoWidget({
     required this.formKey,
-    required this.pickupAddress,
-    required this.pickupNumero,
+    required this.tempPickupAddress,
+    required this.tempPickupNumero,
     required this.updatePickupInfo,
   });
+
+  
 
   @override
   _PickupInfoWidgetState createState() => _PickupInfoWidgetState();
@@ -32,6 +40,11 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   TextEditingController controller = TextEditingController();
   bool useCurrentLocation = false;
   bool showSourceField = false;
+
+  String? tempPickupAddress;
+  int? tempPickupNumero;
+
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +52,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
 
   void updateSelectedAddress(String address) {
     setState(() {
-      widget.pickupAddress = address;
+      widget.tempPickupAddress = address;
     });
   }
 
@@ -118,11 +131,16 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                     setState(() {
                       showSourceField = true;
                     });
+
+                    // Assignez les valeurs à la variable temporaire ici
+              tempPickupAddress = selectedPlace;
+              tempPickupNumero = widget.tempPickupNumero ?? 0;
                   },
                   onChanged: (String? newValue) {
                     print("Le lieu sélectionné {$newValue}");
-                    widget.updatePickupInfo(
-                        newValue ?? '', widget.pickupNumero ?? 0);
+                    // widget.updatePickupInfo(newValue ?? '', widget.pickupNumero ?? 0);
+                    // Utilisez les valeurs de la variable temporaire ici
+              widget.updatePickupInfo(tempPickupAddress ?? '', tempPickupNumero ?? 0);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -173,8 +191,13 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
           keyboardType: TextInputType.phone,
           onChanged: (value) {
             final phoneNumber = value.completeNumber;
-            widget.updatePickupInfo(
-                widget.pickupAddress ?? '', int.tryParse(phoneNumber) ?? 0);
+            // Assignez les valeurs à la variable temporaire ici
+            tempPickupAddress = widget.tempPickupAddress ?? '';
+            tempPickupNumero = int.tryParse(phoneNumber) ?? 0;
+
+             // Utilisez les valeurs de la variable temporaire ici
+            widget.updatePickupInfo(tempPickupAddress ?? '', tempPickupNumero ?? 0);
+            // widget.updatePickupInfo(widget.pickupAddress ?? '', int.tryParse(phoneNumber) ?? 0);
           },
           validator: (value) {
             if (value == null) {

@@ -429,8 +429,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 title: Text("Information sur le lieu de départ "),
                 content: PickupInfoWidget(
                   formKey: _formKey,
-                  pickupAddress: pickupAddress,
-                  pickupNumero: pickupNumero,
+                  tempPickupAddress: pickupAddress,
+                  tempPickupNumero: pickupNumero,
                   updatePickupInfo: (address, numero) {
                     setState(() {
                       pickupAddress = address;
@@ -443,8 +443,8 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 title: Text('Information sur le receveur'),
                 content: DeliveryInfoWidget(
                   formKey: _formKey,
-                  deliveryAddress: deliveryAddress,
-                  deliveryNumero: deliveryNumero,
+                  tempDeliveryAddress: deliveryAddress,
+                  tempDeliveryNumero: deliveryNumero,
                   updateDeliveryInfo: (address, numero) {
                     print(address);
                     setState(() {
