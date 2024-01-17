@@ -2,7 +2,6 @@ import 'package:allogroup/screens/office/allolivreur/courseLivreur.dart';
 import 'package:allogroup/screens/office/allolivreur/detailsOnLivreur.dart';
 import 'package:allogroup/screens/office/widgets/app_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

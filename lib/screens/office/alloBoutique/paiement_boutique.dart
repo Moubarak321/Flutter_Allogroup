@@ -108,38 +108,6 @@ Future<dynamic> GetProductFromCart() async {
   }
 }
 
-Future<int> Recuperationprix(String pickupAddress) async {
-  try {
-    // Récupérer les données depuis Firestore
-    DocumentSnapshot zoneSnapshot = await FirebaseFirestore.instance
-        .collection('administrateur')
-        .doc('zone')
-        .get();
-
-    // Vérifier si le document existe et s'il contient la clé 'livraison'
-    if (zoneSnapshot.exists) {
-      Map<String, dynamic>? data = zoneSnapshot.data() as Map<String, dynamic>?;
-
-      if (data != null && data.containsKey('livraison')) {
-        List<dynamic> livraisonList = data['livraison'];
-
-        // Parcourir la liste des adresses de livraison pour trouver l'indice
-        for (int i = 0; i < livraisonList.length; i++) {
-          // Vérifier si l'adresse correspond à celle fournie
-          if (livraisonList[i] == pickupAddress) {
-            return await getPrixForIndice(i);
-          }
-        }
-
-        return -1;
-      }
-    }
-  } catch (e) {
-    print('Erreur lors de la récupération des adresses de livraison : $e');
-  }
-
-  return -1;
-}
 
 Future<int> getPrixForIndice(int indice) async {
   try {
@@ -239,7 +207,7 @@ Future<void> envoi() async {
                 'numeroLivraison': pickupNumero,
                 'detailsLivraison': details,
                 'titreLivraison': title,
-                'prix': await Recuperationprix(pickupAddress ?? ''),
+                'prix': 1000,
                 'paye':
                     (int.parse(order['prix']) * int.parse(order['quantite']))
                         .toString(),
@@ -339,7 +307,6 @@ class _UtilisateurState extends State<Utilisateur> {
   Future<void> fetchData() async {
     // Récupération des valeurs du panier et de la livraison
     fetchProductsFromCart();
-    deliveryCost = await Recuperationprix(pickupAddress ?? '');
     isLoading = false; // Mettre à jour l'état du chargement
     setState(() {});
   }
@@ -518,36 +485,13 @@ class _UtilisateurState extends State<Utilisateur> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        FutureBuilder<int>(
-                          future: Recuperationprix(pickupAddress ?? ''),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // Afficher un indicateur de chargement si nécessaire
-                              return CircularProgressIndicator();
-                            } else {
-                              if (snapshot.hasError) {
-                                // Gérer les erreurs si elles se produisent pendant le chargement des données
-                                return Text(
-                                  'Erreur lors de la récupération du prix',
+                        Text(
+                                  'Prix du service : 1000 F',
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     color: Colors.white, // Couleur du texte
                                   ),
-                                );
-                              } else {
-                                // Afficher le prix récupéré
-                                return Text(
-                                  'Prix du service : ${snapshot.data ?? ''} F',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.white, // Couleur du texte
-                                  ),
-                                );
-                              }
-                            }
-                          },
-                        ),
+                                )
                       ],
                     ),
                   ),
