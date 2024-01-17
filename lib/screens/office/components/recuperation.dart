@@ -98,18 +98,18 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                 height: 50,
                 padding: EdgeInsets.only(left: 10),
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(8)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      spreadRadius: 1,
+                      blurRadius: 1,
+                    )
+                  ],
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: TextFormField(
                   controller: controller,
-                  readOnly: true,
                   onTap: () async {
                     String selectedPlace =
                         await showGoogleAutoComplete(context);
@@ -119,15 +119,27 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                       showSourceField = true;
                     });
                   },
+                  onChanged: (String? newValue) {
+                    print("Le lieu sélectionné {$newValue}");
+                    widget.updatePickupInfo(
+                        newValue ?? '', widget.pickupNumero ?? 0);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Il est important de préciser une adresse de récupération';
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(
-                      hintText: "Destination initiale",
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.black12,
-                        ),
-                      )),
+                    hintText: "Destination initiale",
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.black12,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
