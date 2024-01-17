@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
@@ -9,68 +11,25 @@ const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 // ignore: must_be_immutable
 class DeliveryInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  // String? deliveryAddress;
-  // int? deliveryNumero;
-
   String? tempDeliveryAddress;
   int? tempDeliveryNumero;
 
-  final Function(String, int) updateDeliveryInfo;
 
   DeliveryInfoWidget({
     required this.formKey,
     required this.tempDeliveryAddress,
     required this.tempDeliveryNumero,
-    required this.updateDeliveryInfo,
   });
 
   @override
-  _DeliveryInfoWidgetState createState() => _DeliveryInfoWidgetState();
+  _PickupInfoWidgetState createState() => _PickupInfoWidgetState();
 }
 
-class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
+class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController controller = TextEditingController();
   bool showSourceField = false;
-
-  String? tempDeliveryAddress;
-  int? tempDeliveryNumero;
-
-  void updateSelectedAddress(String address) {
-    setState(() {
-      widget.tempDeliveryAddress = address;
-    });
-  }
-
-  Future<String> showGoogleAutoComplete(BuildContext context) async {
-    try {
-      Prediction? p = await PlacesAutocomplete.show(
-        offset: 0,
-        radius: 1000,
-        strictbounds: false,
-        region: "us",
-        language: "fr",
-        context: context,
-        mode: Mode.overlay,
-        apiKey: kGoogleApiKey,
-        components: [new Component(Component.country, "bj")],
-        types: [],
-        hint: "Emplacement",
-      );
-
-      if (p != null) {
-        String selectedAddress = p.description!;
-        updateSelectedAddress(selectedAddress);
-        return selectedAddress;
-      } else {
-        print('Aucune prédiction trouvée');
-        return ''; // ou une valeur par défaut
-      }
-    } catch (e) {
-      print("Erreur lors de l'autocomplétion : $e");
-      // Gérer l'erreur selon vos besoins
-      return ''; // ou une valeur par défaut
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +37,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Lieu de livraison',
+          "Adresse de livraison",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -89,6 +48,7 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+              SizedBox(height: 20.0),
               Container(
                 width: Get.width,
                 height: 50,
@@ -107,36 +67,17 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
                 child: TextFormField(
                   controller: controller,
                   onTap: () async {
-                    String selectedPlace =
-                        await showGoogleAutoComplete(context);
+                    String selectedPlace = await showGoogleAutoComplete(context);
                     controller.text = selectedPlace;
 
                     setState(() {
                       showSourceField = true;
                     });
-                    // Assignez les valeurs à la variable temporaire ici
-                    tempDeliveryAddress = selectedPlace;
-                    tempDeliveryNumero = widget.tempDeliveryNumero ?? 0;
-                  },
-                  onChanged: (String? newValue) {
-                    // Mettre à jour la valeur sélectionnée
-                    setState(() {
-                      widget.tempDeliveryAddress = newValue;
-                    });
-
-                    // Utilisez les valeurs de la variable temporaire ici
-                    widget.updateDeliveryInfo(
-                        tempDeliveryAddress ?? '', tempDeliveryNumero ?? 0);
-                    // widget.updateDeliveryInfo(newValue ?? '', widget.deliveryNumero ?? 0);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Il est important de préciser une adresse de récupération';
-                    }
-                    return null;
+                    widget.tempDeliveryAddress = selectedPlace;
+                    widget.tempDeliveryNumero = widget.tempDeliveryNumero ?? 0;
                   },
                   decoration: InputDecoration(
-                    hintText: "Destination initiale",
+                    hintText: "Destination finale",
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Icon(
@@ -175,183 +116,76 @@ class _DeliveryInfoWidgetState extends State<DeliveryInfoWidget> {
               borderRadius: BorderRadius.all(Radius.circular(35)),
             ),
           ),
-          keyboardType: TextInputType.number,
-          onChanged: (value) {
-            // Extraire le numéro de téléphone
-            final phoneNumber = value.completeNumber;
-
-            // Assignez les valeurs à la variable temporaire ici
-            tempDeliveryAddress = widget.tempDeliveryAddress ?? '';
-            tempDeliveryNumero = int.parse(phoneNumber);
-
-            // Utilisez les valeurs de la variable temporaire ici
-            widget.updateDeliveryInfo(
-                tempDeliveryAddress ?? '', tempDeliveryNumero ?? 0);
-
-            // // Appeler la fonction pour mettre à jour les données
-            // widget.updateDeliveryInfo(
-            //     widget.deliveryAddress ?? '', int.parse(phoneNumber));
-          },
-          validator: (value) {
-            if (value == null) {
-              return 'Il est important de préciser un numéro de contact';
+          keyboardType: TextInputType.phone,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            // Vérifiez si l'utilisateur est connecté
+            User? user = _auth.currentUser;
+            if (user != null) {
+              // Utilisateur connecté, envoyez les données à Firestore
+              await sendDataToFirestore(user.uid);
+            } else {
+              // L'utilisateur n'est pas connecté, affichez un message ou redirigez vers la page de connexion
+              print("L'utilisateur n'est pas connecté");
             }
-            return null;
           },
+          child: Text('Validation'),
         ),
       ],
     );
   }
+
+  Future<void> sendDataToFirestore(String userId) async {
+    try {
+      // Vous pouvez ajuster cette logique en fonction de votre structure de données
+      await _firestore.collection('users').doc(userId).update(
+        {
+          'Livraison': widget.tempDeliveryAddress,
+          'numeroLivraison': widget.tempDeliveryNumero,
+        },
+      );
+      print('Données envoyées avec succès à Firestore');
+    } catch (error) {
+      print("Erreur lors de l'envoi des données à Firestore: $error");
+    }
+  }
+
+  Future<String> showGoogleAutoComplete(BuildContext context) async {
+    try {
+      Prediction? p = await PlacesAutocomplete.show(
+        offset: 0,
+        radius: 1000,
+        strictbounds: false,
+        region: "us",
+        language: "fr",
+        context: context,
+        mode: Mode.overlay,
+        apiKey: kGoogleApiKey,
+        components: [new Component(Component.country, "bj")],
+        types: [],
+        hint: "Emplacement",
+      );
+
+      if (p != null) {
+        String selectedAddress = p.description!;
+        widget.tempDeliveryAddress = selectedAddress;
+        updateSelectedAddress(selectedAddress);
+        print(selectedAddress);
+        return selectedAddress;
+      } else {
+        print('Aucune prédiction trouvée');
+        return ''; // ou une valeur par défaut
+      }
+    } catch (e) {
+      print("Erreur lors de l'autocomplétion : $e");
+      return ''; 
+    }
+  }
+
+  void updateSelectedAddress(String address) {
+    setState(() {
+      widget.tempDeliveryAddress = address;
+    });
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:intl_phone_field/intl_phone_field.dart';
-
-// // ignore: must_be_immutable
-// class DeliveryInfoWidget extends StatelessWidget {
-//   final GlobalKey<FormState> formKey;
-//   String? deliveryAddress;
-//   int? deliveryNumero;
-//   final Function(String, int) updateDeliveryInfo;
-
-//   DeliveryInfoWidget({
-//     required this.formKey,
-//     required this.deliveryAddress,
-//     required this.deliveryNumero,
-//     required this.updateDeliveryInfo,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: <Widget>[
-//         Text(
-//           'Identifiant',
-//           style: TextStyle(
-//             fontSize: 20.0,
-//             fontWeight: FontWeight.bold,
-//             color: Colors.orange,
-//           ),
-//         ),
-//         Container(
-//           decoration: BoxDecoration(
-//             border: Border.all(
-//               color: Colors.lightBlue,
-//             ),
-//             borderRadius: BorderRadius.circular(8.0),
-//           ),
-//           child: TextFormField(
-//             decoration: InputDecoration(
-//               labelText: 'Prénom',
-//               prefixIcon: Icon(Icons.person_2_rounded),
-//             ),
-//             onChanged: (value) {
-//               // Appeler la fonction pour mettre à jour les données
-//               updateDeliveryInfo(value, deliveryNumero ?? 0);
-//             },
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Ce champ est requis pour une bonne orientation';
-//               }
-//               return null;
-//             },
-//           ),
-//         ),
-//         SizedBox(height: 20.0),
-
-//         Text(
-//           'Rendre à',
-//           style: TextStyle(
-//             fontSize: 20.0,
-//             fontWeight: FontWeight.bold,
-//             color: Colors.orange,
-//           ),
-//         ),
-       
-//         IntlPhoneField(
-//           key: Key('phoneFieldKey'), 
-//           flagsButtonPadding: const EdgeInsets.all(5),
-//           dropdownIconPosition: IconPosition.trailing,
-//           initialCountryCode: 'BJ',
-//           decoration: const InputDecoration(
-//             labelText: 'Numéro',
-//             labelStyle: TextStyle(color: Color.fromRGBO(250, 153, 78, 1)),
-//             filled: true,
-//             fillColor: Colors.white,
-//             alignLabelWithHint: true,
-//             border: OutlineInputBorder(
-//               borderSide: BorderSide(),
-//               borderRadius: BorderRadius.all(Radius.circular(35)),
-//             ),
-//           ),
-//           keyboardType: TextInputType.number,
-//           onChanged: (value) {
-//             // Extraire le numéro de téléphone
-//             final phoneNumber = value.completeNumber;
-           
-//               // Appeler la fonction pour mettre à jour les données
-//             updateDeliveryInfo(deliveryAddress ?? '', int.parse(phoneNumber));
-           
-//           },
-//           validator: (value) {
-//             if (value == null) {
-//               return 'Il est important de préciser un numéro de contact';
-//             }
-//             return null;
-//           },
-//         ),
-//       ],
-//     );
-//   }
-// }

@@ -22,15 +22,11 @@ const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
 class _DeliveryFormPageState extends State<DeliveryFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // String? pickupAddress;
-  // int? pickupNumero;
-  // String? deliveryAddress;
-  // int? deliveryNumero;
+  
   String? title;
   String? details;
   String? password;
-  // DateTime? selectedDateTime = DateTime.now();
-
+ 
   String? tempPickupAddress;
   int? tempPickupNumero;
   String? tempDeliveryAddress;
@@ -454,38 +450,16 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 title: Text("Information sur le lieu de départ "),
                 content: PickupInfoWidget(
                   formKey: _formKey,
-                  // pickupAddress: pickupAddress,
                   tempPickupAddress: tempPickupAddress,
                   tempPickupNumero: tempPickupNumero,
-                  updatePickupInfo: (address, numero) {
-                    setState(() {
-                      // pickupAddress = address;
-                      // pickupNumero = numero;
-                      tempPickupAddress = address;
-                      tempPickupNumero = numero;
-                    });
-                  },
                 ),
               ),
               Step(
-                title: Text('Information sur le receveur'),
+                title: Text('Information sur le lieu de départ'),
                 content: DeliveryInfoWidget(
                   formKey: _formKey,
-                  // deliveryAddress: deliveryAddress,
-                  // deliveryNumero: deliveryNumero,
-                  tempDeliveryAddress:
-                      tempDeliveryAddress, // Utilisez la variable temporaire
-                  tempDeliveryNumero:
-                      tempDeliveryNumero, // Utilisez la variable temporaire
-                  updateDeliveryInfo: (address, numero) {
-                    print(address);
-                    setState(() {
-                      // deliveryAddress = address;
-                      // deliveryNumero = numero;
-                      tempDeliveryAddress = address;
-                      tempDeliveryNumero = numero;
-                    });
-                  },
+                  tempDeliveryAddress: tempDeliveryAddress,
+                  tempDeliveryNumero: tempDeliveryNumero,   
                 ),
               ),
               Step(

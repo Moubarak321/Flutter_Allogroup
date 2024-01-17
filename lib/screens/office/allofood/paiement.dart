@@ -455,12 +455,6 @@ class _UtilisateurState extends State<Utilisateur> {
                   formKey: _formKey,
                   tempPickupAddress: pickupAddress,
                   tempPickupNumero: pickupNumero,
-                  updatePickupInfo: (address, numero) {
-                    setState(() {
-                      pickupAddress = address;
-                      pickupNumero = numero;
-                    });
-                  },
                 ),
               ),
               Step(
