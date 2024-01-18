@@ -215,7 +215,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         final userData = {
           'id': courseId,
           'commandaire': user.uid,
-          'type_courses': 'Taxi moto',
+          'type_courses': 'Livraison de bien',
           'addressRecuperation':
               tempPickupAddress, // Utilisez la variable temporaire
           'numeroARecuperation':

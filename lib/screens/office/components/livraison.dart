@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 const kGoogleApiKey = "AIzaSyAgjmN1oAneb0t9v8gIgWSWkwwBj-KLLsw";
@@ -27,8 +27,8 @@ class DeliveryInfoWidget extends StatefulWidget {
 }
 
 class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //final FirebaseAuth _auth = FirebaseAuth.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController controller = TextEditingController();
   bool showSourceField = false;
 
@@ -127,51 +127,12 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
             widget.onDeliveryInfoSelected( widget.tempDeliveryAddress ?? '', widget.tempDeliveryNumero?? 0);
           },
         ),
-        ElevatedButton(
-          onPressed: () async {
-            // Vérifiez si l'utilisateur est connecté
-            User? user = _auth.currentUser;
-            if (user != null) {
-              // Utilisateur connecté, envoyez les données à Firestore
-              await sendDeliveryDataToFirestore(user.uid);
-            } else {
-              // L'utilisateur n'est pas connecté, affichez un message ou redirigez vers la page de connexion
-              print("L'utilisateur n'est pas connecté");
-            }
-          },
-          child: Text('Validation'),
-        ),
+        
       ],
     );
   }
 
- Future<void> sendDeliveryDataToFirestore(String userId) async {
-  try {
-    // Vous pouvez ajuster cette logique en fonction de votre structure de données
-    await _firestore.collection('users').doc(userId).set(
-      {
-        'deplacementLivraison': FieldValue.arrayUnion([
-          {
-            'Livraison': widget.tempDeliveryAddress,
-            'numeroLivraison': widget.tempDeliveryNumero,
-          },
-        ]),
-      },
-      SetOptions(merge: true), // Utilisez merge: true pour mettre à jour plutôt qu'ajouter
-    );
-
-    String message = "Nous livrons à ${widget.tempDeliveryAddress} et appelerons le numéro ${widget.tempDeliveryNumero}";
-    
-    Get.snackbar("Infos",
-                message,
-                backgroundColor: Colors.orange, colorText: Colors.white);
-
-    print(message); // Cela affichera également les valeurs dans la console.
-  } catch (error) {
-    print("Erreur lors de la mise à jour des données dans Firestore: $error");
-  }
-}
-
+ 
 
 
 

@@ -397,7 +397,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                 } else {
                   saveFormDataToFirestore();
                   sendNotificationLivraison();
-                  Get.snackbar("Succès", "Votre comande est envoyée au livreur",
+                  Get.snackbar("Succès", "Votre comande est envoyée au zem",
                       backgroundColor: Colors.orange, colorText: Colors.white);
 
                   Navigator.push(
