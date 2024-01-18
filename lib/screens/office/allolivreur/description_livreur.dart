@@ -583,7 +583,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                             } else {
                               // Utiliser la distance récupérée
                               return Text(
-                                '${snapshot.data} mètres',
+                                '${snapshot.data} km',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.white,
