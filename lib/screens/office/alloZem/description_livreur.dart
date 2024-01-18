@@ -33,7 +33,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
   int? tempDeliveryNumero;
   DateTime? tempSelectedDateTime = DateTime.now();
 
-  int currentStep = 0; // Étape actuelle du formulaire
+  int currentStep = 0; 
 
   User? getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
@@ -213,14 +213,6 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
         String? fcmToken = await getUserFCMToken(user.uid);
 
         final userData = {
-          // 'id': courseId,
-          // 'commandaire': user.uid,
-          // 'type_courses': 'Taxi moto',
-          // 'addressRecuperation': pickupAddress,
-          // 'numeroARecuperation': pickupNumero,
-          // 'addressLivraison': deliveryAddress,
-          // 'numeroALivraison': deliveryNumero,
-          // 'dateDeLivraison': selectedDateTime,
           'id': courseId,
           'commandaire': user.uid,
           'type_courses': 'Taxi moto',
@@ -452,14 +444,26 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                   formKey: _formKey,
                   tempPickupAddress: tempPickupAddress,
                   tempPickupNumero: tempPickupNumero,
+                  onPickupInfoSelected: (String address, int numero) {
+                    setState(() {
+                      tempPickupAddress = address;
+                      tempPickupNumero = numero;
+                    });
+                  },
                 ),
               ),
               Step(
-                title: Text('Information sur le lieu de départ'),
+                title: Text('Information sur le lieu d"arrivée'),
                 content: DeliveryInfoWidget(
                   formKey: _formKey,
                   tempDeliveryAddress: tempDeliveryAddress,
-                  tempDeliveryNumero: tempDeliveryNumero,   
+                  tempDeliveryNumero: tempDeliveryNumero,  
+                   onDeliveryInfoSelected: (String address, int numero) {
+                    setState(() {
+                      tempDeliveryAddress = address;
+                      tempDeliveryNumero = numero;
+                    });
+                  }, 
                 ),
               ),
               Step(

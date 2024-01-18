@@ -13,12 +13,13 @@ class DeliveryInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   String? tempDeliveryAddress;
   int? tempDeliveryNumero;
-
+  final Function(String, int) onDeliveryInfoSelected;
 
   DeliveryInfoWidget({
     required this.formKey,
     required this.tempDeliveryAddress,
     required this.tempDeliveryNumero,
+    required this.onDeliveryInfoSelected
   });
 
   @override
@@ -137,19 +138,24 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
   }
 
   Future<void> sendDataToFirestore(String userId) async {
-    try {
-      // Vous pouvez ajuster cette logique en fonction de votre structure de données
-      await _firestore.collection('users').doc(userId).update(
+  try {
+    // Vous pouvez ajuster cette logique en fonction de votre structure de données
+    await _firestore.collection('users').doc(userId).update({
+      'deplacement': FieldValue.arrayUnion([
         {
           'Livraison': widget.tempDeliveryAddress,
           'numeroLivraison': widget.tempDeliveryNumero,
         },
-      );
-      print('Données envoyées avec succès à Firestore');
-    } catch (error) {
-      print("Erreur lors de l'envoi des données à Firestore: $error");
-    }
+      ]),
+    });
+    Get.snackbar("Infos",
+                "Nous livrons à {$widget.tempDeliveryAddress} et appelerons le numéro {$widget.tempDeliveryNumero}",
+                backgroundColor: Colors.orange, colorText: Colors.white);
+  } catch (error) {
+    print("Erreur lors de l'envoi des données à Firestore: $error");
   }
+}
+
 
   Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {

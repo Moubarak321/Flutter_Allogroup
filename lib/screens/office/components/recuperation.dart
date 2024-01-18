@@ -13,12 +13,14 @@ class PickupInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   String? tempPickupAddress;
   int? tempPickupNumero;
+  final Function(String, int) onPickupInfoSelected;
 
 
   PickupInfoWidget({
     required this.formKey,
     required this.tempPickupAddress,
     required this.tempPickupNumero,
+    required this.onPickupInfoSelected,
   });
 
   @override
@@ -73,8 +75,8 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                     setState(() {
                       showSourceField = true;
                     });
-                    widget.tempPickupAddress = selectedPlace;
-                    widget.tempPickupNumero = widget.tempPickupNumero ?? 0;
+
+                    widget.onPickupInfoSelected(selectedPlace, widget.tempPickupNumero ?? 0);
                   },
                   decoration: InputDecoration(
                     hintText: "Destination initiale",
@@ -139,17 +141,22 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   Future<void> sendDataToFirestore(String userId) async {
     try {
       // Vous pouvez ajuster cette logique en fonction de votre structure de données
-      await _firestore.collection('users').doc(userId).update(
-        {
-          'recuperation': widget.tempPickupAddress,
-          'numeroRecup': widget.tempPickupNumero,
-        },
-      );
-      print('Données envoyées avec succès à Firestore');
+      await _firestore.collection('users').doc(userId).update({
+        'deplacement': FieldValue.arrayUnion([
+          {
+            'recuperation': widget.tempPickupAddress,
+            'numeroRecup': widget.tempPickupNumero,
+          },
+        ]),
+      });
+      Get.snackbar("Infos",
+                "Nous récupérons à {$widget.tempPickupAddress} et appelerons le numéro {$widget.tempPickupNumero}",
+                backgroundColor: Colors.orange, colorText: Colors.white);
     } catch (error) {
       print("Erreur lors de l'envoi des données à Firestore: $error");
     }
   }
+
 
   Future<String> showGoogleAutoComplete(BuildContext context) async {
     try {

@@ -19,8 +19,8 @@ class Utilisateur extends StatefulWidget {
 }
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-String? pickupAddress;
-int? pickupNumero;
+String? tempPickupAddress;
+int? tempPickupNumero;
 String? title;
 String? details;
 String? error;
@@ -203,8 +203,8 @@ Future<void> envoi() async {
               {
                 ...order,
                 'commandaire': user.uid,
-                'lieuLivraison': pickupAddress,
-                'numeroLivraison': pickupNumero,
+                'lieuLivraison': tempPickupAddress,
+                'numeroLivraison': tempPickupNumero,
                 'detailsLivraison': details,
                 'titreLivraison': title,
                 'prix': 1000,
@@ -251,8 +251,8 @@ Future<void> commande() async {
           products
               .map((order) => {
                     ...order,
-                    'lieuLivraison': pickupAddress,
-                    'numeroLivraison': pickupNumero,
+                    'lieuLivraison': tempPickupAddress,
+                    'numeroLivraison': tempPickupNumero,
                   })
               .toList(),
         ),
@@ -283,7 +283,7 @@ bool isStepValid() {
     case 1:
       return true;
     case 2:
-      return pickupAddress != null && pickupNumero != null;
+      return tempPickupAddress != null && tempPickupNumero != null;
     case 3:
       return true;
     case 4:
@@ -453,8 +453,14 @@ class _UtilisateurState extends State<Utilisateur> {
                 title: Text('Processus de Livraison'),
                 content: PickupInfoWidget(
                   formKey: _formKey,
-                  tempPickupAddress: pickupAddress,
-                  tempPickupNumero: pickupNumero,
+                  tempPickupAddress: tempPickupAddress,
+                  tempPickupNumero: tempPickupNumero,
+                  onPickupInfoSelected: (String address, int numero) {
+                    setState(() {
+                      tempPickupAddress = address;
+                      tempPickupNumero = numero;
+                    });
+                  },
                 ),
               ),
               Step(
