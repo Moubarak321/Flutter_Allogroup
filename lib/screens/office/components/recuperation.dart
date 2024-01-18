@@ -119,6 +119,12 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             ),
           ),
           keyboardType: TextInputType.phone,
+          onChanged: (value) {
+            final completeNumber = value.completeNumber;
+            setState(() {
+              widget.tempPickupNumero = int.parse(completeNumber); 
+            });
+          },
         ),
         ElevatedButton(
           onPressed: () async {
@@ -139,23 +145,29 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   }
 
   Future<void> sendDataToFirestore(String userId) async {
-    try {
-      // Vous pouvez ajuster cette logique en fonction de votre structure de données
-      await _firestore.collection('users').doc(userId).update({
-        'deplacement': FieldValue.arrayUnion([
-          {
-            'recuperation': widget.tempPickupAddress,
-            'numeroRecup': widget.tempPickupNumero,
-          },
-        ]),
-      });
-      Get.snackbar("Infos",
-                "Nous récupérons à {$widget.tempPickupAddress} et appelerons le numéro {$widget.tempPickupNumero}",
+  try {
+    // Vous pouvez ajuster cette logique en fonction de votre structure de données
+    await _firestore.collection('users').doc(userId).update({
+      'deplacementRecuperation': FieldValue.arrayUnion([
+        {
+          'recuperation': widget.tempPickupAddress,
+          'numeroRecup': widget.tempPickupNumero,
+        },
+      ]),
+    });
+
+    String message = "Nous récupérons à ${widget.tempPickupAddress} et appelerons le numéro ${widget.tempPickupNumero}";
+    
+    Get.snackbar("Infos",
+                message,
                 backgroundColor: Colors.orange, colorText: Colors.white);
-    } catch (error) {
-      print("Erreur lors de l'envoi des données à Firestore: $error");
-    }
+
+    print(message); // Cela affichera également les valeurs dans la console.
+  } catch (error) {
+    print("Erreur lors de l'envoi des données à Firestore: $error");
   }
+}
+
 
 
   Future<String> showGoogleAutoComplete(BuildContext context) async {

@@ -118,6 +118,12 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
             ),
           ),
           keyboardType: TextInputType.phone,
+          onChanged: (value) {
+            final completeNumber = value.completeNumber;
+            setState(() {
+              widget.tempDeliveryNumero = int.parse(completeNumber); 
+            });
+          },
         ),
         ElevatedButton(
           onPressed: () async {
@@ -141,20 +147,26 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
   try {
     // Vous pouvez ajuster cette logique en fonction de votre structure de données
     await _firestore.collection('users').doc(userId).update({
-      'deplacement': FieldValue.arrayUnion([
+      'deplacementLivraison': FieldValue.arrayUnion([
         {
           'Livraison': widget.tempDeliveryAddress,
           'numeroLivraison': widget.tempDeliveryNumero,
         },
       ]),
     });
+
+    String message = "Nous livrons à ${widget.tempDeliveryAddress} et appelerons le numéro ${widget.tempDeliveryNumero}";
+    
     Get.snackbar("Infos",
-                "Nous livrons à {$widget.tempDeliveryAddress} et appelerons le numéro {$widget.tempDeliveryNumero}",
+                message,
                 backgroundColor: Colors.orange, colorText: Colors.white);
+
+    print(message); // Cela affichera également les valeurs dans la console.
   } catch (error) {
     print("Erreur lors de l'envoi des données à Firestore: $error");
   }
 }
+
 
 
   Future<String> showGoogleAutoComplete(BuildContext context) async {
