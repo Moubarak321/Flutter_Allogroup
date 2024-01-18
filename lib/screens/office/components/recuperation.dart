@@ -33,6 +33,8 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   TextEditingController controller = TextEditingController();
   bool showSourceField = false;
 
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -119,11 +121,14 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
             ),
           ),
           keyboardType: TextInputType.phone,
-          onChanged: (value) {
+          onChanged: (value) async {
             final completeNumber = value.completeNumber;
+            updatePhoneNumber(completeNumber);
             setState(() {
-              widget.tempPickupNumero = int.parse(completeNumber); 
+              showSourceField = true;
             });
+
+            widget.onPickupInfoSelected( widget.tempPickupAddress  ?? '', widget.tempPickupNumero ?? 0);
           },
         ),
         ElevatedButton(
@@ -145,29 +150,31 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   }
 
   Future<void> sendDataToFirestore(String userId) async {
-  try {
-    // Vous pouvez ajuster cette logique en fonction de votre structure de données
-    await _firestore.collection('users').doc(userId).update({
-      'deplacementRecuperation': FieldValue.arrayUnion([
+    try {
+      // Vous pouvez ajuster cette logique en fonction de votre structure de données
+      await _firestore.collection('users').doc(userId).set(
         {
-          'recuperation': widget.tempPickupAddress,
-          'numeroRecup': widget.tempPickupNumero,
+          'deplacementRecuperation': FieldValue.arrayUnion([
+            {
+              'recuperation': widget.tempPickupAddress,
+              'numeroRecup': widget.tempPickupNumero,
+            },
+          ]),
         },
-      ]),
-    });
+        SetOptions(merge: true), // Utilisez merge: true pour mettre à jour plutôt qu'ajouter
+      );
 
-    String message = "Nous récupérons à ${widget.tempPickupAddress} et appelerons le numéro ${widget.tempPickupNumero}";
-    
-    Get.snackbar("Infos",
-                message,
-                backgroundColor: Colors.orange, colorText: Colors.white);
+      String message = "Nous récupérons à ${widget.tempPickupAddress} et appelerons le numéro ${widget.tempPickupNumero}";
+      
+      Get.snackbar("Infos",
+                  message,
+                  backgroundColor: Colors.orange, colorText: Colors.white);
 
-    print(message); // Cela affichera également les valeurs dans la console.
-  } catch (error) {
-    print("Erreur lors de l'envoi des données à Firestore: $error");
+      print(message); // Cela affichera également les valeurs dans la console.
+    } catch (error) {
+      print("Erreur lors de la mise à jour des données dans Firestore: $error");
+    }
   }
-}
-
 
 
   Future<String> showGoogleAutoComplete(BuildContext context) async {
@@ -205,6 +212,12 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
   void updateSelectedAddress(String address) {
     setState(() {
       widget.tempPickupAddress = address;
+    });
+  }
+  
+  void updatePhoneNumber(String phoneNumber) {
+    setState(() {
+      widget.tempPickupNumero = int.parse(phoneNumber) ?? 0;
     });
   }
 }

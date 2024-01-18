@@ -74,8 +74,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
                     setState(() {
                       showSourceField = true;
                     });
-                    widget.tempDeliveryAddress = selectedPlace;
-                    widget.tempDeliveryNumero = widget.tempDeliveryNumero ?? 0;
+                    widget.onDeliveryInfoSelected(selectedPlace, widget.tempDeliveryNumero ?? 0);
                   },
                   decoration: InputDecoration(
                     hintText: "Destination finale",
@@ -118,11 +117,14 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
             ),
           ),
           keyboardType: TextInputType.phone,
-          onChanged: (value) {
+          onChanged: (value) async {
             final completeNumber = value.completeNumber;
+            updatePhoneNumber(completeNumber);
             setState(() {
-              widget.tempDeliveryNumero = int.parse(completeNumber); 
+              showSourceField = true;
             });
+
+            widget.onDeliveryInfoSelected( widget.tempDeliveryAddress ?? '', widget.tempDeliveryNumero?? 0);
           },
         ),
         ElevatedButton(
@@ -131,7 +133,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
             User? user = _auth.currentUser;
             if (user != null) {
               // Utilisateur connecté, envoyez les données à Firestore
-              await sendDataToFirestore(user.uid);
+              await sendDeliveryDataToFirestore(user.uid);
             } else {
               // L'utilisateur n'est pas connecté, affichez un message ou redirigez vers la page de connexion
               print("L'utilisateur n'est pas connecté");
@@ -143,17 +145,20 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
     );
   }
 
-  Future<void> sendDataToFirestore(String userId) async {
+ Future<void> sendDeliveryDataToFirestore(String userId) async {
   try {
     // Vous pouvez ajuster cette logique en fonction de votre structure de données
-    await _firestore.collection('users').doc(userId).update({
-      'deplacementLivraison': FieldValue.arrayUnion([
-        {
-          'Livraison': widget.tempDeliveryAddress,
-          'numeroLivraison': widget.tempDeliveryNumero,
-        },
-      ]),
-    });
+    await _firestore.collection('users').doc(userId).set(
+      {
+        'deplacementLivraison': FieldValue.arrayUnion([
+          {
+            'Livraison': widget.tempDeliveryAddress,
+            'numeroLivraison': widget.tempDeliveryNumero,
+          },
+        ]),
+      },
+      SetOptions(merge: true), // Utilisez merge: true pour mettre à jour plutôt qu'ajouter
+    );
 
     String message = "Nous livrons à ${widget.tempDeliveryAddress} et appelerons le numéro ${widget.tempDeliveryNumero}";
     
@@ -163,9 +168,10 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
 
     print(message); // Cela affichera également les valeurs dans la console.
   } catch (error) {
-    print("Erreur lors de l'envoi des données à Firestore: $error");
+    print("Erreur lors de la mise à jour des données dans Firestore: $error");
   }
 }
+
 
 
 
@@ -204,6 +210,11 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
   void updateSelectedAddress(String address) {
     setState(() {
       widget.tempDeliveryAddress = address;
+    });
+  }
+  void updatePhoneNumber(String phoneNumber) {
+    setState(() {
+      widget.tempDeliveryNumero = int.parse(phoneNumber) ?? 0;
     });
   }
 }
