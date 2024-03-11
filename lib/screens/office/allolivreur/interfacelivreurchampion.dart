@@ -370,8 +370,7 @@ class _InterFaceLivreurChampionState extends State<InterFaceLivreurChampion> {
               }
             },
             style: ElevatedButton.styleFrom(
-              primary: Colors.white,
-              onPrimary: Colors.blue,
+              foregroundColor: Colors.blue, backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),

@@ -106,53 +106,56 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     }
   }
 
-  Future<int> Recuperationdistance(
-      String pickupAddress, String deliveryAddress) async {
-    try {
-      final String apiUrl =
-          "https://maps.googleapis.com/maps/api/distancematrix/json";
 
-      final Map<String, String> params = {
-        'origins': pickupAddress,
-        'destinations': deliveryAddress,
-        'key': kGoogleApiKey,
-      };
+Future<double> Recuperationdistance(
+  String pickupAddress, String deliveryAddress) async {
+  try {
+    final String apiUrl =
+        "https://maps.googleapis.com/maps/api/distancematrix/json";
 
-      final Uri uri = Uri.parse(apiUrl).replace(queryParameters: params);
+    final Map<String, String> params = {
+      'origins': pickupAddress,
+      'destinations': deliveryAddress,
+      'key': kGoogleApiKey,
+    };
 
-      final http.Response response = await http.get(uri);
+    final Uri uri = Uri.parse(apiUrl).replace(queryParameters: params);
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+    final http.Response response = await http.get(uri);
 
-        // Vérifier si la requête a réussi
-        if (data['status'] == 'OK') {
-          // Extraire la distance depuis la réponse JSON
-          final String distanceText =
-              data['rows'][0]['elements'][0]['distance']['text'];
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
 
-          // Convertir la distance en mètres
-          final double distanceInMeters = double.parse(
-            distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
-          );
+      // Vérifier si la requête a réussi
+      if (data['status'] == 'OK') {
+        // Extraire la distance depuis la réponse JSON
+        final String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
 
-          // Appliquer la logique de tarification basée sur la distance
-          return distanceInMeters.toInt(); // Convertir la distance en entier
-        } else {
-          print(
-              "Erreur dans la réponse de l'API Distance Matrix: ${data['status']}");
-        }
+        // Convertir la distance en mètres
+        final double distanceInMeters = double.parse(
+          distanceText.replaceAll(RegExp(r'[^0-9.]'), ''),
+        );
+
+        // Appliquer la logique de tarification basée sur la distance
+        return double.parse(distanceInMeters.toStringAsFixed(2)); // Convertir la distance en nombre réel à deux chiffres après la virgule
       } else {
         print(
-            "Erreur lors de la requête vers l'API Distance Matrix. Statut : ${response.statusCode}");
+            "Erreur dans la réponse de l'API Distance Matrix: ${data['status']}");
       }
-    } catch (e) {
-      print("Erreur lors de la récupération de la distance : $e");
+    } else {
+      print(
+          "Erreur lors de la requête vers l'API Distance Matrix. Statut : ${response.statusCode}");
     }
-
-    // En cas d'erreur, retourner une valeur par défaut
-    return -1;
+  } catch (e) {
+    print("Erreur lors de la récupération de la distance : $e");
   }
+
+  // En cas d'erreur, retourner une valeur par défaut
+  return -1;
+}
+
+
 
   Future<int> Recuperationprix(
       String pickupAddress, String deliveryAddress) async {
@@ -192,15 +195,61 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
     return -1;
   }
 
-  int calculerPrix(double distanceInMeters) {
-    if (distanceInMeters < 1000) {
-      return 500;
-    } else if (distanceInMeters < 5000) {
-      return 1000; // Exemple de prix pour une distance entre 1 km et 5 km
+  // int calculerPrix(double distanceInMeters) {
+  //   if (distanceInMeters < 1000) {
+  //     return 500;
+  //   } else if (distanceInMeters < 5000) {
+  //     return 1000; // Exemple de prix pour une distance entre 1 km et 5 km
+  //   } else {
+  //     return 1500; // Exemple de prix pour une distance supérieure à 5 km
+  //   }
+  // }
+
+
+Future<int> calculerPrix(double distanceInMeters) async {
+  try {
+    // Accéder à la collection "admin" dans Firebase
+    DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
+        .collection('administrateur')
+        .doc('admin')
+        .get();
+
+    // Vérifier si le document admin existe
+    if (adminSnapshot.exists) {
+      // Accéder au tableau factureLivraison
+      List<dynamic> factureLivraison = adminSnapshot['factureLivraison'];
+
+      // Parcourir les éléments du tableau pour déterminer la tranche
+      for (var i = 0; i < factureLivraison.length; i++) {
+        // Récupérer la clé et la valeur du tableau
+        int cle = factureLivraison[i]['cle'];
+        int valeur = factureLivraison[i]['valeur'];
+
+        // Vérifier si la distance se situe dans la tranche actuelle
+        if (i < factureLivraison.length - 1 &&
+            distanceInMeters >= cle &&
+            distanceInMeters < factureLivraison[i + 1]['cle']) {
+          return valeur;
+        }
+
+        // Si la distance dépasse la dernière clé du tableau, utiliser la dernière tranche
+        if (i == factureLivraison.length - 1 && distanceInMeters >= cle) {
+          return valeur;
+        }
+      }
+
+      // Si la distance est inférieure à la première clé du tableau, retourner une valeur par défaut
+      return 0; // Valeur par défaut à définir selon vos besoins
     } else {
-      return 1500; // Exemple de prix pour une distance supérieure à 5 km
+      print("Document admin n'existe pas.");
+      return -1; // Retourner une valeur d'erreur si le document admin n'existe pas
     }
+  } catch (e) {
+    print("Erreur lors de la récupération des données depuis Firebase : $e");
+    return -1; // Retourner une valeur d'erreur en cas d'échec
   }
+}
+
 
   Future<void> saveFormDataToFirestore() async {
     try {
@@ -565,7 +614,7 @@ class _DeliveryFormPageState extends State<DeliveryFormPage> {
                             color: Colors.white, // Couleur du texte
                           ),
                         ),
-                        FutureBuilder<int>(
+                        FutureBuilder<double>(
                           future: Recuperationdistance(tempPickupAddress ?? '',
                               tempDeliveryAddress ?? ''),
                           builder: (context, snapshot) {
