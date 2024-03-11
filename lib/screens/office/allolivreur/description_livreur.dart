@@ -206,7 +206,7 @@ Future<double> Recuperationdistance(
   // }
 
 
-Future<int> calculerPrix(double distanceInMeters) async {
+ Future<int> calculerPrix(double distanceInMeters) async {
   try {
     // Accéder à la collection "admin" dans Firebase
     DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
@@ -216,29 +216,32 @@ Future<int> calculerPrix(double distanceInMeters) async {
 
     // Vérifier si le document admin existe
     if (adminSnapshot.exists) {
-      // Accéder au tableau factureLivraison
-      List<dynamic> factureLivraison = adminSnapshot['factureLivraison'];
+      // Récupérer les données de factureLivraison
+      Map<String, dynamic> factureLivraison = adminSnapshot['factureLivraison'];
 
-      // Parcourir les éléments du tableau pour déterminer la tranche
-      for (var i = 0; i < factureLivraison.length; i++) {
-        // Récupérer la clé et la valeur du tableau
-        int cle = factureLivraison[i]['cle'];
-        int valeur = factureLivraison[i]['valeur'];
+      // Convertir les clés en entiers et trier par ordre croissant
+      List<int> cleValues = factureLivraison.keys.map(int.parse).toList()..sort();
+
+      // Parcourir les clés pour déterminer la tranche
+      for (var i = 0; i < cleValues.length; i++) {
+        // Récupérer la clé et la valeur
+        int cle = cleValues[i];
+        int valeur = factureLivraison[cle.toString()];
 
         // Vérifier si la distance se situe dans la tranche actuelle
-        if (i < factureLivraison.length - 1 &&
+        if (i < cleValues.length - 1 &&
             distanceInMeters >= cle &&
-            distanceInMeters < factureLivraison[i + 1]['cle']) {
+            distanceInMeters < cleValues[i + 1]) {
           return valeur;
         }
 
-        // Si la distance dépasse la dernière clé du tableau, utiliser la dernière tranche
-        if (i == factureLivraison.length - 1 && distanceInMeters >= cle) {
+        // Si la distance dépasse la dernière clé, utiliser la dernière tranche
+        if (i == cleValues.length - 1 && distanceInMeters >= cle) {
           return valeur;
         }
       }
 
-      // Si la distance est inférieure à la première clé du tableau, retourner une valeur par défaut
+      // Si la distance est inférieure à la première clé, retourner une valeur par défaut
       return 0; // Valeur par défaut à définir selon vos besoins
     } else {
       print("Document admin n'existe pas.");
