@@ -41,7 +41,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Adresse de récupération",
+          "Votre Adresse",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
                     widget.onPickupInfoSelected(selectedPlace, widget.tempPickupNumero ?? 0);
                   },
                   decoration: InputDecoration(
-                    hintText: "Destination initiale",
+                    hintText: "Emplacement",
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Icon(
@@ -97,7 +97,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Prendre chez',
+          'Votre contact',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,

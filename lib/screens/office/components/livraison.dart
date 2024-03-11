@@ -38,7 +38,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Adresse de livraison",
+          "Votre Adresse",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
