@@ -41,7 +41,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Votre Adresse",
+          "Adresse",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class _PickupInfoWidgetState extends State<PickupInfoWidget> {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Votre contact',
+          'Contact',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,

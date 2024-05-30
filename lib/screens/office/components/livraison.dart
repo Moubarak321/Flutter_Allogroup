@@ -38,7 +38,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Votre Adresse",
+          "Adresse",
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
                     widget.onDeliveryInfoSelected(selectedPlace, widget.tempDeliveryNumero ?? 0);
                   },
                   decoration: InputDecoration(
-                    hintText: "Destination finale",
+                    hintText: "Destination",
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Icon(
@@ -93,7 +93,7 @@ class _PickupInfoWidgetState extends State<DeliveryInfoWidget> {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Rendre à',
+          'Contact',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
